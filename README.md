@@ -1,3 +1,3 @@
 ## Project Team Null Pointers
 
-Pages Project: https://swillnmsu.github.io/
+Pages website: https://diegomorales30.github.io/NullPointers/
