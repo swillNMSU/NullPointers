@@ -1,3 +1,4 @@
+package src;
 /*
 Class that represents pets.
 VARS:

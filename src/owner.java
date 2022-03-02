@@ -1,3 +1,4 @@
+package src;
 /*
 Owner class. 
 Vars:
