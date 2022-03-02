@@ -42,6 +42,11 @@ public class pet {
         return fixedPet;
     }
 
+    @Override
+    public String toString() {
+        return this.name + "  " + this.breed + "  " + this.fixedPet;
+    }
+
     
 
 }
