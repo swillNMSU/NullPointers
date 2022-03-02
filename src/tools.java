@@ -10,10 +10,13 @@ Tools to implement our CSV file.
 
 public class tools {
     
+    Scanner sn = new Scanner("csvTest.csv");
     public static void main(String[] args) {
         
         //Temp console display to test tools
         System.out.println("Enter your choice:\n\t1. Display All\n\t2. Add Owner\n\t3. Remove Owner\n\t4. View Owner");
+        System.out.println();
+
     }
 
 
