@@ -14,11 +14,11 @@ Tools to implement our CSV file.
 
 public class tools {
 
-
+    static owner[] owners = new owner[10];  // these need to be dynamic in the future. Probably should use linked list or collections.
+    static int numOwners = 0;
+    static pet[] pets = new pet[100];
+    
     public static void readCSV(){
-        
-        owner[] owners = new owner[100];
-        pet[] pets = new pet[100];
         
         try{
             File theFile = new File("csvTest.csv");
@@ -45,12 +45,10 @@ public class tools {
                         if (petData[2] == "t") tBool = true;
                         if (petData[2] == "f") tBool = false;
                         pet newPet = new pet(petData[0], petData[1], tBool);
-                        
                         newOwner.addPet(newPet);
+                    } // end for loop
 
-                    }
-
-
+                    owners[numOwners++] = newOwner;
 
                     System.out.println(tempStr + " ");
                     i++;
@@ -70,6 +68,13 @@ public class tools {
         System.out.println("Enter your choice:\n\t1. Display All\n\t2. Add Owner\n\t3. Remove Owner\n\t4. View Owner");
         System.out.println("\n\n");
         readCSV();
+        System.out.println(owners[0]);
+        for (owner ows : owners) {
+            System.out.println(ows);
+            for (int j = 0; j < ows.getNumPets(); j++){
+                System.out.println(ows.ownersPets[j]);
+            }
+        }
 
         
 
