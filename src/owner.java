@@ -22,7 +22,7 @@ Vars:
 public class owner {
 
     private String name, incomeProof;
-    private int numPets, strikes, numRecieved;
+    public static int numPets, strikes, numRecieved;
     private pet[] ownersPets = new pet[10];
 
 
@@ -37,6 +37,7 @@ public class owner {
     // currently allows for only one pet.
     public void addPet(pet newPet){
         ownersPets[0] = newPet;
+        numPets++;
     }
 
 
