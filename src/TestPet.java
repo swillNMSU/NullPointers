@@ -1,7 +1,10 @@
 package src;
 
 public class TestPet {
-   pet dog = new pet("Cracon","Mastiff");
-
-   System.out.println(dog);
+    
+    public static void main(String[] args){
+    pet Marcus = new pet("Caracon", "Mastiff", false);
+    //pet Marcus = new pet("Caracon", "Mastiff", true);
+    System.out.println(Marcus);
+    }
 }
