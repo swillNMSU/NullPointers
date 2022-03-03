@@ -39,6 +39,15 @@ public class tools {
                     // split pet data.
                     String[] petSplit = tempArr[1].split(";");
                     newOwner.setNumPets(petSplit.length);
+                    for (int j = 0; j < petSplit.length; j++){
+                        String[] petData = petSplit[j].split(",");
+                        Boolean tBool = null;
+                        if (petData[2] == "t") tBool = true;
+                        if (petData[2] == "f") tBool = false;
+                        pet newPet = new pet(petData[0], petData[1], tBool);
+                        newOwner.addPet(newPet);
+
+                    }
 
 
 
