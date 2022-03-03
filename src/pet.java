@@ -13,10 +13,10 @@ public class pet {
     private String breed;
 
 
-    public pet(String nm, String brd){
+    public pet(String nm, String brd, boolean isFixed){
         this.name = nm;
         this.breed = brd;
-        this.fixedPet = false;
+        this.fixedPet = isFixed;
     }
 
     public void setName(String nm) {
