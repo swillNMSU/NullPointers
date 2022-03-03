@@ -36,9 +36,16 @@ public class owner {
 
     // currently allows for only one pet.
     public void addPet(pet newPet){
-        ownersPets[0] = newPet;
-        numPets++;
+        ownersPets[numPets++] = newPet;
+        
     }
+
+    @Override 
+    public String toString(){
+        return "Name: " + getName() + "\nProof of Income Status: " + getIncomeProof()
+        + "\nStrikes: " + getStrikes() + "\nNumber of food withdrawls: " + getNumRecieved() 
+        + "\nNumber of Pets: " + getNumPets();
+    } 
 
 
 //#region GET/SET

@@ -44,7 +44,7 @@ public class pet {
 
     @Override
     public String toString() {
-        return this.name + "  " + this.breed + "  " + this.fixedPet;
+        return  "\n\tName: " + this.name + "\n\tType: " + this.breed + "Fixed: " + this.fixedPet;
     }
 
     

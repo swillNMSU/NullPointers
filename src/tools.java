@@ -41,10 +41,11 @@ public class tools {
                     newOwner.setNumPets(petSplit.length);
                     for (int j = 0; j < petSplit.length; j++){
                         String[] petData = petSplit[j].split(",");
-                        Boolean tBool = null;
+                        Boolean tBool = false;
                         if (petData[2] == "t") tBool = true;
                         if (petData[2] == "f") tBool = false;
                         pet newPet = new pet(petData[0], petData[1], tBool);
+                        
                         newOwner.addPet(newPet);
 
                     }
@@ -69,6 +70,8 @@ public class tools {
         System.out.println("Enter your choice:\n\t1. Display All\n\t2. Add Owner\n\t3. Remove Owner\n\t4. View Owner");
         System.out.println("\n\n");
         readCSV();
+
+        
 
     }
 
