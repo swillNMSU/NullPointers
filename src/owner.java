@@ -22,7 +22,8 @@ Vars:
 public class owner {
 
     private String name, incomeProof;
-    private int numPets, strikes, numRecieved;
+    public static int numPets, strikes, numRecieved;
+    public static pet[] ownersPets;
 
 
     public owner(String _name){
@@ -31,7 +32,22 @@ public class owner {
         setNumPets(0);
         setStrikes(0);
         setNumRecieved(0);
+        ownersPets = new pet[10];
     }
+
+    // currently allows for only one pet.
+    public void addPet(pet newPet){
+        ownersPets[numPets++] = newPet;
+        
+    }
+
+    @Override 
+    public String toString(){
+        return "Name: " + getName() + "\nProof of Income Status: " + getIncomeProof()
+        + "\nStrikes: " + getStrikes() + "\nNumber of food withdrawls: " + getNumRecieved() 
+        + "\nNumber of Pets: " + getNumPets();
+    } 
+
 
 //#region GET/SET
     public int getNumRecieved() {
