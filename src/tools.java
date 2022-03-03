@@ -14,11 +14,11 @@ Tools to implement our CSV file.
 
 public class tools {
 
+    static owner[] owners = new owner[10];  // these need to be dynamic in the future. Probably should use linked list or collections.
+    static int numOwners = 0;
+    static pet[] pets = new pet[100];
 
     public static void readCSV(){
-        
-        owner[] owners = new owner[100];
-        pet[] pets = new pet[100];
         
         try{
             File theFile = new File("csvTest.csv");
@@ -38,7 +38,8 @@ public class tools {
                     
                     // split pet data.
                     String[] petSplit = tempArr[1].split(";");
-                    newOwner.setNumPets(petSplit.length);
+                    
+                    
                     for (int j = 0; j < petSplit.length; j++){
                         String[] petData = petSplit[j].split(",");
                         
@@ -49,14 +50,15 @@ public class tools {
                         
                         newOwner.addPet(newPet);
 
-                    }
+                    } // end for loop
 
 
 
-                    System.out.println(tempStr + " ");
+                    
+                    owners[numOwners++] = newOwner;
                     i++;
                 }
-                System.out.println();
+                System.out.println("\n\n");
             }
             br.close();
         } catch(IOException ioe) {
@@ -68,11 +70,17 @@ public class tools {
     public static void main(String[] args) {
         
         //Temp console display to test tools
-        System.out.println("Enter your choice:\n\t1. Display All\n\t2. Add Owner\n\t3. Remove Owner\n\t4. View Owner");
-        System.out.println("\n\n");
+        //System.out.println("Enter your choice:\n\t1. Display All\n\t2. Add Owner\n\t3. Remove Owner\n\t4. View Owner");
+       // System.out.println("\n\n");
         readCSV();
 
-        
+ 
+        for (owner ows : owners) {
+            System.out.println(ows);
+            for (int j = 0; j < ows.getNumPets(); j++){
+                System.out.println(ows.ownersPets[j]);
+            }
+        }
 
     }
 
