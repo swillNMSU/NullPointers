@@ -37,7 +37,7 @@ public class tools {
                     newOwner.setNumRecieved(Integer.parseInt(ownerData[3]));
                     
                     // split pet data.
-                    String[] petSplit = tempArr[1].split(",");
+                    String[] petSplit = tempArr[1].split(";");
                     newOwner.setNumPets(petSplit.length);
 
 
