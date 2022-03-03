@@ -23,7 +23,7 @@ public class owner {
 
     private String name, incomeProof;
     public static int numPets, strikes, numRecieved;
-    private pet[] ownersPets = new pet[10];
+    public static pet[] ownersPets;
 
 
     public owner(String _name){
@@ -32,6 +32,7 @@ public class owner {
         setNumPets(0);
         setStrikes(0);
         setNumRecieved(0);
+        ownersPets = new pet[10];
     }
 
     // currently allows for only one pet.
