@@ -28,42 +28,50 @@ public class tools {
             String[] tempArr;
             while((line=br.readLine()) != null){
                 tempArr = line.split(":");
-                int i = 0;
-                for(String tempStr : tempArr) {
-                    String[] ownerData = tempArr[0].split(",");
-                    owner newOwner = new owner(ownerData[0]);
-                    newOwner.setIncomeProof(ownerData[1]);
-                    newOwner.setStrikes(Integer.parseInt(ownerData[2]));
-                    newOwner.setNumRecieved(Integer.parseInt(ownerData[3]));
+               
+                
+                String[] ownerData = tempArr[0].split(",");
+                owner newOwner = new owner(ownerData[0]);
+                newOwner.setIncomeProof(ownerData[1]);
+                newOwner.setStrikes(Integer.parseInt(ownerData[2]));
+                newOwner.setNumRecieved(Integer.parseInt(ownerData[3]));
+                
+                // split pet data.
+                String[] petSplit = tempArr[1].split(";");
+                
+                
+                for (int j = 0; j < petSplit.length; j++){
+                    String[] petData = petSplit[j].split(",");
                     
-                    // split pet data.
-                    String[] petSplit = tempArr[1].split(";");
+                    Boolean tBool = false;
+                    if (petData[2] == "t") tBool = true;
+                    if (petData[2] == "f") tBool = false;
+                    pet newPet = new pet(petData[0], petData[1], tBool);
                     
+                    newOwner.addPet(newPet);
                     
-                    for (int j = 0; j < petSplit.length; j++){
-                        String[] petData = petSplit[j].split(",");
-                        
-                        Boolean tBool = false;
-                        if (petData[2] == "t") tBool = true;
-                        if (petData[2] == "f") tBool = false;
-                        pet newPet = new pet(petData[0], petData[1], tBool);
-                        
-                        newOwner.addPet(newPet);
 
-                    } // end for loop
+                } // end for loop
 
-
-
-                    
-                    owners[numOwners++] = newOwner;
-                    i++;
+                //Print owners and pets.
+                
+                System.out.println(newOwner);
+                for (int i = 0; i < newOwner.numPets; i++){
+                    System.out.println(newOwner.ownersPets[i]);
                 }
-                System.out.println("\n\n");
+
+                
+                owners[numOwners] = newOwner;
+                numOwners++;
+                    
+
+                System.out.println();
             }
             br.close();
         } catch(IOException ioe) {
             ioe.printStackTrace();
         }
+       
         
     }
 
@@ -72,15 +80,11 @@ public class tools {
         //Temp console display to test tools
         //System.out.println("Enter your choice:\n\t1. Display All\n\t2. Add Owner\n\t3. Remove Owner\n\t4. View Owner");
        // System.out.println("\n\n");
-        readCSV();
+       System.out.println("\n\n\nRead from CSV file:\n"); 
+       readCSV();
 
  
-        for (owner ows : owners) {
-            System.out.println(ows);
-            for (int j = 0; j < ows.getNumPets(); j++){
-                System.out.println(ows.ownersPets[j]);
-            }
-        }
+        
 
     }
 
