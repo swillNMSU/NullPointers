@@ -77,7 +77,13 @@ public class TestDataValidation{
      *  of the pet Y for fixed and N for not fixed. This method used a helper method to check if the input
      *  is correct. If the input is not correct then in the while loop the user is prompted to enter the same
      *  input that was asked if the input is correct then the method will return a charcter y for fix and n
-     *  for not fixed.  
+     *  for not fixed.
+     * 
+     *  Precondition: This method uses a scanner for a string input and the method isValidYesNo checks to see
+     *  if the user input is correct
+     *  
+     *  Postcondition: Once the method isValidYesNo make sure that the input is correct then this method returns
+     *  the charcter Y for yes and N for no.
      */
 
     public static char getFixedStatus(Scanner input){
