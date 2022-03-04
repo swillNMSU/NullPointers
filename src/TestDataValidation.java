@@ -73,7 +73,12 @@ public class TestDataValidation{
 
     }
 
-
+    /** This methods paremeter is a Scanner type called input. This method ask the user to input the status
+     *  of the pet Y for fixed and N for not fixed. This method used a helper method to check if the input
+     *  is correct. If the input is not correct then in the while loop the user is prompted to enter the same
+     *  input that was asked if the input is correct then the method will return a charcter y for fix and n
+     *  for not fixed.  
+     */
 
     public static char getFixedStatus(Scanner input){
         System.out.println("Is your dog or cat fixed \"Y\" for yes and \"N\" for No");
