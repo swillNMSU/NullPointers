@@ -44,7 +44,8 @@ public class TestDataValidation{
      *  break out of the loop.
      * 
      *  Precondition: This method checks to see if the perameter isValidName is the correct input
-     *  Post: This method returns true if the data is invalid and false if the data is correct.
+     *  Post: This method displays an error message and returns true if the data is invalid and 
+     *  false if the data is correct.
     */
     public static boolean checkName(String isValidName){
         boolean notValid = true;
@@ -96,7 +97,16 @@ public class TestDataValidation{
         return userInput.charAt(0);
     }
 
-    
+    /** The method isValidYesNo perameter is a string called inputYOrN from the user. This method checks to see
+     *  if the perameter is valid. If it is not valid then this method will print the specific error that it got
+     *  and return true. If the input is valid then then the method will return false.
+     * 
+     * Precondition: The user input called inputYOrN might not be valid
+     * 
+     * Postcondition: If the input form the user is not valid then the method will display the error message
+     * and also return true. If valid then the method will return false.
+     * 
+    */
     public static boolean isValidYesNo(String inputYOrN){
         
         if(inputYOrN.isEmpty() || inputYOrN.isBlank()){
@@ -115,6 +125,15 @@ public class TestDataValidation{
 
     }
 
+    /** This methods perameters is a Scanner called numInput. This method ask the user to input a number and the
+     *  helper method call isValidNumInput checks to see if the number that they put is a valid number. If the 
+     *  input is not valid then in the while loop the user will be promped to enter another valid number. If the 
+     *  input is valid then this method will return an interger that was valid.
+     * 
+     *  Precondition: This methods perametor is a Scanner called numInput we do not know what the user is going to
+     *  put, so we call isValidNumInput to check if the user input is correct.
+     *  Postcondition: If the input is valid through isValidNumInput then this method will return an integer 
+     */
     public static int getNumOfVisit(Scanner numInput){
         System.out.println("Enter the number of visits for the owner");
         int inputNumber = numInput.nextInt();
@@ -126,6 +145,14 @@ public class TestDataValidation{
         return inputNumber;
     }
 
+    /** This method perameter is an interger that was input from the user. This method checks to see if the user input
+     *  is valid. If the input is not valid then an error message will go with what the invalid input was, and it will
+     *  return true. If the input is valid then this method will return false.
+     * 
+     *  Precondition: The perameter isValidNumVisit we do not know if what the user put is a valid number.
+     *  Postcondition: If the user inputs a valid number then this method returns false, if not valid then
+     *  the method will display an error message as well as return true.
+     */
     public static boolean isValidNumInput(int isValidNumVisit){
         if(isValidNumVisit < 0){
             System.out.println("You can not enter a value less then 0");
