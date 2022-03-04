@@ -18,6 +18,16 @@ public class tools {
     static int numOwners = 0;
     static pet[] pets = new pet[100];
 
+    /**
+     *  Call to read a CSV file.
+     *     CSV reading is strucured as follows:
+     * 
+     *      ':' seperates all owner and pet objects into their own substring,
+     *       with owners being stored in arr[0], pets in arr[1], arr[2]...
+     * 
+     *      ',' seperates these substrings into the objects data members,
+     *      which are then converted to the appropriate type and stored in the objects
+     */
     public static void readCSV(){
         
         try{
@@ -26,6 +36,8 @@ public class tools {
             BufferedReader br = new BufferedReader(fr);
             String line = "";
             String[] tempArr;
+
+            //splite lines and store data into newObjects.
             while((line=br.readLine()) != null){
                 tempArr = line.split(":");
                
@@ -53,18 +65,12 @@ public class tools {
 
                 } // end for loop
 
-                //Print owners and pets.
-                
+                //Print owners and pets.  
                 System.out.println(newOwner);
                 for (int i = 0; i < newOwner.numPets; i++){
                     System.out.println(newOwner.ownersPets[i]);
-                }
-
-                
-                owners[numOwners] = newOwner;
-                numOwners++;
-                    
-
+                }        
+                owners[numOwners++] = newOwner;    // temporarily stored in an array. Needs to be arraylist.               
                 System.out.println();
             }
             br.close();
@@ -76,10 +82,7 @@ public class tools {
     }
 
     public static void main(String[] args) {
-        
-        //Temp console display to test tools
-        //System.out.println("Enter your choice:\n\t1. Display All\n\t2. Add Owner\n\t3. Remove Owner\n\t4. View Owner");
-       // System.out.println("\n\n");
+
        System.out.println("\n\n\nRead from CSV file:\n"); 
        readCSV();
 
