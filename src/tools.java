@@ -16,7 +16,7 @@ public class tools {
 
     static owner[] owners = new owner[10];  // these need to be dynamic in the future. Probably should use linked list or collections.
     static int numOwners = 0;
-    static pet[] pets = new pet[100];
+   // static pet[] pets = new pet[100];
 
     /**
      *  Call to read a CSV file.
@@ -49,27 +49,27 @@ public class tools {
                 newOwner.setNumRecieved(Integer.parseInt(ownerData[3]));
                 
                 // split pet data.
-                String[] petSplit = tempArr[1].split(";");
+                // String[] petSplit = tempArr[1].split(";");
                 
                 
-                for (int j = 0; j < petSplit.length; j++){
-                    String[] petData = petSplit[j].split(",");
+                // for (int j = 0; j < petSplit.length; j++){
+                //     String[] petData = petSplit[j].split(",");
                     
-                    Boolean tBool = false;
-                    if (petData[2] == "t") tBool = true;
-                    if (petData[2] == "f") tBool = false;
-                    pet newPet = new pet(petData[0], petData[1], tBool);
+                //     Boolean tBool = false;
+                //     if (petData[2] == "t") tBool = true;
+                //     if (petData[2] == "f") tBool = false;
+                //     pet newPet = new pet(petData[0], petData[1], tBool);
                     
-                    newOwner.addPet(newPet);
+                //     newOwner.addPet(newPet);
                     
 
-                } // end for loop
+                // } // end for loop
 
                 //Print owners and pets.  
                 System.out.println(newOwner);
-                for (int i = 0; i < newOwner.numPets; i++){
-                    System.out.println(newOwner.ownersPets[i]);
-                }        
+                // for (int i = 0; i < newOwner.numPets; i++){
+                //     System.out.println(newOwner.ownersPets[i]);
+                // }        
                 owners[numOwners++] = newOwner;    // temporarily stored in an array. Needs to be arraylist.               
                 System.out.println();
             }
