@@ -23,6 +23,7 @@ public class owner {
 
     private String name, incomeProof;
     public static int numPets, strikes, numRecieved;
+    public static boolean isFixed;
     //public static pet[] ownersPets;
 
 
@@ -32,6 +33,7 @@ public class owner {
         setNumPets(0);
         setStrikes(0);
         setNumRecieved(0);
+        setIsFixed(false);
         //ownersPets = new pet[10];
     }
 
@@ -96,6 +98,14 @@ public class owner {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setIsFixed(boolean bool){
+        this.isFixed=bool;
+    }
+
+    public boolean getIsFixed(){
+        return isFixed;
     }
 
 //#endregion
