@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.*;
 
 /*
 Tools to implement our CSV file.
@@ -14,7 +16,10 @@ Tools to implement our CSV file.
 
 public class tools {
 
-    static owner[] owners = new owner[10];  // these need to be dynamic in the future. Probably should use linked list or collections.
+
+    static List<owner> owners = new ArrayList<>();
+
+    //static owner[] owners = new owner[10];  // these need to be dynamic in the future. Probably should use linked list or collections.
     static int numOwners = 0;
    // static pet[] pets = new pet[100];
 
@@ -47,44 +52,27 @@ public class tools {
                 newOwner.setIncomeProof(ownerData[1]);
                 newOwner.setStrikes(Integer.parseInt(ownerData[2]));
                 newOwner.setNumRecieved(Integer.parseInt(ownerData[3]));
+            
+                System.out.println("Added to list:\n" + newOwner);
                 
-                // split pet data.
-                // String[] petSplit = tempArr[1].split(";");
-                
-                
-                // for (int j = 0; j < petSplit.length; j++){
-                //     String[] petData = petSplit[j].split(",");
-                    
-                //     Boolean tBool = false;
-                //     if (petData[2] == "t") tBool = true;
-                //     if (petData[2] == "f") tBool = false;
-                //     pet newPet = new pet(petData[0], petData[1], tBool);
-                    
-                //     newOwner.addPet(newPet);
-                    
-
-                // } // end for loop
-
-                //Print owners and pets.  
-                System.out.println(newOwner);
-                // for (int i = 0; i < newOwner.numPets; i++){
-                //     System.out.println(newOwner.ownersPets[i]);
-                // }        
-                owners[numOwners++] = newOwner;    // temporarily stored in an array. Needs to be arraylist.               
+                owners.add(newOwner);           
                 System.out.println();
             }
             br.close();
         } catch(IOException ioe) {
             ioe.printStackTrace();
         }
-       
-        
     }
+
+public static void write(){
+    
+}
 
     public static void main(String[] args) {
 
        System.out.println("\n\n\nRead from CSV file:\n"); 
        readCSV();
+       System.out.println(owners.size());
 
  
         
