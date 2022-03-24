@@ -13,6 +13,10 @@ public class driver {
         search
     }
 
+    /**
+     * Test driver
+     * @param args
+     */
     public static void main(String[] args){
         Scanner sc = new Scanner(System.in);
         
@@ -22,13 +26,12 @@ public class driver {
 
         for (owner owner : owners){
             System.out.println("\n" + owner);
-
-            System.out.println("Total number of owners: " + owners.size());
-
-            System.out.println("Add owner: ");
-            write.addOwner();
-            
-            
+        }
+        System.out.println("Total number of owners: " + owners.size());
+        System.out.println("Add owner: ");
+        write.addOwner();
+        for (owner owner : owners){
+            System.out.println("\n" + owner);
         }
     }
 }

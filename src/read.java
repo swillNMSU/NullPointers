@@ -47,15 +47,14 @@ public class read {
                 newOwner.setIncomeProof(Boolean.parseBoolean(ownerData[1]));
                 newOwner.setStrikes(Integer.parseInt(ownerData[2]));
                 newOwner.setNumRecieved(Integer.parseInt(ownerData[3]));
-            
-                // System.out.println("Added to list:\n" + newOwner);
-                
                 driver.owners.add(newOwner);           
 
             }
             br.close();
+            //TODO: sort the list.
         } catch(IOException ioe) {
             ioe.printStackTrace();
         }
     }
+
 }

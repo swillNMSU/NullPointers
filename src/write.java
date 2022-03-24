@@ -2,8 +2,13 @@ package src;
 
 import java.util.Scanner;
 
+/**
+ * All prints will be handled by the GUI in the future.
+ */
 public class write {
     
+
+
     static DVO dVal = new DVO();
     static Scanner sc = new Scanner(System.in);
 
