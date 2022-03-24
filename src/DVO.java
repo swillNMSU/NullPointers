@@ -47,7 +47,7 @@ public class DVO {
         else if(isNegative(isValidNum))
             return true;
         int isOkayNumInput = Integer.parseInt(isValidNum);
-        if(isOkayNumInput < 7){
+        if(isOkayNumInput > 7){
             System.out.println("You can no longer get food until next year");
             return true;
         }
