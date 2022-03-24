@@ -21,15 +21,16 @@ Vars:
 */
 public class owner {
 
-    private String name, incomeProof;
+    private String name;
     public static int numPets, strikes, numRecieved;
-    public static boolean isFixed;
+    public static boolean isFixed, incomeProof;
     //public static pet[] ownersPets;
 
+    public owner(){}
 
     public owner(String _name){
         setName(_name);
-        setIncomeProof(null);
+        setIncomeProof(false);
         setNumPets(0);
         setStrikes(0);
         setNumRecieved(0);
@@ -81,12 +82,12 @@ public class owner {
     }
 
 
-    public String getIncomeProof() {
+    public boolean getIncomeProof() {
         return incomeProof;
     }
 
 
-    public void setIncomeProof(String incomeProof) {
+    public void setIncomeProof(boolean incomeProof) {
         this.incomeProof = incomeProof;
     }
 
