@@ -1,27 +1,28 @@
 package src;
 
 import java.util.Scanner;
+import java.io.File;
+import java.io.FileWriter;
+import java.lang.*;
 
 /**
  * All prints will be handled by the GUI in the future.
  */
 public class write {
-    
-
 
     static DVO dVal = new DVO();
     static Scanner sc = new Scanner(System.in);
 
     public static void addOwner(){
+        
         owner newOwner = new owner();
-
-
         newOwner.setName(newName());
         newOwner.setIncomeProof(true); // TODO: defaults to true, still need to decide on ui execution.
         newOwner.setIsFixed(true);  // same as above
         newOwner.setNumPets(newPetNum());
         newOwner.setStrikes(0);
         newOwner.setNumRecieved(0);
+        driver.owners.add(newOwner); 
     }
 
     public static String newName(){
@@ -51,5 +52,33 @@ public class write {
             if (!accept) System.out.println("Invalid number, please enter again.");
         }
         return Integer.parseInt(input);
+    }
+
+    public static void writeToCSV(File f){
+        
+        // TODO: sort arraylist
+        
+        try {
+            FileWriter fw = new FileWriter(f);
+            for (owner ow : driver.owners){
+                String line = "";
+                line = line + ow.getName() + "," + ow.getIncomeProof() + "," +
+                    ow.getStrikes() + "," + ow.getNumRecieved() + "," + ow.getNumPets();
+                System.out.println(line);
+                try {
+                    fw.write(line + "\n");
+                    fw.flush();
+                }
+                catch (Exception e){
+                    System.out.println("Line not written!");
+                }
+            }
+            fw.close();
+        }
+        catch (Exception e){
+            System.err.println("File not found.");
+        }
+
+        
     }
 }
