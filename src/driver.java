@@ -21,13 +21,8 @@ public class driver {
      */
     public static void main(String[] args){
         Scanner sc = new Scanner(System.in);
-        
-        
         // draw out all owners from the csv
         read.readCSV();
-
-       
-
         for (owner owner : owners){
             System.out.println("\n" + owner);
         }
