@@ -4,7 +4,6 @@ import java.util.*;
 
 public class driver {
 
-    // global vars, for now just a list of all owners.
     public static List<owner> owners = new ArrayList<>();
     public static File writeFile = new File("src/csvWriteTest.csv");
 
@@ -23,9 +22,8 @@ public class driver {
         Scanner sc = new Scanner(System.in);
         // draw out all owners from the csv
         read.readCSV();
-        for (owner owner : owners){
-            System.out.println("\n" + owner);
-        }
+        for (owner owner : owners) System.out.println("\n" + owner);
+        
         System.out.println("Total number of owners: " + owners.size());
         System.out.println("Add owner: ");
         
