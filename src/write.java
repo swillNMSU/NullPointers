@@ -76,6 +76,7 @@ public class write {
         try {
             FileWriter fw = new FileWriter(f);
             for (owner ow : driver.owners){
+                
                 String line = ow.getName() + "," + ow.getIncomeProof() + "," +
                     ow.getStrikes() + "," + ow.getNumRecieved() + "," + ow.getNumPets();
                 System.out.println(line);

@@ -29,32 +29,36 @@ public class read {
      *      which are then converted to the appropriate type and stored in the objects
      */
     public static void readCSV(){
-        
+        List<owner> owners = new ArrayList<>();
         try{
             File theFile = new File("csvTest.csv");
             FileReader fr = new FileReader(theFile);
             BufferedReader br = new BufferedReader(fr);
-            String line = "";
-            String[] tempArr;
-
+            String line = br.readLine();
+            
             //splite lines and store data into newObjects.
-            while((line=br.readLine()) != null){
-                tempArr = line.split(":");
-               
+            while(line != null){    
                 
-                String[] ownerData = tempArr[0].split(",");
+                String[] ownerData = line.split(",");
                 owner nOwner = new owner(ownerData[0]);
                 nOwner.setIncomeProof(Boolean.parseBoolean(ownerData[1]));
-                nOwner.setStrikes(Integer.parseInt(ownerData[2])); System.out.println("OWNER DATA 2: " +ownerData[3]);
+                nOwner.setStrikes(Integer.parseInt(ownerData[2])); 
                 nOwner.setNumRecieved(Integer.parseInt(ownerData[3]));
                 nOwner.setNumPets(Integer.parseInt(ownerData[4]));
-                driver.owners.add(nOwner);           
-
+                //System.out.println(nOwner+"\n");
+                owners.add(nOwner); 
+                 
+                 
+               // System.out.println(); 
+                line = br.readLine();      
             }
             br.close();
             //TODO: sort the list.
         } catch(IOException ioe) {
             ioe.printStackTrace();
+        }
+        for (owner ow : owners){
+            System.out.println(ow + "\n");
         }
     }
 

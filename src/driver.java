@@ -26,17 +26,17 @@ public class driver {
         // draw out all owners from the csv
         read.readCSV();
 
-        System.out.println(owners);
+       
 
-        for (owner owner : owners){
-            System.out.println("\n" + owner);
-        }
-        System.out.println("Total number of owners: " + owners.size());
-        System.out.println("Add owner: ");
+        // for (owner owner : owners){
+        //     System.out.println("\n" + owner);
+        // }
+        // System.out.println("Total number of owners: " + owners.size());
+        // System.out.println("Add owner: ");
         
-        for (owner owner : owners){
-            System.out.println("\n" + owner);
-        }
+        // for (owner owner : owners){
+        //     System.out.println("\n" + owner);
+        // }
         write.writeToCSV(writeFile);
     }
 }
