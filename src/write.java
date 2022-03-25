@@ -83,6 +83,7 @@ public class write {
                 try {
                     fw.write(line + "\n");
                     fw.flush();
+                    System.out.println("Line added to CSV");
                 }
                 catch (Exception e){
                     System.out.println("Line not written!");
