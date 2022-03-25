@@ -19,16 +19,16 @@ Vars:
 /*
 * Constructor. Generates a default owner object with only the string 'name'.
 */
-public class owner {
+public class Owner {
 
     private String name;
     public int numPets, strikes, numRecieved;
     public boolean isFixed, incomeProof;
     //public static pet[] ownersPets;
 
-    public owner(){}
+    public Owner(){}
 
-    public owner(String _name){
+    public Owner(String _name){
         setName(_name);
         setIncomeProof(false);
         setNumPets(0);

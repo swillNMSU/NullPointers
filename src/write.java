@@ -8,7 +8,7 @@ import java.lang.*;
 /**
  * All prints will be handled by the GUI in the future.
  */
-public class write {
+public class Write {
 
     static DVO dVal = new DVO(); // initiate data validation object.
     static Scanner sc = new Scanner(System.in);
@@ -18,14 +18,14 @@ public class write {
      * TODO: Sort the list after adding.
      */
     public static void addOwner(){
-        owner newOwner = new owner();
+        Owner newOwner = new Owner();
         newOwner.setName(newName());
         newOwner.setIncomeProof(true); // TODO: defaults to true, still need to decide on ui execution.
         newOwner.setIsFixed(true);  // same as above
         newOwner.setNumPets(newPetNum());
         newOwner.setStrikes(0);
         newOwner.setNumRecieved(0);
-        driver.owners.add(newOwner); 
+        Driver.owners.add(newOwner); 
     }
 
     /**
@@ -75,7 +75,7 @@ public class write {
         
         try {
             FileWriter fw = new FileWriter(f);
-            for (owner ow : driver.owners){
+            for (Owner ow : Driver.owners){
                 
                 String line = ow.getName() + "," + ow.getIncomeProof() + "," +
                     ow.getStrikes() + "," + ow.getNumRecieved() + "," + ow.getNumPets();

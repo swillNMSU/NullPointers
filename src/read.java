@@ -14,7 +14,7 @@ Tools to implement our CSV file.
 
 */
 
-public class read {
+public class Read {
 
     static int numOwners = 0;
 
@@ -40,13 +40,13 @@ public class read {
             while(line != null){    
                 
                 String[] ownerData = line.split(",");
-                owner nOwner = new owner(ownerData[0]);
+                Owner nOwner = new Owner(ownerData[0]);
                 nOwner.setIncomeProof(Boolean.parseBoolean(ownerData[1]));
                 nOwner.setStrikes(Integer.parseInt(ownerData[2])); 
                 nOwner.setNumRecieved(Integer.parseInt(ownerData[3]));
                 nOwner.setNumPets(Integer.parseInt(ownerData[4]));
                 //System.out.println(nOwner+"\n");
-                driver.owners.add(nOwner); 
+                Driver.owners.add(nOwner); 
                  
                  
                // System.out.println(); 
