@@ -47,6 +47,7 @@ public class read {
                 newOwner.setIncomeProof(Boolean.parseBoolean(ownerData[1]));
                 newOwner.setStrikes(Integer.parseInt(ownerData[2]));
                 newOwner.setNumRecieved(Integer.parseInt(ownerData[3]));
+                newOwner.setNumPets(Integer.parseInt(ownerData[4]));
                 driver.owners.add(newOwner);           
 
             }
