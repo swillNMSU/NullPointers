@@ -28,15 +28,12 @@ public class driver {
 
        
 
-        // for (owner owner : owners){
-        //     System.out.println("\n" + owner);
-        // }
-        // System.out.println("Total number of owners: " + owners.size());
-        // System.out.println("Add owner: ");
+        for (owner owner : owners){
+            System.out.println("\n" + owner);
+        }
+        System.out.println("Total number of owners: " + owners.size());
+        System.out.println("Add owner: ");
         
-        // for (owner owner : owners){
-        //     System.out.println("\n" + owner);
-        // }
         write.writeToCSV(writeFile);
     }
 }

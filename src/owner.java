@@ -22,8 +22,8 @@ Vars:
 public class owner {
 
     private String name;
-    public static int numPets, strikes, numRecieved;
-    public static boolean isFixed, incomeProof;
+    public int numPets, strikes, numRecieved;
+    public boolean isFixed, incomeProof;
     //public static pet[] ownersPets;
 
     public owner(){}
