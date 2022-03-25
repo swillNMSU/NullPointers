@@ -1,10 +1,12 @@
 package src;
+import java.io.File;
 import java.util.*;
 
 public class driver {
 
     // global vars, for now just a list of all owners.
     public static List<owner> owners = new ArrayList<>();
+    public static File writeFile = new File("src/csvWriteTest.csv");
 
     enum menu {
         add,
@@ -33,5 +35,7 @@ public class driver {
         for (owner owner : owners){
             System.out.println("\n" + owner);
         }
+        write.writeToCSV(writeFile);
+
     }
 }
