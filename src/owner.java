@@ -1,21 +1,5 @@
 package src;
 
-
-/*
-Owner class. 
-Vars:
-    String name
-    Proof of low income
-    pet(s)
-    int numPets
-    strikes
-    Times they recieved petfood (7 or 8 in a year? Diego knows)
-    ???
-
-*/
-
-
-
 /*
 * Constructor. Generates a default owner object with only the string 'name'.
 */
@@ -37,11 +21,6 @@ public class Owner {
         setIsFixed(false);
         //ownersPets = new pet[10];
     }
-
-    // currently allows for only one pet.
-    // public void addPet(pet newPet){
-    //     ownersPets[numPets++] = newPet;
-    // }
 
     @Override 
     public String toString(){
