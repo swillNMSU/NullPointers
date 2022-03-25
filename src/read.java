@@ -29,7 +29,7 @@ public class read {
      *      which are then converted to the appropriate type and stored in the objects
      */
     public static void readCSV(){
-        List<owner> owners = new ArrayList<>();
+       
         try{
             File theFile = new File("csvTest.csv");
             FileReader fr = new FileReader(theFile);
@@ -46,7 +46,7 @@ public class read {
                 nOwner.setNumRecieved(Integer.parseInt(ownerData[3]));
                 nOwner.setNumPets(Integer.parseInt(ownerData[4]));
                 //System.out.println(nOwner+"\n");
-                owners.add(nOwner); 
+                driver.owners.add(nOwner); 
                  
                  
                // System.out.println(); 
@@ -56,9 +56,6 @@ public class read {
             //TODO: sort the list.
         } catch(IOException ioe) {
             ioe.printStackTrace();
-        }
-        for (owner ow : owners){
-            System.out.println(ow + "\n");
         }
     }
 
