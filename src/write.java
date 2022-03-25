@@ -10,11 +10,14 @@ import java.lang.*;
  */
 public class write {
 
-    static DVO dVal = new DVO();
+    static DVO dVal = new DVO(); // initiate data validation object.
     static Scanner sc = new Scanner(System.in);
 
+    /**
+     * Constructs a new owner based on input and adds it to the list of owners. 
+     * TODO: Sort the list after adding.
+     */
     public static void addOwner(){
-        
         owner newOwner = new owner();
         newOwner.setName(newName());
         newOwner.setIncomeProof(true); // TODO: defaults to true, still need to decide on ui execution.
@@ -25,6 +28,10 @@ public class write {
         driver.owners.add(newOwner); 
     }
 
+    /**
+     * Collects name with data validation.
+     * @return
+     */
     public static String newName(){
         String name = "", fName = "", lName = "";
         boolean acceptF = false, acceptL = false;
@@ -42,6 +49,10 @@ public class write {
         return name;
     }
 
+    /**
+     * Collects number of pets with data validation.
+     * @return
+     */
     public static int newPetNum(){
         System.out.print("Please enter the nunber of pets: ");
         boolean accept = false;
@@ -54,6 +65,10 @@ public class write {
         return Integer.parseInt(input);
     }
 
+    /**
+     * This method takes all owners stored and writes them to a csv file.
+     * @param f, csv file to write owners to.
+     */
     public static void writeToCSV(File f){
         
         // TODO: sort arraylist
