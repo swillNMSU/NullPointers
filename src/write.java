@@ -76,8 +76,7 @@ public class write {
         try {
             FileWriter fw = new FileWriter(f);
             for (owner ow : driver.owners){
-                String line = "";
-                line = line + ow.getName() + "," + ow.getIncomeProof() + "," +
+                String line = ow.getName() + "," + ow.getIncomeProof() + "," +
                     ow.getStrikes() + "," + ow.getNumRecieved() + "," + ow.getNumPets();
                 System.out.println(line);
                 try {
@@ -93,7 +92,5 @@ public class write {
         catch (Exception e){
             System.err.println("File not found.");
         }
-
-        
     }
 }

@@ -43,12 +43,12 @@ public class read {
                
                 
                 String[] ownerData = tempArr[0].split(",");
-                owner newOwner = new owner(ownerData[0]);
-                newOwner.setIncomeProof(Boolean.parseBoolean(ownerData[1]));
-                newOwner.setStrikes(Integer.parseInt(ownerData[2]));
-                newOwner.setNumRecieved(Integer.parseInt(ownerData[3]));
-                newOwner.setNumPets(Integer.parseInt(ownerData[4]));
-                driver.owners.add(newOwner);           
+                owner nOwner = new owner(ownerData[0]);
+                nOwner.setIncomeProof(Boolean.parseBoolean(ownerData[1]));
+                nOwner.setStrikes(Integer.parseInt(ownerData[2])); System.out.println("OWNER DATA 2: " +ownerData[3]);
+                nOwner.setNumRecieved(Integer.parseInt(ownerData[3]));
+                nOwner.setNumPets(Integer.parseInt(ownerData[4]));
+                driver.owners.add(nOwner);           
 
             }
             br.close();
