@@ -1,5 +1,14 @@
 package src;
 
+import java.util.Scanner;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.time.format.*;
+import java.util.Date;
+import java.lang.*;
+import java.util.*;
+
 /*
 * Constructor. Generates a default owner object with only the string 'name'.
 */
@@ -80,6 +89,21 @@ public class Owner {
         this.name = name;
     }
 
+    public String getLastName(){
+        String[] nameSplit = this.name.split(" "); // TODO: error handle
+        return nameSplit[1];
+    }
+
+    /**
+     * Returns a string, last name comma first.
+     * @return Last, First
+     */
+    public String getLastThenFirst(){
+        String[] nameSplit = this.name.split(" ");
+        return nameSplit[1] + ", " + nameSplit[0];
+        
+    }
+
     public void setIsFixed(boolean bool){
         this.isFixed=bool;
     }
@@ -90,4 +114,17 @@ public class Owner {
 
 //#endregion
 
+}
+
+/**
+ * Sorts overrides the compare method from Arraylists. Sorts objects alphebetically by last name.
+ */
+class OwnerComparator implements Comparator<Owner> {
+    public int compare(Owner o1, Owner o2){
+        if (o1.getLastName() == o2.getLastName())
+            return 0;
+        else if (o1.getLastName().compareTo(o2.getLastName()) > 0)
+            return 1;
+        else return -1;
+    }
 }
