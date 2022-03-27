@@ -7,11 +7,13 @@ public class Driver {
     public static List<Owner> owners = new ArrayList<>();
     public static File writeFile = new File("src/csvWriteTest.csv");
 
-    enum menu {
+    enum Menu {
+        mMenu,
         add,
         remove,
         display,
-        search
+        search,
+        archive
     }
 
     /**
@@ -19,8 +21,10 @@ public class Driver {
      * @param args
      */
     public static void main(String[] args){
+       
+       
         Scanner sc = new Scanner(System.in);
-        // draw out all owners from the csv
+       
         Read.readCSV();
         for (Owner owner : owners) System.out.println("\n" + owner);
         
@@ -28,5 +32,7 @@ public class Driver {
         System.out.println("Add owner: ");
         
         Write.writeToCSV(writeFile);
+        Write.archiveCurrent();
+      
     }
 }
