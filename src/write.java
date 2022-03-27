@@ -3,6 +3,9 @@ package src;
 import java.util.Scanner;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.time.format.*;
+import java.util.Date;
 import java.lang.*;
 
 /**
@@ -94,5 +97,46 @@ public class Write {
         catch (Exception e){
             System.err.println("File not found.");
         }
+    }
+
+    /**
+     * Method creates and archive of the current log. Repeated code in writetoCSV, could stand to implement better.
+     * File saved as CSV, titled todays date and time. TODO: make a directory.
+     */
+    public static void archiveCurrent(){
+        Date date = new Date();
+        String fName = date.toString() + "csv";
+        try {
+            File f = new File(fName);
+            if (f.createNewFile()){
+                System.out.println("New archive csv created: " + fName);
+                try {
+                    FileWriter fw = new FileWriter(f);
+                    for (Owner ow : Driver.owners){
+                        
+                        String line = ow.getLastThenFirst() + "," + ow.getIncomeProof() + "," +
+                            ow.getStrikes() + "," + ow.getNumRecieved() + "," + ow.getNumPets();
+                        try {
+                            fw.write(line + "\n");
+                            fw.flush();
+                            System.out.println("Line added to CSV");
+                        }
+                        catch (Exception e){
+                            System.out.println("Line not written!");
+                        }
+                    }
+                    fw.close();
+                }
+                catch (Exception e){
+                    System.err.println("File not found.");
+                }
+            }
+            else { System.out.println("File not created, already exists.");}
+        }
+        catch (IOException e){
+            System.out.println("Error in file creation:");
+            e.printStackTrace();
+        }
+        
     }
 }
