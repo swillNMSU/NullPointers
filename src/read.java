@@ -53,10 +53,18 @@ public class Read {
                 line = br.readLine();      
             }
             br.close();
-            //TODO: sort the list.
+            Collections.sort(Driver.owners, new OwnerComparator());
+            
         } catch(IOException ioe) {
             ioe.printStackTrace();
         }
     }
+
+    
+
+    /**
+     * Display method. Return ype depends on GUI implementation
+     */
+
 
 }
