@@ -14,10 +14,9 @@ import java.util.*;
 */
 public class Owner {
 
-    private String name;
+    private String name, address;
     public int numPets, strikes, numRecieved;
     public boolean isFixed, incomeProof;
-    //public static pet[] ownersPets;
 
     public Owner(){}
 
@@ -28,7 +27,8 @@ public class Owner {
         setStrikes(0);
         setNumRecieved(0);
         setIsFixed(false);
-        //ownersPets = new pet[10];
+        setAddress(null);
+
     }
 
     @Override 
@@ -79,6 +79,13 @@ public class Owner {
         this.incomeProof = incomeProof;
     }
 
+    public String getAddress(){
+        return this.address;
+    }
+
+    public void setAddress(String address){
+        this.address = address;
+    }
 
     public String getName() {
         return name;
@@ -115,6 +122,8 @@ public class Owner {
 //#endregion
 
 }
+
+
 
 /**
  * Sorts overrides the compare method from Arraylists. Sorts objects alphebetically by last name.
