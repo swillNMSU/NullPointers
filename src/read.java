@@ -60,11 +60,22 @@ public class Read {
         }
     }
 
-    
-
     /**
-     * Display method. Return ype depends on GUI implementation
+     * Returns a arraylist containing all possible search results. This allows for dynamic searching (i.e. this can
+     * be called each time a letter is entered/removed in the search bar and possible results can be reported.)
+     * @param search Strings from the GUI's search bar.
+     * @return list of possible results.
+     * TODO: Need to factor in lower/upper comparisons.
      */
+    public static List<Owner> searchByName(String search){
+        List<Owner> result = new ArrayList<Owner>();
+        
+        for (Owner ow : Driver.owners){
+            if (ow.getLastName().startsWith(search) || ow.getName().startsWith(search))
+                result.add(ow);                            
+        }
+        return result;
+    }
 
 
 }
