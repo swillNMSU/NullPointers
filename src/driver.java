@@ -8,12 +8,11 @@ public class Driver {
     public static File writeFile = new File("src/csvWriteTest.csv");
 
     enum Menu {
-        mMenu,
-        add,
-        remove,
-        display,
-        search,
-        archive
+        Add,
+        Delete,
+        Display,
+        Search,
+        Archive
     }
 
 
@@ -22,36 +21,53 @@ public class Driver {
      * @param args
      */
     public static void main(String[] args){
-       
+        Menu menu;
        
         Scanner sc = new Scanner(System.in);
-        System.out.println("Begin, type anything.");
-        sc.nextLine();
         Read.readCSV();
-       // for (Owner owner : owners) System.out.println("\n" + owner);
         
-         System.out.println("Total number of owners: " + owners.size());
-        // System.out.println("Add owner: ");
+        System.out.println("Total number of owners: " + owners.size());
         
         Write.writeToCSV(writeFile);
-        // Write.archiveCurrent();
-       
-       
-// TEST: Edit method.
-
-
-
+        //Write.archiveCurrent();
 
 // TEST: Search method and edit method.  
         while(true){
-            System.out.print("Enter a name to search: ");
-            String s = sc.nextLine();
+           displayMenu();          
             
-            List<Owner> r = Read.searchByName(s);
-            System.out.println("Possible results: ");
-            for (Owner x: r)
-                System.out.println("\t" + x.getName());
+            int opt = Integer.parseInt(sc.nextLine());
+            
+            if (opt == 1)
+                for (Owner x : owners) System.out.println(x + "\n");
+            if (opt == 2){
+                System.out.println("Enter a name. press 2 if found, type '1' to end.");
+                String s = " ";
+                List<Owner> results = new ArrayList<>();
+                while (true){
+                    s = sc.nextLine();
+                    if (s.equals("1")) break;
+                    results = Read.searchByName(s);
+                    for (Owner ows : results) System.out.println("\t" + ows.getName());
+                }
+                if (results.size() == 1) System.out.println(results.get(0));
+                else { System.out.println("Not found.");}
+            }
+            if (opt == 3){
+                Write.addOwner();
+            }
+            if (opt == 4){
+                System.out.println("Not working just yet");
+            }
+            if (opt == 5){
+                Write.archiveCurrent();
+            }
+            else { System.out.println("Not an option"); }
         }
       
+    }
+
+    public static void displayMenu(){
+        System.out.println("OPTIONS:  Type number");
+        System.out.println("\t1. Display All\n\t2. Search\n\t3. Add\n\t4. Delete\n\t5. Archive");
     }
 }
