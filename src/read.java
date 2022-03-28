@@ -16,8 +16,6 @@ Tools to implement our CSV file.
 
 public class Read {
 
-    static int numOwners = 0;
-
     /**
      *  Call to read a CSV file.
      *     CSV reading is strucured as follows:
@@ -29,14 +27,12 @@ public class Read {
      *      which are then converted to the appropriate type and stored in the objects
      */
     public static void readCSV(){
-       
         try{
             File theFile = new File("csvTest.csv");
             FileReader fr = new FileReader(theFile);
             BufferedReader br = new BufferedReader(fr);
             String line = br.readLine();
             
-            //splite lines and store data into newObjects.
             while(line != null){    
                 
                 String[] ownerData = line.split(",");
@@ -45,11 +41,7 @@ public class Read {
                 nOwner.setStrikes(Integer.parseInt(ownerData[2])); 
                 nOwner.setNumRecieved(Integer.parseInt(ownerData[3]));
                 nOwner.setNumPets(Integer.parseInt(ownerData[4]));
-                //System.out.println(nOwner+"\n");
                 Driver.owners.add(nOwner); 
-                 
-                 
-               // System.out.println(); 
                 line = br.readLine();      
             }
             br.close();
@@ -69,11 +61,9 @@ public class Read {
      */
     public static List<Owner> searchByName(String search){
         List<Owner> result = new ArrayList<Owner>();
-        
-        for (Owner ow : Driver.owners){
+        for (Owner ow : Driver.owners)
             if (ow.getLastName().startsWith(search) || ow.getName().startsWith(search))
                 result.add(ow);                            
-        }
         return result;
     }
 
