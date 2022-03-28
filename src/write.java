@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.format.*;
+import java.util.Collections;
 import java.util.Date;
 import java.lang.*;
 
@@ -40,6 +41,15 @@ public class Write {
         newOwner.setStrikes(0);
         newOwner.setNumRecieved(0);
         Driver.owners.add(newOwner); 
+        Collections.sort(Driver.owners, new OwnerComparator());
+
+        // possibly want to archive file before rewriting.
+        writeToCSV(Driver.writeFile);
+    }
+
+    public static void delete(Owner owner){
+        Driver.owners.remove(owner);
+        writeToCSV(Driver.writeFile);
     }
 
     /**
@@ -112,16 +122,12 @@ public class Write {
                 ow.setNumRecieved(newNum);
                 break;
             default :
-                System.out.println("Error: Improper arguments.");
-
-                //TODO: Send something to the GUI
-
+                System.out.println("Error: Improper args."); //TODO: Send something to the GUI
         }
         System.out.println("Save?  (Type exactly 'Yes')");
         Scanner sc = new Scanner(System.in);
         if (sc.nextLine().equals("Yes")) {
             writeToCSV(Driver.writeFile); // This should not be called here. Testing purposes only
-
             System.out.println("saved");
         }
         sc.close();
@@ -197,6 +203,10 @@ public class Write {
             e.printStackTrace();
         }
         
+    }
+
+    public static void save(){
+        writeToCSV(Driver.writeFile);
     }
 
 }
