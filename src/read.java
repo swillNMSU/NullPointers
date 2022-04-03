@@ -67,5 +67,18 @@ public class Read {
         return result;
     }
 
+    /**
+     * Assembles a new list of owners with as a potential search result.
+     * @param search
+     * @return List of possible owners with a matching query.
+     */
+    public static List<Owner> searchByAddr(String search){
+        List<Owner> result = new ArrayList<Owner>();
+        for (Owner ow : Driver.owners)
+            if (ow.getAddress().startsWith(search) || ow.getAddress().startsWith(search))
+                result.add(ow);                            
+        return result;
+    }
+
 
 }
