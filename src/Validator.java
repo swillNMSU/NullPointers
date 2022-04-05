@@ -1,6 +1,6 @@
 package src;
 
-public class DVO {
+public class Validator {
     static boolean isEmptyInput(String isItEmpty){
         if(isItEmpty.isEmpty() || isItEmpty.isBlank()){
             System.out.println("EMPTY INPUT NOT ALLOWED");
