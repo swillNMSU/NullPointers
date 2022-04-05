@@ -66,4 +66,29 @@ public class Validator {
         }
         return false;
     }
+
+    static boolean checkAddress(String isValidAddress){
+        boolean notValidAddress = true;
+        int invalidIndex = 1;
+        if(isEmptyInput(isValidAddress))
+            return true;
+
+        for(int i = 0; i < isValidAddress.length() && notValidAddress; i++){
+            if(isValidAddress.charAt(i) != ' ' && (isValidAddress.charAt(i) < 'A' || isValidAddress.charAt(i) > 'Z')
+                && (isValidAddress.charAt(i) < 'a' || isValidAddress.charAt(i) > 'z') && (isValidAddress.charAt(i) < '1' || 
+                isValidAddress.charAt(i) < '9')
+            ){
+                notValidAddress = false;
+                invalidIndex = i + invalidIndex;
+            }
+        }
+
+        if(!notValidAddress){
+            System.out.println("Invalid Addres put");
+            System.out.println("The error is at " + invalidIndex);
+            return true;
+        }
+
+        return false;
+    }
 }
