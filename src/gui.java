@@ -58,12 +58,19 @@ public class gui extends Application {
         final Text actiontarget = new Text();
         grid.add(actiontarget, 1, 6);
 
+        GridPane actions = new GridPane();
+        Label test = new Label("Test");
+        actions.add(test, 1, 4);
+
         btn.setOnAction(new EventHandler<ActionEvent>() {
 
             @Override
             public void handle(ActionEvent e) {
                 actiontarget.setFill(Color.FIREBRICK);
                 actiontarget.setText("Sign in button pressed");
+                Scene newScene = new Scene(actions, 300, 275);
+                primaryStage.setScene(newScene);
+                primaryStage.show();
             }
         });
 
