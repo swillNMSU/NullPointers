@@ -18,7 +18,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-public class gui extends Application {
+public class GUI extends Application {
 
     
 
