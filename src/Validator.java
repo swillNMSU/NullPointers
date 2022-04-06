@@ -76,7 +76,7 @@ public class Validator {
         for(int i = 0; i < isValidAddress.length() && notValidAddress; i++){
             if(isValidAddress.charAt(i) != ' ' && (isValidAddress.charAt(i) < 'A' || isValidAddress.charAt(i) > 'Z')
                 && (isValidAddress.charAt(i) < 'a' || isValidAddress.charAt(i) > 'z') && (isValidAddress.charAt(i) < '0' || 
-                isValidAddress.charAt(i) < '9')
+                isValidAddress.charAt(i) > '9')
             ){
                 notValidAddress = false;
                 invalidIndex = i + invalidIndex;
