@@ -25,7 +25,7 @@ enum Edit{
  */
 public class Write {
 
-    static DVO dVal = new DVO(); // initiate data validation object.
+    static Validator dVal = new Validator(); // initiate data validation object.
     static Scanner sc = new Scanner(System.in);
 
     /**
