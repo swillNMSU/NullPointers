@@ -53,7 +53,7 @@ public class Write {
     }
 
     /**
-     * Collects name with data validation.
+     * Collects name with data validation. Split boolean indicates if this method needs to split the string TODO
      * @return
      */
     public static String newName(){
