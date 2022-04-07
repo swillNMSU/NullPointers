@@ -33,15 +33,15 @@ public class Write {
      * TODO: Sort the list after adding.
      */
     public static void addOwner(){
-        Owner newOwner = new Owner();
-        newOwner.setName(newName());
-        newOwner.setIncomeProof(true); // TODO: defaults to true, still need to decide on ui execution.
-        newOwner.setIsFixed(true);  // same as above
-        newOwner.setNumPets(newPetNum());
-        newOwner.setStrikes(0);
-        newOwner.setNumRecieved(0);
-        Driver.owners.add(newOwner); 
-        Collections.sort(Driver.owners, new OwnerComparator());
+        // Owner newOwner = new Owner();
+        // newOwner.setName(newName());
+        // newOwner.setIncomeProof(true); // TODO: defaults to true, still need to decide on ui execution.
+        // newOwner.setIsFixed(true);  // same as above
+        // newOwner.setNumPets(newPetNum());
+        // newOwner.setStrikes(0);
+        // newOwner.setNumRecieved(0);
+        // Driver.owners.add(newOwner); 
+        // Collections.sort(Driver.owners, new OwnerComparator());
 
         // possibly want to archive file before rewriting.
         writeToCSV(Driver.writeFile);
@@ -56,21 +56,15 @@ public class Write {
      * Collects name with data validation. Split boolean indicates if this method needs to split the string TODO
      * @return
      */
-    public static String newName(){
-        String name = "", fName = "", lName = "";
+    public static boolean newName(String newName){
+        String[] newNames = newName.split(" ");
         boolean acceptF = false, acceptL = false;
-        while (!acceptF) {
-            System.out.print("Please enter first name: ");
-            fName = sc.nextLine();
-            acceptF = !dVal.checkNameFields(fName);
-        }
-        while (!acceptL) {
-            System.out.print("Please enter last name: ");
-            lName = sc.nextLine();
-            acceptL = !dVal.checkNameFields(fName);
-        }
-        name = fName + " " + lName;
-        return name;
+        
+        acceptF = !dVal.checkNameFields(newNames[0]);
+        acceptL = !dVal.checkNameFields(newNames[1]);
+        
+        if (acceptF && acceptL) return true;
+        else return false;
     }
 
     /**
@@ -87,6 +81,10 @@ public class Write {
             if (!accept) System.out.println("Invalid number, please enter again.");
         }
         return Integer.parseInt(input);
+    }
+
+    public static boolean newAddress(String newAddr){
+        return !dVal.checkAddress(newAddr);
     }
 
    /**

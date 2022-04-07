@@ -5,13 +5,17 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -22,17 +26,24 @@ public class GUI extends Application {
 
     
     Owner testOwner = new Owner("tFName tLName");
+    int count = 0;
 
-
+    Validator dv = new Validator();
     Stage ps;
+
+    ScrollPane sp = new ScrollPane();
 
     Scene mainMenu, editSc;
 
     double width = 500, height = 600; // global sizes for scenes.
+    int errNum = 0;//maybe not necessary
 
     // debugging feilds, switch to false to view the gui in full.
     final boolean debug = true;
-    Scene currScene;
+    Scene currScene = mainMenu;
+
+    Text nameErr, addressErr, numPetErr, strikesErr, withdrawlErr = new Text();
+    
 
     public static void main(String[] args) {
         launch(args);
@@ -57,12 +68,25 @@ public class GUI extends Application {
         ps = primaryStage;
         initializeScenes();
 
-        primaryStage.setTitle("Welcome");
+        VBox root = new VBox();
+        //TableView<TableObject> table = new TODO: do this shit next.
+
+        //#region mainMenu
+        // Begin main Menu initialization
+        //primaryStage.setTitle("Welcome");
         GridPane grid = new GridPane();
-        grid.setAlignment(Pos.CENTER);
+        grid.setAlignment(Pos.CENTER_LEFT);
         grid.setHgap(10);
         grid.setVgap(10);
         grid.setPadding(new Insets(25, 25, 25, 25));
+
+        sp.setPrefSize(580, 500);
+        //sp.setContent();
+        grid.add(sp, 5, 8);
+
+        // add scrollpane
+        
+        
 
         Text scenetitle = new Text("Search");
         scenetitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
@@ -114,8 +138,10 @@ public class GUI extends Application {
         });
 
         mainMenu = new Scene(grid, 300, 275);
+//#endregion
+
         if (debug) {
-            currScene = editSc;
+            currScene = mainMenu;
             primaryStage.setScene(currScene);
         }
         else primaryStage.setScene(mainMenu);
@@ -124,9 +150,7 @@ public class GUI extends Application {
 
     public void initializeScenes(){
         
-        
         //#region EditScene
-        
         Owner ow = testOwner;
 
         ps.setTitle("Edit Owner Information");
@@ -205,7 +229,7 @@ public class GUI extends Application {
         Label ownerNumPets = new Label(String.valueOf(ow.getNumPets()));
         grid.add(ownerNumPets, 1, 3);
 
-        TextField numPeTextField = new TextField(String.valueOf(ow.getNumPets()));
+        TextField numPetTextField = new TextField(String.valueOf(ow.getNumPets()));
 
         Button editBtn2 = new Button("Edit");
         HBox editHB2 = new HBox(10);
@@ -217,7 +241,7 @@ public class GUI extends Application {
             @Override
             public void handle(ActionEvent e){
                 ownerNumPets.setVisible(false);
-                grid.add(numPeTextField, 1, 3);
+                grid.add(numPetTextField, 1, 3);
                 // select text field
                 //highlight text field
             }
@@ -230,9 +254,9 @@ public class GUI extends Application {
         grid.add(numStrikesL, 0, 4);
 
         Label ownerStrikes = new Label(String.valueOf(ow.getStrikes()));
+        grid.add(ownerStrikes, 1, 4);
 
-        TextField numStrikesTextField = new TextField();
-        grid.add(numStrikesTextField, 1, 4);
+        TextField numStrikesTextField = new TextField(String.valueOf(ow.getStrikes()));
 
         Button editBtn3 = new Button("Edit");
         HBox editHB3 = new HBox(10);
@@ -240,7 +264,7 @@ public class GUI extends Application {
         editHB3.getChildren().add(editBtn3);
         grid.add(editHB3, 3, 4);
 
-        editBtn2.setOnAction(new EventHandler<ActionEvent>() {
+        editBtn3.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e){
                 ownerStrikes.setVisible(false);
@@ -253,17 +277,30 @@ public class GUI extends Application {
         //#endregion
 
         //#region Withdrawls
-        Label numWithdrawls = new Label("Withdrawls:");
-        grid.add(numWithdrawls, 0, 5);
+        Label numWithdrawlsL = new Label("Withdrawls:");
+        grid.add(numWithdrawlsL, 0, 5);
 
-        TextField numWithdrawlsTextField = new TextField();
-        grid.add(numWithdrawlsTextField, 1, 5);
+        Label ownerWithdrawls = new Label(String.valueOf(ow.getNumRecieved()));
+        grid.add(ownerWithdrawls, 1, 5);
+
+        TextField numWithdrawlsTextField = new TextField(String.valueOf(ow.getNumRecieved()));
 
         Button editBtn4 = new Button("Edit");
         HBox editHB4 = new HBox(10);
         editHB4.setAlignment(Pos.CENTER_LEFT);
         editHB4.getChildren().add(editBtn4);
         grid.add(editHB4, 3, 5);
+
+        editBtn4.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e){
+                ownerWithdrawls.setVisible(false);
+                grid.add(numWithdrawlsTextField, 1, 5);
+                // select text field
+                //highlight text field
+            }
+        });
+
 
         //#endregion
         
@@ -272,6 +309,7 @@ public class GUI extends Application {
         hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
         hbBtn.getChildren().add(saveBtn);
         grid.add(hbBtn, 1, 7);
+
 
         //back button
         Button backBtn = new Button("Back");
@@ -291,25 +329,91 @@ public class GUI extends Application {
         final Text actiontarget = new Text();
         grid.add(actiontarget, 1, 6);
 
+        // errors
+        nameErr = displayErr(grid, "Name not valid", 5, 1);
+        addressErr = displayErr(grid, "Invalid address", 5, 2);
+        numPetErr = displayErr(grid, "Invalid", 5, 3);
+        strikesErr = displayErr(grid, "Invalid", 5, 4);
+        withdrawlErr = displayErr(grid, "Invalid", 5, 5);
+                
+
+
+
+        //Data Validation goes in here.
         saveBtn.setOnAction(new EventHandler<ActionEvent>() {
 
             @Override
             public void handle(ActionEvent e) { // IF there is at least a name entered.
-                if (ownerTextField.getText() != null){
-                    Owner tempOwn = new Owner();
-                    tempOwn.setName(ownerTextField.getText());
-                    tempOwn.setAddress(addressTextField.getText());
-                    tempOwn.setNumPets(Integer.parseInt(numPeTextField.getText()));
-                    tempOwn.setStrikes(Integer.parseInt(numStrikesTextField.getText()));
-                    System.out.println(tempOwn);
+                Owner tempOwn = new Owner();
+
+                // nameErr.setDisable(true);
+                // addressErr.setDisable(true);
+                // numPetErr.setVisible(true);
+                // strikesErr.setVisible(true);
+                // withdrawlErr.setVisible(true);
+                
+                if (ownerTextField.getText() != ow.getName()){
+                    if (Write.newName(ownerTextField.getText())){
+                        nameErr.setVisible(false);
+                        tempOwn.setName(ownerTextField.getText());
+                    }
+                    else {
+                        nameErr.setVisible(true);
+                        System.err.println("Name field not valid.");
+                    }
+                }
+                    
+                if (addressTextField.getText() != ow.getAddress()) {
+                    if(Write.newAddress(addressTextField.getText())){
+                        addressErr.setVisible(false);
+                        tempOwn.setAddress(addressTextField.getText());
+                    }
+                    else {
+                        addressErr.setVisible(true);
+                        System.err.println("Address field not valid");
+                    }
+                        
                 }
 
+                if (numPetTextField.getText() != String.valueOf(ow.getNumPets())){
+                    if (!dv.checkNumPets(numPetTextField.getText())) {
+                        numPetErr.setVisible(false);
+                        tempOwn.setNumPets(Integer.parseInt(numPetTextField.getText()));
 
+                    }
+                    else {        
+                        numPetErr.setVisible(true);
+                    }
+                }
+
+                if (numStrikesTextField.getText() != String.valueOf(ow.getStrikes())){
+                    if (!dv.isNegative(numStrikesTextField.getText())) {
+                        strikesErr.setVisible(false);
+                        tempOwn.setStrikes(Integer.parseInt(numStrikesTextField.getText()));
+                    }
+                    else {
+                        
+                        strikesErr.setVisible(false);
+                    }
+                }
+
+                if (numWithdrawlsTextField.getText() != String.valueOf(ow.getNumRecieved())){
+                    if (!dv.isNegative(numWithdrawlsTextField.getText())) {
+                        withdrawlErr.setVisible(false);
+                        tempOwn.setStrikes(Integer.parseInt(numWithdrawlsTextField.getText()));
+                    }
+                    else {
+                        withdrawlErr.setVisible(false);
+                    }
+                }
+                    
+                System.out.println(tempOwn);
+                // if check and add owner
                 
                 ownerTextField.getText();
 
                 actiontarget.setFill(Color.FIREBRICK);
-                actiontarget.setText("Saved");
+                actiontarget.setText("Saved " + count++);
             }
         });
 
@@ -319,4 +423,15 @@ public class GUI extends Application {
 
         //#endregion
     }
+
+    public Text displayErr(GridPane gr, String err, int width, int height){
+        Text er = new Text();
+        er.setVisible(false);
+        er.setFill(Color.FIREBRICK);
+        er.setText(err);
+        gr.add(er, width, height);
+        return er;
+    }
+
+
 }

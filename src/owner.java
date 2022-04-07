@@ -101,6 +101,11 @@ public class Owner {
         return nameSplit[1];
     }
 
+    public String getFirstName(){
+        String[] nameSplit = this.name.split(" "); // TODO: error Handle
+        return nameSplit[0];
+    }
+
     /**
      * Returns a string, last name comma first.
      * @return Last, First
