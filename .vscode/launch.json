@@ -35,7 +35,7 @@
             "type": "java",
             "name": "Launch gui",
             "request": "launch",
-            "vmArgs": "--module-path C:/Users/steve/Downloads/openjfx-18_windows-x64_bin-sdk/javafx-sdk-18/lib --add-modules javafx.controls,javafx.fxml",
+            "vmArgs": "--module-path C:/Users/diego/Downloads/openjfx-18_windows-x64_bin-sdk/javafx-sdk-18/lib --add-modules javafx.controls,javafx.fxml",
             "mainClass": "src.gui",
             "projectName": "GitHub_4ca2b0b5"
         },
