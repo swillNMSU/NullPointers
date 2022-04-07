@@ -6,13 +6,6 @@
     "configurations": [
         {
             "type": "java",
-            "name": "Launch gui",
-            "request": "launch",
-            "mainClass": "src.gui",
-            "projectName": "GitHub_80f14fc0"
-        },
-        {
-            "type": "java",
             "name": "Launch driver",
             "request": "launch",
             "mainClass": "src.driver",
