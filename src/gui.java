@@ -11,8 +11,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -68,20 +70,54 @@ public class GUI extends Application {
         ps = primaryStage;
         initializeScenes();
 
-        VBox root = new VBox();
-        //TableView<TableObject> table = new TODO: do this shit next.
+         //#region mainMenu
 
-        //#region mainMenu
-        // Begin main Menu initialization
-        //primaryStage.setTitle("Welcome");
+         //#region Table
+        TableView<Owner> owTable = new TableView<>();
+        TableColumn<Owner, String> column1 = new TableColumn<>("Name");
+        TableColumn<Owner, String> column2 = new TableColumn<>("Address");
+        TableColumn<Owner, String> column3 = new TableColumn<>("Number of Pets");
+        TableColumn<Owner, String> column4 = new TableColumn<>("Strikes");
+        TableColumn<Owner, String> column5 = new TableColumn<>("withdrawls");
+
+        column1.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+        column2.setCellValueFactory(new PropertyValueFactory<>("addr"));
+        column3.setCellValueFactory(new PropertyValueFactory<>("numPets"));
+        column4.setCellValueFactory(new PropertyValueFactory<>("strikes"));
+        column5.setCellValueFactory(new PropertyValueFactory<>("withdrawls"));
+
+        owTable.getColumns().add(column1);
+        owTable.getColumns().add(column2);
+        owTable.getColumns().add(column3);
+        owTable.getColumns().add(column4);
+        owTable.getColumns().add(column5);
+
+        Read.readCSV();
+        for (Owner ows : Driver.owners){
+            owTable.getItems().add(ows /*,
+              ows.getName(), 
+              ows.getAddress(), 
+              ows.getNumPets(), 
+              ows.getStrikes(), 
+              ows.getNumRecieved()  */
+            );
+        }
+
+        VBox vBox = new VBox(owTable);
+        //#endregion
+
+
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER_LEFT);
         grid.setHgap(10);
         grid.setVgap(10);
         grid.setPadding(new Insets(25, 25, 25, 25));
+        
+        sp.setFitToWidth(true);
+        sp.setFitToHeight(true);
 
         sp.setPrefSize(580, 500);
-        //sp.setContent();
+        sp.setContent(vBox);
         grid.add(sp, 5, 8);
 
         // add scrollpane
@@ -440,5 +476,6 @@ public class GUI extends Application {
         return er;
     }
 
-
 }
+
+
