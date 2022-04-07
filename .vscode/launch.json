@@ -6,6 +6,7 @@
     "configurations": [
         {
             "type": "java",
+<<<<<<< HEAD
             "name": "Launch GUI",
             "request": "launch",
             "mainClass": "src.GUI",
@@ -13,6 +14,8 @@
         },
         {
             "type": "java",
+=======
+>>>>>>> 823170d5990ff0a49dd8818b097ba664874617bf
             "name": "Launch driver",
             "request": "launch",
             "mainClass": "src.driver",
