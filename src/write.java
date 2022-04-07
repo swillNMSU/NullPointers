@@ -25,7 +25,7 @@ enum Edit{
  */
 public class Write {
 
-    static DVO dVal = new DVO(); // initiate data validation object.
+    static Validator dVal = new Validator(); // initiate data validation object.
     static Scanner sc = new Scanner(System.in);
 
     /**
@@ -53,7 +53,7 @@ public class Write {
     }
 
     /**
-     * Collects name with data validation.
+     * Collects name with data validation. Split boolean indicates if this method needs to split the string TODO
      * @return
      */
     public static String newName(){
