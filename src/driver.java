@@ -33,7 +33,7 @@ public class Driver {
 
 // TEST: Search method and edit method.  
         while(true){
-           displayMenu();          
+         
             
             int opt = Integer.parseInt(sc.nextLine());
             
@@ -66,8 +66,5 @@ public class Driver {
       
     }
 
-    public static void displayMenu(){
-        System.out.println("OPTIONS:  Type number");
-        System.out.println("\t1. Display All\n\t2. Search\n\t3. Add\n\t4. Delete\n\t5. Archive");
-    }
+
 }

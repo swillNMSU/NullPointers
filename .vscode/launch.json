@@ -6,7 +6,7 @@
     "configurations": [
         {
             "type": "java",
-<<<<<<< HEAD
+            "name": "Launch Driver",
             "name": "Launch GUI",
             "request": "launch",
             "mainClass": "src.GUI",
@@ -14,31 +14,24 @@
         },
         {
             "type": "java",
-=======
->>>>>>> 823170d5990ff0a49dd8818b097ba664874617bf
             "name": "Launch driver",
             "request": "launch",
-            "mainClass": "src.driver",
-            "projectName": "GitHub_4ca2b0b5"
-        },
-        {
-            "type": "java",
-            "name": "Launch Current File",
-            "request": "launch",
-            "mainClass": "${file}"
+            "mainClass": "src.Driver",
+            "projectName": "NullPointers_fac2e31"
         },
         {
             "type": "java",
             "name": "Launch TestDataValidation",
             "request": "launch",
             "mainClass": "src.TestDataValidation",
-            "projectName": "GitHub_4ca2b0b5"
+            "projectName": "NullPointers_fac2e31"
         },
         {
             "type": "java",
             "name": "Launch TestPet",
             "request": "launch",
             "mainClass": "src.TestPet",
+            "projectName": "NullPointers_fac2e31",
             "projectName": "GitHub_4ca2b0b5"
         },
         {
@@ -51,10 +44,11 @@
         },
         {
             "type": "java",
-            "name": "Launch tools",
+            "name": "Launch GUI",
             "request": "launch",
-            "mainClass": "src.tools",
-            "projectName": "GitHub_4ca2b0b5"
+            "vmArgs": "--module-path /Users/johngilbert/Downloads/javafx-sdk-18/lib --add-modules javafx.controls,javafx.fxml",
+            "mainClass": "src.GUI",
+            "projectName": "NullPointers_fac2e31"
         }
     ]
 }
