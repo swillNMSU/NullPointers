@@ -21,6 +21,7 @@ import javafx.stage.Stage;
 public class GUI extends Application {
 
     
+    Owner testOwner = new Owner("tFName tLName");
 
 
     Stage ps;
@@ -43,6 +44,16 @@ public class GUI extends Application {
  */
     @Override
     public void start(Stage primaryStage) {
+        
+        // #region test owner - delete when done
+        testOwner.setAddress("1115 Branson Ave");
+        testOwner.setIncomeProof(true);
+        testOwner.setNumPets(2);
+        testOwner.setNumRecieved(1);
+        testOwner.setIsFixed(true);
+        testOwner.setStrikes(0);
+        //#endregion
+        
         ps = primaryStage;
         initializeScenes();
 
@@ -116,6 +127,8 @@ public class GUI extends Application {
         
         //#region EditScene
         
+        Owner ow = testOwner;
+
         ps.setTitle("Edit Owner Information");
         ps.setHeight(800);
         ps.setWidth(1000);
@@ -132,25 +145,40 @@ public class GUI extends Application {
         grid.add(scenetitle, 0, 0, 2, 1);
 
         //#region name
-        Label ownerName = new Label("Name:");
-        grid.add(ownerName, 0, 1);
+        Label ownerNameL = new Label("Name:");
+        grid.add(ownerNameL, 0, 1);
 
-        TextField ownerTextField = new TextField();
-        grid.add(ownerTextField, 1, 1);
+        Label ownerName = new Label(ow.getName());
+        grid.add(ownerName, 1, 1);
+
+        TextField ownerTextField = new TextField(ow.getName()); 
+        
 
         Button editBtn0 = new Button("Edit");
         HBox editHB0 = new HBox(10);
         editHB0.setAlignment(Pos.CENTER_LEFT);
         editHB0.getChildren().add(editBtn0);
         grid.add(editHB0, 3, 1);
+
+        editBtn0.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e){
+                ownerName.setVisible(false);
+                grid.add(ownerTextField, 1, 1);
+                // select text field
+                //highlight text field
+            }
+        });
         //#endregion
 
         //#region Address
-        Label addr = new Label("Address:");
-        grid.add(addr, 0, 2);
+        Label addrL = new Label("Address:");
+        grid.add(addrL, 0, 2);
 
-        TextField addressTextField = new TextField();
-        grid.add(addressTextField, 1, 2);
+        Label ownerAddr = new Label(ow.getAddress());
+        grid.add(ownerAddr, 1, 2);
+
+        TextField addressTextField = new TextField(ow.getAddress());
 
         Button editBtn1 = new Button("Edit");
         HBox editHB1 = new HBox(10);
@@ -158,14 +186,26 @@ public class GUI extends Application {
         editHB1.getChildren().add(editBtn1);
         grid.add(editHB1, 3, 2);
 
+        editBtn1.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e){
+                ownerAddr.setVisible(false);
+                grid.add(addressTextField, 1, 2);
+                // select text field
+                //highlight text field
+            }
+        });
+
         //#endregion
 
         //#region NumPets
-        Label numPets = new Label("Number of Pets:");
-        grid.add(numPets, 0, 3);
+        Label numPetsL = new Label("Number of Pets:");
+        grid.add(numPetsL, 0, 3);
 
-        TextField numPeTextField = new TextField();
-        grid.add(numPeTextField, 1, 3);
+        Label ownerNumPets = new Label(String.valueOf(ow.getNumPets()));
+        grid.add(ownerNumPets, 1, 3);
+
+        TextField numPeTextField = new TextField(String.valueOf(ow.getNumPets()));
 
         Button editBtn2 = new Button("Edit");
         HBox editHB2 = new HBox(10);
@@ -173,11 +213,23 @@ public class GUI extends Application {
         editHB2.getChildren().add(editBtn2);
         grid.add(editHB2, 3, 3);
 
+        editBtn2.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e){
+                ownerNumPets.setVisible(false);
+                grid.add(numPeTextField, 1, 3);
+                // select text field
+                //highlight text field
+            }
+        });
+
         //#endregion
 
         //#region Strikes
-        Label numStrikes = new Label("Strikes:");
-        grid.add(numStrikes, 0, 4);
+        Label numStrikesL = new Label("Strikes:");
+        grid.add(numStrikesL, 0, 4);
+
+        Label ownerStrikes = new Label(String.valueOf(ow.getStrikes()));
 
         TextField numStrikesTextField = new TextField();
         grid.add(numStrikesTextField, 1, 4);
@@ -187,6 +239,16 @@ public class GUI extends Application {
         editHB3.setAlignment(Pos.CENTER_LEFT);
         editHB3.getChildren().add(editBtn3);
         grid.add(editHB3, 3, 4);
+
+        editBtn2.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e){
+                ownerStrikes.setVisible(false);
+                grid.add(numStrikesTextField, 1, 4);
+                // select text field
+                //highlight text field
+            }
+        });
 
         //#endregion
 
