@@ -6,14 +6,6 @@
     "configurations": [
         {
             "type": "java",
-            "name": "Launch Driver",
-            "name": "Launch GUI",
-            "request": "launch",
-            "mainClass": "src.GUI",
-            "projectName": "GitHub_80f14fc0"
-        },
-        {
-            "type": "java",
             "name": "Launch driver",
             "request": "launch",
             "mainClass": "src.Driver",
@@ -32,15 +24,6 @@
             "request": "launch",
             "mainClass": "src.TestPet",
             "projectName": "NullPointers_fac2e31",
-            "projectName": "GitHub_4ca2b0b5"
-        },
-        {
-            "type": "java",
-            "name": "Launch gui",
-            "request": "launch",
-            "vmArgs": "--module-path C:/Users/diego/Downloads/openjfx-17.0.2_windows-x64_bin-sdk/javafx-sdk-17.0.2/lib --add-modules javafx.controls,javafx.fxml",
-            "mainClass": "src.gui",
-            "projectName": "GitHub_4ca2b0b5"
         },
         {
             "type": "java",
