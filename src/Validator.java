@@ -18,7 +18,7 @@ public class Validator {
         return false;
     }
     
-    static boolean checkNameFields(String isValidName){
+    public boolean checkNameFields(String isValidName){
         boolean notValid = true;
         int invalidIntex = 1;
 
@@ -41,7 +41,7 @@ public class Validator {
         return false;
     }
 
-    static boolean checkPickUps(String isValidNum){
+    public boolean checkPickUps(String isValidNum){
         boolean notValidPickUps = true;
         int errorIndex = 1;
         if(isEmptyInput(isValidNum))
@@ -74,7 +74,7 @@ public class Validator {
         return false;
     }
 
-    static boolean checkNumPets(String isValidNumPets){
+    public boolean checkNumPets(String isValidNumPets){
         boolean notValidPetNum = true;
         int errorIndex = 1;
         if(isEmptyInput(isValidNumPets))
@@ -105,7 +105,7 @@ public class Validator {
         return false;
     }
 
-    static boolean checkAddress(String isValidAddress){
+    public boolean checkAddress(String isValidAddress){
         boolean notValidAddress = true;
         int invalidIndex = 1;
         if(isEmptyInput(isValidAddress))
