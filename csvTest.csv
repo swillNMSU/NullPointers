@@ -1,10 +1,19 @@
-John Doe,false,1,4,2
-Terry Mann,true,1,3,1
-Elmo McGee,true,2,2,1
-Kate Phillips,true,0,0,1
-Buster Baxter,false,1,2,1
-Dan Moquin,true,0,0,0
-Joe Hester,true,1,2,3
-Loki Maxwell,false,2,2,2
-Thomas Marquez,true,1,4,2
-Paul Richards,false,2,2,2
+John Doe,false,1,4,2,true,51 Cherry Street Wakefield, MA 01880
+Terry Mann,true,1,3,1,true,421 Amherst Ave Frankfort, KY 40601
+Elmo McGee,true,2,2,1,false,620 Linden Road Bristow, VA 20136
+Kate Phillips,true,0,0,1,false,null
+Buster Baxter,false,1,2,1,true,null
+Dan Moquin,true,0,0,0,true,null
+Joe Hester,true,1,2,3,true,null
+Loki Maxwell,false,2,2,2,true,null
+Thomas Marquez,true,1,4,2,true,null
+Paul Richards,false,2,2,2,true,null
+Dave Richards,false,1,2,1,true,null
+Patty Jenkins,false,1,2,1,true,null
+David Bowie,false,1,2,1,true,null
+Albert Brown,false,1,2,1,true,null
+Donald Figs,false,1,2,1,true,null
+Gaby Flynn,true,0,0,1,false,null
+Angel Donaldson,true,0,0,1,false,null
+Wayne Buck,true,0,0,1,false,null
+Richard Donalds,false,2,2,2,true,null
