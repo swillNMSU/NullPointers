@@ -1,12 +1,14 @@
-Buster Baxter,true,1,2,1,true,3342 Brandon LAne
+Buster Baxter,false,1,2,1,true,null
 David Bowie,false,1,2,1,true,null
-Albert Brown,true,1,2,1,true,332 Yellow Ave
-Wayne Buck,true,0,0,1,true,2223 Avenua Ave
+Albert Brown,false,1,2,1,true,null
+Wayne Buck,true,0,0,1,false,null
+David Davidson,true,0,0,1,true,5543 Golroy ave
 John Doe,false,1,4,2,true,51 Cherry Street Wakefield
 Richard Donalds,false,2,2,2,true,null
 Angel Donaldson,true,0,0,1,false,null
 Donald Figs,false,1,2,1,true,null
 Gaby Flynn,true,0,0,1,false,null
+Maxo Galls,true,0,0,1,true,1114 Branson ave
 Joe Hester,true,1,2,3,true,null
 Patty Jenkins,false,1,2,1,true,null
 Terry Mann,true,1,3,1,true,421 Amherst Ave Frankfort
@@ -17,4 +19,3 @@ Dan Moquin,true,0,0,0,true,null
 Kate Phillips,true,0,0,1,false,null
 Dave Richards,false,1,2,1,true,null
 Paul Richards,false,2,2,2,true,null
-null,false,0,0,0,false,null

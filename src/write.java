@@ -32,14 +32,15 @@ public class Write {
      * Constructs a new owner based on input and adds it to the list of owners. 
      * TODO: Sort the list after adding.
      */
-    public static void addOwner(){
+    public static void addOwner(String name, String addr, /*add booles*/ int numP, int strikes, int numR){
         Owner newOwner = new Owner();
-        newOwner.setName(newName());
+        newOwner.setName(name);
+        newOwner.setAddress(addr);
         newOwner.setIncomeProof(true); // TODO: defaults to true, still need to decide on ui execution.
         newOwner.setIsFixed(true);  // same as above
-        newOwner.setNumPets(newPetNum());
-        newOwner.setStrikes(0);
-        newOwner.setNumRecieved(0);
+        newOwner.setNumPets(numP);
+        newOwner.setStrikes(strikes);
+        newOwner.setNumRecieved(numR);
         Driver.owners.add(newOwner); 
         Collections.sort(Driver.owners, new OwnerComparator());
 

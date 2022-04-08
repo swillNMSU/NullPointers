@@ -1,8 +1,6 @@
 package src;
 
-import java.util.ArrayList;
 import java.util.List;
-
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -13,7 +11,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -38,6 +35,7 @@ public class GUI extends Application {
     ScrollPane sp = new ScrollPane();
     double width = 500, height = 600; // global sizes for scenes.
     Validator dVal = new Validator();
+    boolean addingNew = false;
 
     TableView<Owner> owTable;
 
@@ -126,6 +124,12 @@ public class GUI extends Application {
         tAddHB.getChildren().add(addBtn);
         grid.add(tAddHB, 1, 5);
 
+        Button archiveBtn = new Button("Archive");
+        HBox archHB = new HBox(10);
+        archHB.setAlignment(Pos.BOTTOM_RIGHT);
+        archHB.getChildren().add(archiveBtn);
+        grid.add(archiveBtn, 3, 9);
+
         Label searchL = new Label("Search");
         grid.add(searchL, 1, 7);
 
@@ -152,10 +156,8 @@ public class GUI extends Application {
         addBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e){
-                Owner nOwner = new Owner();
-                Driver.owners.add(nOwner);
-                Write.writeToCSV(Driver.writeFile);
-                selectedOwner = nOwner;
+                addingNew = true;
+                selectedOwner = null;
                 ps.setScene(editSc);
                 initializeScenes();
             }
@@ -171,6 +173,7 @@ public class GUI extends Application {
         editButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e){
+                addingNew = false;
                 if (owTable.getSelectionModel().getSelectedItem() != null) {
                     selectedOwner = owTable.getSelectionModel().getSelectedItem();
                     //error check before swinthing scenes.
@@ -178,6 +181,16 @@ public class GUI extends Application {
                     ps.setScene(editSc);
                     initializeScenes();
                 }
+            }
+        });
+
+        archiveBtn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e){
+                Write.archiveCurrent();
+                Text archSuccess = new Text("Done");
+                archSuccess.setFill(Color.GREEN);
+                grid.add(archSuccess, 4, 9);
             }
         });
 
@@ -234,8 +247,11 @@ public class GUI extends Application {
         grid.add(ownerName, 1, 1);
 
         TextField ownerTextField = new TextField(ow.getName()); 
+        grid.add(ownerTextField, 1, 1);
+        if (!addingNew) ownerTextField.setVisible(false);
+        else ownerTextField.setText("");
+
         Text nameErr = displayErr(grid, "Invalid name", 5, 1);
-        
 
         Button editBtn0 = new Button("Edit");
         HBox editHB0 = new HBox(10);
@@ -247,7 +263,7 @@ public class GUI extends Application {
             @Override
             public void handle(ActionEvent e){
                 ownerName.setVisible(false);
-                grid.add(ownerTextField, 1, 1);
+                ownerTextField.setVisible(true);
             }
         });
         //#endregion
@@ -256,10 +272,14 @@ public class GUI extends Application {
         Label addrL = new Label("Address:");
         grid.add(addrL, 0, 2);
 
+        
         Label ownerAddr = new Label(ow.getAddress());
         grid.add(ownerAddr, 1, 2);
 
         TextField addressTextField = new TextField(ow.getAddress());
+        grid.add(addressTextField, 1, 2);
+        if (!addingNew) addressTextField.setVisible(false);
+        else addressTextField.setText("");
 
         Text addrErr = displayErr(grid, "Invalid address", 5, 2);
 
@@ -273,7 +293,7 @@ public class GUI extends Application {
             @Override
             public void handle(ActionEvent e){
                 ownerAddr.setVisible(false);
-                grid.add(addressTextField, 1, 2);
+                addressTextField.setVisible(true);
             }
         });
 
@@ -287,6 +307,9 @@ public class GUI extends Application {
         grid.add(ownerNumPets, 1, 3);
 
         TextField numPeTextField = new TextField(String.valueOf(ow.getNumPets()));
+        grid.add(numPeTextField, 1, 3);
+        if (!addingNew) numPeTextField.setVisible(false);
+        else numPeTextField.setText("");
 
         Text petErr = displayErr(grid, "Invalid entry", 5, 3);
 
@@ -300,7 +323,7 @@ public class GUI extends Application {
             @Override
             public void handle(ActionEvent e){
                 ownerNumPets.setVisible(false);
-                grid.add(numPeTextField, 1, 3);
+                numPeTextField.setVisible(true);
             }
         });
 
@@ -314,6 +337,9 @@ public class GUI extends Application {
         grid.add(ownerStrikes, 1, 4);
 
         TextField numStrikesTextField = new TextField(String.valueOf(ow.getStrikes()));
+        grid.add(numStrikesTextField, 1, 4);
+        if (!addingNew) numStrikesTextField.setVisible(false);
+        else numStrikesTextField.setText("");
         
         Text strikeErr = displayErr(grid, "*", 5, 4);
 
@@ -327,9 +353,7 @@ public class GUI extends Application {
             @Override
             public void handle(ActionEvent e){
                 ownerStrikes.setVisible(false);
-                grid.add(numStrikesTextField, 1, 4);
-                // select text field
-                //highlight text field
+                numStrikesTextField.setVisible(true);
             }
         });
 
@@ -343,6 +367,10 @@ public class GUI extends Application {
         grid.add(numWithdrawls, 1, 5);
 
         TextField numWithdrawlsTextField = new TextField(String.valueOf(ow.getNumRecieved()));
+        grid.add(numWithdrawlsTextField, 1, 5);
+        if (!addingNew) numWithdrawlsTextField.setVisible(false);
+        else numWithdrawlsTextField.setText("");
+        
 
         Text withdrawlErr = displayErr(grid, "*", 5, 5);
     
@@ -356,7 +384,7 @@ public class GUI extends Application {
             @Override
             public void handle(ActionEvent e){
                 numWithdrawls.setVisible(false);
-                grid.add(numWithdrawlsTextField, 1, 5);
+                numWithdrawlsTextField.setVisible(true);
             }
         });
 
@@ -415,29 +443,44 @@ public class GUI extends Application {
                     canSave = false;
                 } else { withdrawlErr.setVisible(false);}
                 
-                if (!canSave){
-                    isSaved.setText("Invalid entry");
-                    isSaved.setVisible(true);
+                if (!addingNew) {
+                    if (!canSave){
+                        isSaved.setText("Invalid entry");
+                        isSaved.setVisible(true);
+                    }
+                    else {
+                        owTable.getSelectionModel().getSelectedItem().setAllFeilds(
+                            ownerTextField.getText(),
+                            addressTextField.getText(),
+                            true,
+                            true,
+                            Integer.parseInt(numPeTextField.getText()),
+                            Integer.parseInt(numWithdrawls.getText())
+                            );
+
+                        System.out.println(owTable.getSelectionModel().getSelectedItem());
+                        isSaved.setText("Saved");
+                        isSaved.setVisible(true);
+                        // Driver.owners.clear();
+                        // for (Owner ow : owTable.getItems())
+                        // {
+                        //     Driver.owners.add(ow);
+                        // }
+                        Write.writeToCSV(Driver.writeFile);
+                    }
                 }
                 else {
-                    owTable.getSelectionModel().getSelectedItem().setAllFeilds(
+                    System.out.println("TEasST\n\n\n\n");
+                    Write.addOwner(
                         ownerTextField.getText(),
                         addressTextField.getText(),
-                        true,
-                        true,
                         Integer.parseInt(numPeTextField.getText()),
-                        Integer.parseInt(numWithdrawls.getText())
-                        );
-
-                    System.out.println(owTable.getSelectionModel().getSelectedItem());
-                    isSaved.setText("Saved");
-                    isSaved.setVisible(true);
-                    // Driver.owners.clear();
-                    // for (Owner ow : owTable.getItems())
-                    // {
-                    //     Driver.owners.add(ow);
-                    // }
-                    Write.writeToCSV(Driver.writeFile);
+                        Integer.parseInt(numStrikesTextField.getText()),
+                        Integer.parseInt(numWithdrawlsTextField.getText())
+                    );
+                    Text newAdded = new Text("Person successfully added");
+                    newAdded.setFill(Color.BLUE);
+                    grid.add(newAdded, 1, 6);
                 }
             }
         });
