@@ -6,15 +6,13 @@
     "configurations": [
         {
             "type": "java",
-            "name": "Launch Driver",
-            "name": "Launch GUI",
+            "name": "Launch Current File",
             "request": "launch",
-            "mainClass": "src.GUI",
-            "projectName": "GitHub_80f14fc0"
+            "mainClass": "${file}"
         },
         {
             "type": "java",
-            "name": "Launch driver",
+            "name": "Launch Driver",
             "request": "launch",
             "mainClass": "src.Driver",
             "projectName": "NullPointers_fac2e31"
@@ -31,23 +29,14 @@
             "name": "Launch TestPet",
             "request": "launch",
             "mainClass": "src.TestPet",
-            "projectName": "NullPointers_fac2e31",
-            "projectName": "GitHub_4ca2b0b5"
+            "projectName": "NullPointers_fac2e31"
         },
         {
             "type": "java",
             "name": "Launch gui",
             "request": "launch",
-            "vmArgs": "--module-path C:/Users/diego/Downloads/openjfx-17.0.2_windows-x64_bin-sdk/javafx-sdk-17.0.2/lib --add-modules javafx.controls,javafx.fxml",
-            "mainClass": "src.gui",
-            "projectName": "GitHub_4ca2b0b5"
-        },
-        {
-            "type": "java",
-            "name": "Launch GUI",
-            "request": "launch",
             "vmArgs": "--module-path /Users/johngilbert/Downloads/javafx-sdk-18/lib --add-modules javafx.controls,javafx.fxml",
-            "mainClass": "src.GUI",
+            "mainClass": "src.gui",
             "projectName": "NullPointers_fac2e31"
         }
     ]

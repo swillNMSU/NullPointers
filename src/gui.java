@@ -44,6 +44,7 @@ public class GUI extends Application {
     public static void main(String[] args) {
         launch(args);
     }
+    
 /**
  * This sets the scene for the main menu.
  * FYI I'm using regions to make scrolling easier. In case you havent encountered them, 
