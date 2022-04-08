@@ -10,6 +10,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
@@ -20,6 +21,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
@@ -193,13 +195,12 @@ public class GUI extends Application {
                 grid.add(archSuccess, 4, 9);
             }
         });
-
+        
         mainMenu = new Scene(grid, 300, 275);
-        if (debug) {
-            currScene = editSc;
-            primaryStage.setScene(mainMenu);
-        }
-        else primaryStage.setScene(mainMenu);
+        
+        //mainMenu.setBorderpain
+
+        primaryStage.setScene(mainMenu);
         primaryStage.show();
     }
 
@@ -231,13 +232,25 @@ public class GUI extends Application {
         HBox hbBtn = new HBox(10);
         hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
         hbBtn.getChildren().add(saveBtn);
-        grid.add(hbBtn, 1, 7);
+        grid.add(hbBtn, 1, 8);
 
         Button backBtn = new Button("Back");
         HBox bHitB = new HBox(10);
         bHitB.setAlignment(Pos.BOTTOM_LEFT);
         bHitB.getChildren().add(backBtn);
-        grid.add(bHitB, 0, 7);
+        grid.add(bHitB, 0, 8);
+
+        Label isFixLabel = new Label("Pet is Fixed");
+        grid.add(isFixLabel, 0, 6);
+        CheckBox isFixedBox = new CheckBox();
+        HBox isFixedBH = new HBox(isFixedBox);
+        grid.add(isFixedBH, 1, 6);
+
+        Label isProvenLabel = new Label("Proof of Income");
+        grid.add(isProvenLabel, 0, 7);
+        CheckBox isProvenBox = new CheckBox();
+        HBox isProveHB = new HBox(isProvenBox);
+        grid.add(isProveHB, 1, 7);
 
         //#region name
         Label ownerNameL = new Label("Name:");
@@ -272,7 +285,6 @@ public class GUI extends Application {
         Label addrL = new Label("Address:");
         grid.add(addrL, 0, 2);
 
-        
         Label ownerAddr = new Label(ow.getAddress());
         grid.add(ownerAddr, 1, 2);
 
@@ -387,11 +399,9 @@ public class GUI extends Application {
                 numWithdrawlsTextField.setVisible(true);
             }
         });
-
         //#endregion
         
         //#region save button
-
         backBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e){
@@ -406,18 +416,24 @@ public class GUI extends Application {
         //#endregion
         
         Text isSaved = new Text("Saved");
-        grid.add(isSaved, 1, 6);
+        grid.add(isSaved, 1, 9);
         isSaved.setVisible(false);
         isSaved.setFill(Color.BLUEVIOLET);
 
-
         saveBtn.setOnAction(new EventHandler<ActionEvent>() {
-
             @Override
             public void handle(ActionEvent e) { // IF there is at least a name entered.
                 boolean canSave = true;
                 //TODO add fixed status to DVAL
                 
+                // isFixedBox.setOnAction(new EventHandler<ActionEvent>() {
+                //     @Override
+                //     public void handle(ActionEvent e){
+                //         owTable.getSelectionModel().getSelectedItem().setIsFixed(isFixedBox.isSelected());
+                //         // TODO: bad code
+                //     }
+                // });
+
                 if (dVal.checkNameFields(ownerTextField.getText())){
                     nameErr.setVisible(true);
                     canSave = false;
@@ -461,16 +477,10 @@ public class GUI extends Application {
                         System.out.println(owTable.getSelectionModel().getSelectedItem());
                         isSaved.setText("Saved");
                         isSaved.setVisible(true);
-                        // Driver.owners.clear();
-                        // for (Owner ow : owTable.getItems())
-                        // {
-                        //     Driver.owners.add(ow);
-                        // }
                         Write.writeToCSV(Driver.writeFile);
                     }
                 }
                 else {
-                    System.out.println("TEasST\n\n\n\n");
                     Write.addOwner(
                         ownerTextField.getText(),
                         addressTextField.getText(),
@@ -487,14 +497,8 @@ public class GUI extends Application {
 
         editSc = new Scene(grid, 300, 275);
         ps.setScene(editSc);
-        ps.show();
-       
+        ps.show();    
         //#endregion
-
-        //#region add Scene
-        // addSc = new Scene(grid, 300, 275);
-        // ps.setScene(addSc);
-        // ps.show();
 
         //#endregion
     }
