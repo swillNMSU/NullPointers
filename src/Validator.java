@@ -34,18 +34,38 @@ public class Validator {
         }
 
         if(!notValid){
-            System.out.println("YOU ENTERED A VALUE THAT WAS NOT \"A-Z\" or \"a-z\"");
-            System.out.println("The INDEX OF ERROR is at " + invalidIntex);
+            System.out.print("YOU ENTERED A VALUE THAT WAS NOT \"A-Z\" or \"a-z\": ");
+            System.out.println("The error is at " + invalidIntex);
             return true;
         }
         return false;
     }
 
     static boolean checkPickUps(String isValidNum){
+        boolean notValidPickUps = true;
+        int errorIndex = 1;
         if(isEmptyInput(isValidNum))
             return true;
-        else if(isNegative(isValidNum))
+
+        for(int i = 0; i < isValidNum.length() && notValidPickUps;i++){
+            if(isValidNum.charAt(0) == '-'){
+                System.out.print("No negative numbers are allowed: ");
+                System.out.println("Error at " + errorIndex);
+                return true;
+            }
+
+            if(isValidNum.charAt(i) < '0' || isValidNum.charAt(i) > '9'){
+                errorIndex = errorIndex + i;
+                notValidPickUps = false;
+            }
+        }
+
+        if(!notValidPickUps){
+            System.out.print("You can not have letter or any symboles in this field: ");
+            System.out.println("Error at " + errorIndex);
             return true;
+        }
+    
         int isOkayNumInput = Integer.parseInt(isValidNum);
         if(isOkayNumInput > 7){
             System.out.println("You can no longer get food until next year");
@@ -55,10 +75,28 @@ public class Validator {
     }
 
     static boolean checkNumPets(String isValidNumPets){
+        boolean notValidPetNum = true;
+        int errorIndex = 1;
         if(isEmptyInput(isValidNumPets))
             return true;
-        else if(isNegative(isValidNumPets))
+
+        for(int i = 0; i < isValidNumPets.length() && notValidPetNum;i++){
+            if(isValidNumPets.charAt(0) == '-'){
+                System.out.print("Negative numbers are not allowed: ");
+                System.out.println("Error at " + errorIndex);
+                return true;
+            }
+            if(isValidNumPets.charAt(i) < '0' || isValidNumPets.charAt(i) > '9'){
+                notValidPetNum = false;
+                errorIndex = errorIndex + i;
+            }
+        }
+        if(!notValidPetNum){
+            System.out.print("Invalid input can not have letters or characters: ");
+            System.out.println("Error at " + errorIndex);
             return true;
+        }
+
         int isOkayNumInput = Integer.parseInt(isValidNumPets);
         if(isOkayNumInput == 0){
             System.out.println("You can not have 0 pets");
@@ -84,8 +122,8 @@ public class Validator {
         }
 
         if(!notValidAddress){
-            System.out.println("Invalid Addres put");
-            System.out.println("The error is at " + invalidIndex);
+            System.out.print("Invalid Addres put: ");
+            System.out.println("Error at " + invalidIndex);
             return true;
         }
 
