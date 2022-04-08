@@ -1,6 +1,6 @@
 Buster Baxter,true,1,2,1,true,3342 Brandon LAne
 David Bowie,false,1,2,1,true,null
-Albert Brown,false,1,2,1,true,null
+Albert Brown,true,1,2,1,true,332 Yellow Ave
 Wayne Buck,true,0,0,1,true,2223 Avenua Ave
 John Doe,false,1,4,2,true,51 Cherry Street Wakefield
 Richard Donalds,false,2,2,2,true,null
@@ -15,5 +15,6 @@ Loki Maxwell,false,2,2,2,true,null
 Elmo McGee,true,2,2,1,false,620 Linden Road Bristow
 Dan Moquin,true,0,0,0,true,null
 Kate Phillips,true,0,0,1,false,null
-Paul Richards,false,2,2,2,true,null
 Dave Richards,false,1,2,1,true,null
+Paul Richards,false,2,2,2,true,null
+null,false,0,0,0,false,null
