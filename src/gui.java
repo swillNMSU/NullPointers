@@ -1,6 +1,10 @@
 package src;
 
+import java.util.List;
+
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -16,6 +20,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -26,15 +31,13 @@ public class GUI extends Application {
 
     
     Owner testOwner = new Owner("tFName tLName");
-
-
+    Owner selectedOwner;
     Stage ps;
-
-    Scene mainMenu, editSc;
-
+    Scene mainMenu, editSc, addSc;
+    ScrollPane sp = new ScrollPane();
     double width = 500, height = 600; // global sizes for scenes.
 
-    // debugging feilds, switch to false to view the gui in full.
+    // debugging feilds
     final boolean debug = true;
     Scene currScene;
 
@@ -67,36 +70,37 @@ public class GUI extends Application {
         TableView<Owner> owTable = new TableView<>();
         TableColumn<Owner, String> column1 = new TableColumn<>("Name");
         TableColumn<Owner, String> column2 = new TableColumn<>("Address");
-        TableColumn<Owner, String> column3 = new TableColumn<>("Number of Pets");
+        TableColumn<Owner, String> column3 = new TableColumn<>("Pets");
         TableColumn<Owner, String> column4 = new TableColumn<>("Strikes");
-        TableColumn<Owner, String> column5 = new TableColumn<>("withdrawls");
+        TableColumn<Owner, String> column5 = new TableColumn<>("Withdrawls");
+        TableColumn<Owner, Boolean> column6 = new TableColumn<>("Fixed");
 
-        column1.setCellValueFactory(new PropertyValueFactory<>("firstName"));
-        column2.setCellValueFactory(new PropertyValueFactory<>("addr"));
+        column1.setCellValueFactory(new PropertyValueFactory<>("name"));
+        column2.setCellValueFactory(new PropertyValueFactory<>("address"));
         column3.setCellValueFactory(new PropertyValueFactory<>("numPets"));
         column4.setCellValueFactory(new PropertyValueFactory<>("strikes"));
-        column5.setCellValueFactory(new PropertyValueFactory<>("withdrawls"));
+        column5.setCellValueFactory(new PropertyValueFactory<>("numRecieved"));
+        column6.setCellValueFactory(new PropertyValueFactory<>("isFixed"));
+
+    //     private String name, address;
+    // public int numPets, strikes, numRecieved;
+    // public boolean isFixed, incomeProof;
 
         owTable.getColumns().add(column1);
         owTable.getColumns().add(column2);
         owTable.getColumns().add(column3);
         owTable.getColumns().add(column4);
         owTable.getColumns().add(column5);
+        owTable.getColumns().add(column6);
 
         Read.readCSV();
-        for (Owner ows : Driver.owners){
-            owTable.getItems().add(ows /*,
-              ows.getName(), 
-              ows.getAddress(), 
-              ows.getNumPets(), 
-              ows.getStrikes(), 
-              ows.getNumRecieved()  */
-            );
-        }
+        for (Owner ows : Driver.owners)
+            owTable.getItems().add(ows);
 
         VBox vBox = new VBox(owTable);
-        //#endregion
+        vBox.setPrefSize(580, 700);
 
+        //#endregion
 
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
@@ -107,80 +111,92 @@ public class GUI extends Application {
         sp.setFitToWidth(true);
         sp.setFitToHeight(true);
 
-        sp.setPrefSize(580, 500);
+        sp.setPrefSize(580, 400);
         sp.setContent(vBox);
-        grid.add(sp, 5, 8);
+        grid.add(sp, 2, 8);
 
-        // add scrollpane
-        
-        
-
-        Text scenetitle = new Text("Search");
+        Text scenetitle = new Text("Patron List");
+        grid.setAlignment(Pos.CENTER);
         scenetitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
-        grid.add(scenetitle, 0, 0, 2, 1);
+        grid.add(scenetitle, 1, 0, 2, 1);
 
-        Label userName = new Label("Name:");
-        grid.add(userName, 0, 1);
+        // Button btn = new Button("Search");
+        // HBox hbBtn = new HBox(10);
+        // hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
+        // hbBtn.getChildren().add(btn);
+        // grid.add(hbBtn, 1, 4);
 
-        TextField userTextField = new TextField();
-        grid.add(userTextField, 1, 1);
+        Button addBtn = new Button("Add New");
+        HBox tAddHB = new HBox(10);
+        tAddHB.setAlignment(Pos.BOTTOM_RIGHT);
+        tAddHB.getChildren().add(addBtn);
+        grid.add(tAddHB, 1, 5);
 
-        Label pw = new Label("Password:");
-        grid.add(pw, 0, 2);
+        Label searchL = new Label("Search");
+        grid.add(searchL, 1, 7);
 
-        PasswordField pwBox = new PasswordField();
-        grid.add(pwBox, 1, 2);
+        TextField searchTextField = new TextField();
+        grid.add(searchTextField, 2, 7);
 
-        Button btn = new Button("Search");
-        HBox hbBtn = new HBox(10);
-        hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
-        hbBtn.getChildren().add(btn);
-        grid.add(hbBtn, 1, 4);
+        searchTextField.textProperty().addListener(new ChangeListener<String>()  {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (searchTextField.getText() == "")
+                    for (Owner ows : Driver.owners)
+                        owTable.getItems().add(ows);
+                List<Owner> query = Read.searchByName(searchTextField.getText());
+                owTable.getItems().clear();
+                for (Owner ows : query)
+                    owTable.getItems().add(ows);
 
-        // I've added a temporary button to get the the Edit scene I'm building.
-        Button tEdit = new Button("tEdit");
-        HBox tEditHB = new HBox(10);
-        tEditHB.setAlignment(Pos.BOTTOM_RIGHT);
-        tEditHB.getChildren().add(tEdit);
-        grid.add(tEditHB, 1, 5);
+            }
+        });
 
-        tEdit.setOnAction(new EventHandler<ActionEvent>() {
-            
+        addBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e){
                 primaryStage.setScene(editSc);
             }
         });
 
-        final Text actiontarget = new Text();
-        grid.add(actiontarget, 1, 6);
 
-        btn.setOnAction(new EventHandler<ActionEvent>() {
+        Button editButton = new Button("Edit");
+        HBox editHb = new HBox(10);
+        editHb.setAlignment(Pos.BOTTOM_RIGHT);
+        editHb.getChildren().add(editButton);
+        grid.add(editHb, 3, 8);
 
+        editButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
-            public void handle(ActionEvent e) {
-                actiontarget.setFill(Color.FIREBRICK);
-                actiontarget.setText("Sign in button pressed");
+            public void handle(ActionEvent e){
+                selectedOwner = owTable.getSelectionModel().getSelectedItem();
+                //error check before swinthing scenes.
+                System.out.println(selectedOwner);
+                ps.setScene(editSc);
+                initializeScenes();
             }
         });
+
 
         mainMenu = new Scene(grid, 300, 275);
         if (debug) {
             currScene = editSc;
-            primaryStage.setScene(currScene);
+            primaryStage.setScene(mainMenu);
         }
         else primaryStage.setScene(mainMenu);
         primaryStage.show();
     }
 
     public void initializeScenes(){
-        
-        
-        //#region EditScene
-        
-        Owner ow = testOwner;
+        Owner ow = new Owner("");
 
-        ps.setTitle("Edit Owner Information");
+        //#region EditScene
+        if (selectedOwner != null) {
+            System.out.println(selectedOwner);
+            ow = selectedOwner;
+        }
+
+        ps.setTitle("Patron List");
         ps.setHeight(800);
         ps.setWidth(1000);
         GridPane grid = new GridPane();
@@ -188,8 +204,6 @@ public class GUI extends Application {
         grid.setHgap(10);
         grid.setVgap(10);
         grid.setPadding(new Insets(25, 25, 25, 25));
-
-
 
         Text scenetitle = new Text("Edit Owner Information");
         scenetitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
@@ -318,13 +332,14 @@ public class GUI extends Application {
 
         //#endregion
         
+        //#region save button
         Button saveBtn = new Button("Save");
         HBox hbBtn = new HBox(10);
         hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
         hbBtn.getChildren().add(saveBtn);
         grid.add(hbBtn, 1, 7);
-
-        //back button
+        //#endregion
+        //#region back button
         Button backBtn = new Button("Back");
         HBox bHitB = new HBox(10);
         bHitB.setAlignment(Pos.BOTTOM_LEFT);
@@ -338,7 +353,8 @@ public class GUI extends Application {
                 ps.setScene(mainMenu);
             }
         });
-
+        //#endregion
+        
         final Text actiontarget = new Text();
         grid.add(actiontarget, 1, 6);
 
@@ -354,11 +370,7 @@ public class GUI extends Application {
                     tempOwn.setStrikes(Integer.parseInt(numStrikesTextField.getText()));
                     System.out.println(tempOwn);
                 }
-
-
-                
                 ownerTextField.getText();
-
                 actiontarget.setFill(Color.FIREBRICK);
                 actiontarget.setText("Saved");
             }
@@ -367,7 +379,8 @@ public class GUI extends Application {
         editSc = new Scene(grid, 300, 275);
         ps.setScene(editSc);
         ps.show();
-
+       
+       
         //#endregion
     }
 
