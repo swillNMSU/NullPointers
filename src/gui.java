@@ -448,9 +448,12 @@ public class GUI extends Application {
        
         //#endregion
 
+        //#region add Scene
         // addSc = new Scene(grid, 300, 275);
         // ps.setScene(addSc);
         // ps.show();
+
+        //#endregion
     }
 
     public Text displayErr(GridPane gr, String err, int width, int height){
