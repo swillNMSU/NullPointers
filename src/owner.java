@@ -38,6 +38,15 @@ public class Owner {
         + "\nNumber of Pets: " + getNumPets();
     } 
 
+    public void setAllFeilds(String name, String addr, boolean fixed, boolean incProof, int numP, int numR){
+        setName(name);
+        setAddress(addr);
+        setIsFixed(fixed);
+        setIncomeProof(incProof);
+        setNumPets(numP);
+        setNumRecieved(numR);
+    }
+
 
 //#region GET/SET
     public int getNumRecieved() {

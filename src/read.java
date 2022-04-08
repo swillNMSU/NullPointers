@@ -28,7 +28,7 @@ public class Read {
      */
     public static void readCSV(){
         try{
-            File theFile = new File("csvTest.csv");
+            File theFile = new File("src/csvWriteTest.csv");
             FileReader fr = new FileReader(theFile);
             BufferedReader br = new BufferedReader(fr);
             String line = br.readLine();

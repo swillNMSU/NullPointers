@@ -57,6 +57,9 @@ public class Write {
      * @return
      */
     public static String newName(){
+        
+        
+        
         String name = "", fName = "", lName = "";
         boolean acceptF = false, acceptL = false;
         while (!acceptF) {
@@ -146,7 +149,7 @@ public class Write {
             for (Owner ow : Driver.owners){
                 
                 String line = ow.getName() + "," + ow.getIncomeProof() + "," +
-                    ow.getStrikes() + "," + ow.getNumRecieved() + "," + ow.getNumPets();
+                    ow.getStrikes() + "," + ow.getNumRecieved() + "," + ow.getNumPets() + "," + ow.getIsFixed() + "," + ow.getAddress();
                 
                 try {
                     fw.write(line + "\n");

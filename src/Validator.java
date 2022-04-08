@@ -17,6 +17,8 @@ public class Validator {
         }
         return false;
     }
+
+    
     
     static boolean checkNameFields(String isValidName){
         boolean notValid = true;
