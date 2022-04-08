@@ -244,12 +244,14 @@ public class GUI extends Application {
         grid.add(isFixLabel, 0, 6);
         CheckBox isFixedBox = new CheckBox();
         HBox isFixedBH = new HBox(isFixedBox);
+        isFixedBox.setSelected(ow.getIsFixed());
         grid.add(isFixedBH, 1, 6);
 
         Label isProvenLabel = new Label("Proof of Income");
         grid.add(isProvenLabel, 0, 7);
         CheckBox isProvenBox = new CheckBox();
         HBox isProveHB = new HBox(isProvenBox);
+        isProvenBox.setSelected(ow.getIncomeProof());
         grid.add(isProveHB, 1, 7);
 
         //#region name
@@ -264,7 +266,7 @@ public class GUI extends Application {
         if (!addingNew) ownerTextField.setVisible(false);
         else ownerTextField.setText("");
 
-        Text nameErr = displayErr(grid, "Invalid name", 5, 1);
+        Text nameErr = displayErr(grid, "*", 5, 1);
 
         Button editBtn0 = new Button("Edit");
         HBox editHB0 = new HBox(10);
@@ -293,7 +295,7 @@ public class GUI extends Application {
         if (!addingNew) addressTextField.setVisible(false);
         else addressTextField.setText("");
 
-        Text addrErr = displayErr(grid, "Invalid address", 5, 2);
+        Text addrErr = displayErr(grid, "*", 5, 2);
 
         Button editBtn1 = new Button("Edit");
         HBox editHB1 = new HBox(10);
@@ -323,7 +325,7 @@ public class GUI extends Application {
         if (!addingNew) numPeTextField.setVisible(false);
         else numPeTextField.setText("");
 
-        Text petErr = displayErr(grid, "Invalid entry", 5, 3);
+        Text petErr = displayErr(grid, "*", 5, 3);
 
         Button editBtn2 = new Button("Edit");
         HBox editHB2 = new HBox(10);
@@ -490,7 +492,7 @@ public class GUI extends Application {
                     );
                     Text newAdded = new Text("Person successfully added");
                     newAdded.setFill(Color.BLUE);
-                    grid.add(newAdded, 1, 6);
+                    grid.add(newAdded, 2, 8);
                 }
             }
         });
