@@ -146,7 +146,8 @@ public class Write {
             for (Owner ow : Driver.owners){
                 
                 String line = ow.getName() + "," + ow.getIncomeProof() + "," +
-                    ow.getStrikes() + "," + ow.getNumRecieved() + "," + ow.getNumPets();
+                    ow.getStrikes() + "," + ow.getNumRecieved() + "," + ow.getNumPets() + "," + ow.getIsFixed() + "," + 
+                    ow.getAddress();
                 
                 try {
                     fw.write(line + "\n");
