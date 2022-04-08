@@ -301,7 +301,7 @@ public class GUI extends Application {
 
         Button editBtn3 = new Button("Edit");
         HBox editHB3 = new HBox(10);
-        editHB3.setAlignment(Pos.CENTER_LEFT);
+        editHB3.setAlignment(Pos.CENTER);
         editHB3.getChildren().add(editBtn3);
         grid.add(editHB3, 3, 4);
 
