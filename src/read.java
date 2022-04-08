@@ -41,6 +41,8 @@ public class Read {
                 nOwner.setStrikes(Integer.parseInt(ownerData[2])); 
                 nOwner.setNumRecieved(Integer.parseInt(ownerData[3]));
                 nOwner.setNumPets(Integer.parseInt(ownerData[4]));
+                nOwner.setIsFixed(Boolean.parseBoolean(ownerData[5]));
+                nOwner.setAddress(ownerData[6]);
                 Driver.owners.add(nOwner); 
                 line = br.readLine();      
             }
@@ -62,7 +64,8 @@ public class Read {
     public static List<Owner> searchByName(String search){
         List<Owner> result = new ArrayList<Owner>();
         for (Owner ow : Driver.owners)
-            if (ow.getLastName().startsWith(search) || ow.getName().startsWith(search))
+            if (ow.getLastName().toLowerCase().startsWith(search.toLowerCase()) || 
+                ow.getName().toLowerCase().startsWith(search.toLowerCase()))
                 result.add(ow);                            
         return result;
     }
