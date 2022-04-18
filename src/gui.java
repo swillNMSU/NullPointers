@@ -36,6 +36,7 @@ import javafx.stage.Stage;
 
 /**
  * TODO:
+ *      Next, organize code. this is disorganized and causeing properties to be set in the wrong place. 
  *      Color each owner in table red if they dont have proof of income, as well
  *      Search by address
  *      Hover over attributes and click to edit
@@ -43,6 +44,8 @@ import javafx.stage.Stage;
  *      Based on date, check if person is qualified for more withdrawls.
  *      Add delete method
  *      Bug in save, two were saved.
+ *      Check for memory leak
+ *      
  *      
  */
 
