@@ -9,7 +9,7 @@ public class Owner {
 
     private String name, address;
     public int numPets, strikes, numRecieved;
-    public boolean isFixed, incomeProof;
+    public boolean isFixed, incomeProof, qualifiedForService;
 
     public Owner(){}
 
@@ -21,7 +21,13 @@ public class Owner {
         setNumRecieved(0);
         setIsFixed(false);
         setAddress(null);
+        setQualifiedForService();
+    }
 
+    public void setQualifiedForService() {
+        if (strikes > 3 || !incomeProof || !isFixed){
+            qualifiedForService = false;
+        } else qualifiedForService = true;
     }
 
     @Override 
@@ -31,13 +37,15 @@ public class Owner {
         + "\nNumber of Pets: " + getNumPets();
     } 
 
-    public void setAllFeilds(String name, String addr, boolean fixed, boolean incProof, int numP, int numR){
+    public void setAllFeilds(String name, String addr, boolean fixed, boolean incProof, int numP, int numR, int strikes){
         setName(name);
         setAddress(addr);
         setIsFixed(fixed);
         setIncomeProof(incProof);
         setNumPets(numP);
         setNumRecieved(numR);
+        setStrikes(strikes);
+        setQualifiedForService();
     }
 
 
@@ -59,6 +67,7 @@ public class Owner {
 
     public void setStrikes(int strikes) {
         this.strikes = strikes;
+        setQualifiedForService();
     }
 
 
@@ -79,6 +88,7 @@ public class Owner {
 
     public void setIncomeProof(boolean incomeProof) {
         this.incomeProof = incomeProof;
+        setQualifiedForService();
     }
 
     public String getAddress(){
@@ -103,6 +113,10 @@ public class Owner {
         return nameSplit[1];
     }
 
+    public Boolean getQualifiedForService() {
+        return qualifiedForService;
+    }
+
     /**
      * Returns a string, last name comma first.
      * @return Last, First
@@ -115,6 +129,7 @@ public class Owner {
 
     public void setIsFixed(boolean bool){
         this.isFixed=bool;
+        setQualifiedForService();
     }
 
     public boolean getIsFixed(){

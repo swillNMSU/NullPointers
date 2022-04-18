@@ -2,6 +2,10 @@ package src;
 
 import java.util.List;
 import javafx.application.Application;
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -9,11 +13,14 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -26,6 +33,19 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+
+/**
+ * TODO:
+ *      Color each owner in table red if they dont have proof of income, as well
+ *      Search by address
+ *      Hover over attributes and click to edit
+ *      Save window
+ *      Based on date, check if person is qualified for more withdrawls.
+ *      Add delete method
+ *      Bug in save, two were saved.
+ *      
+ */
+
 
 public class GUI extends Application {
 
@@ -66,18 +86,24 @@ public class GUI extends Application {
         //#endregion
         
         ps = primaryStage;
+        ps.setHeight(height);
+        ps.setWidth(width);
         initializeScenes();
 
          //#region mainMenu
 
          //#region Table
         owTable = new TableView<>();
+        owTable.prefHeightProperty().bind(ps.heightProperty());
+        owTable.prefWidthProperty().bind(ps.widthProperty());
         TableColumn<Owner, String> column1 = new TableColumn<>("Name");
         TableColumn<Owner, String> column2 = new TableColumn<>("Address");
         TableColumn<Owner, String> column3 = new TableColumn<>("Pets");
         TableColumn<Owner, String> column4 = new TableColumn<>("Strikes");
         TableColumn<Owner, String> column5 = new TableColumn<>("Withdrawls");
         TableColumn<Owner, Boolean> column6 = new TableColumn<>("Fixed");
+        TableColumn<Owner, Boolean> column7 = new TableColumn<>("Income");
+        TableColumn<Owner, Boolean> column8 = new TableColumn<>("Qualified");
 
         column1.setCellValueFactory(new PropertyValueFactory<>("name"));
         column2.setCellValueFactory(new PropertyValueFactory<>("address"));
@@ -85,6 +111,8 @@ public class GUI extends Application {
         column4.setCellValueFactory(new PropertyValueFactory<>("strikes"));
         column5.setCellValueFactory(new PropertyValueFactory<>("numRecieved"));
         column6.setCellValueFactory(new PropertyValueFactory<>("isFixed"));
+        column7.setCellValueFactory(new PropertyValueFactory<>("incomeProof")); // change to string maybe
+        column8.setCellValueFactory(new PropertyValueFactory<>("qualifiedForService"));
 
         owTable.getColumns().add(column1);
         owTable.getColumns().add(column2);
@@ -92,13 +120,36 @@ public class GUI extends Application {
         owTable.getColumns().add(column4);
         owTable.getColumns().add(column5);
         owTable.getColumns().add(column6);
+        owTable.getColumns().add(column7);
+        owTable.getColumns().add(column8);
+
+       
 
         Read.readCSV();
-        for (Owner ows : Driver.owners)
+        for (Owner ows : Driver.owners) {
             owTable.getItems().add(ows);
+        }
+         // ALTER COLOR if Owner is inelligable
+        //  owTable.setRowFactory(tv -> new TableRow<Owner>() {
+        //     @Override
+        //     public void updateItem(Owner item, boolean empty) {
+        //         super.updateItem(item, empty) ;
+        //         if (item == null) {
+        //             setStyle("-fx-background-color: red;");
+        //         } else if (!item.getIncomeProof() || item.getStrikes() > 3) {
+        //             setStyle("-fx-background-color: red;");
+        //         } else {
+        //             setStyle("-fx-background-color: red;");
+        //         }
+        //     }
+        // });
+
+        
+        
+        owTable.refresh();
 
         VBox vBox = new VBox(owTable);
-        vBox.setPrefSize(580, 700);
+        vBox.setPrefWidth(10);
 
         //#endregion
 
@@ -108,16 +159,19 @@ public class GUI extends Application {
         grid.setVgap(10);
         grid.setPadding(new Insets(25, 25, 25, 25));
         
+        
         sp.setFitToWidth(true);
         sp.setFitToHeight(true);
 
-        sp.setPrefSize(580, 400);
+        sp.setPrefSize(ps.getWidth()*.7, ps.getHeight()*.6);
         sp.setContent(vBox);
         grid.add(sp, 2, 8);
 
+        grid.setStyle("-fx-background-color: light grey;");
+
         Text scenetitle = new Text("Patron List");
         grid.setAlignment(Pos.CENTER);
-        scenetitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+        scenetitle.setFont(Font.font("Telugu MN", 20));
         grid.add(scenetitle, 1, 0, 2, 1);
 
         Button addBtn = new Button("Add New");
@@ -130,7 +184,7 @@ public class GUI extends Application {
         HBox archHB = new HBox(10);
         archHB.setAlignment(Pos.BOTTOM_RIGHT);
         archHB.getChildren().add(archiveBtn);
-        grid.add(archiveBtn, 3, 9);
+        grid.add(archiveBtn, 3, 10);
 
         Label searchL = new Label("Search");
         grid.add(searchL, 1, 7);
@@ -170,7 +224,14 @@ public class GUI extends Application {
         HBox editHb = new HBox(10);
         editHb.setAlignment(Pos.BOTTOM_RIGHT);
         editHb.getChildren().add(editButton);
-        grid.add(editHb, 3, 8);
+        grid.add(editHb, 3, 9);
+        editButton.setDisable(true);
+
+        owTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                editButton.setDisable(false);
+            } else editButton.setDisable(true);
+        });
 
         editButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -178,6 +239,7 @@ public class GUI extends Application {
                 addingNew = false;
                 if (owTable.getSelectionModel().getSelectedItem() != null) {
                     selectedOwner = owTable.getSelectionModel().getSelectedItem();
+                    editButton.setDisable(false);
                     //error check before swinthing scenes.
                     System.out.println(selectedOwner);
                     ps.setScene(editSc);
@@ -194,6 +256,21 @@ public class GUI extends Application {
                 archSuccess.setFill(Color.GREEN);
                 grid.add(archSuccess, 4, 9);
             }
+        });
+
+
+        owTable.setRowFactory( tv -> {
+            TableRow<Owner> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && (! row.isEmpty()) ) {
+                    addingNew = false;
+                    selectedOwner = row.getItem();
+                    System.out.println(selectedOwner + "\n\n\n\n"); //BUG: checking
+                    ps.setScene(editSc);
+                    initializeScenes();
+                }
+            });
+            return row ;
         });
         
         mainMenu = new Scene(grid, 300, 275);
@@ -246,6 +323,14 @@ public class GUI extends Application {
         HBox isFixedBH = new HBox(isFixedBox);
         isFixedBox.setSelected(ow.getIsFixed());
         grid.add(isFixedBH, 1, 6);
+
+        isFixedBox.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e){
+                System.out.println(owTable.getSelectionModel().getSelectedItem().getIsFixed());
+                owTable.getSelectionModel().getSelectedItem().setIsFixed(isFixedBox.isSelected());
+            }
+        });
 
         Label isProvenLabel = new Label("Proof of Income");
         grid.add(isProvenLabel, 0, 7);
@@ -426,15 +511,8 @@ public class GUI extends Application {
             @Override
             public void handle(ActionEvent e) { // IF there is at least a name entered.
                 boolean canSave = true;
-                //TODO add fixed status to DVAL
                 
-                // isFixedBox.setOnAction(new EventHandler<ActionEvent>() {
-                //     @Override
-                //     public void handle(ActionEvent e){
-                //         owTable.getSelectionModel().getSelectedItem().setIsFixed(isFixedBox.isSelected());
-                //         // TODO: bad code
-                //     }
-                // });
+                
 
                 if (dVal.checkNameFields(ownerTextField.getText())){
                     nameErr.setVisible(true);
@@ -470,10 +548,11 @@ public class GUI extends Application {
                         owTable.getSelectionModel().getSelectedItem().setAllFeilds(
                             ownerTextField.getText(),
                             addressTextField.getText(),
-                            true,
-                            true,
+                            isFixedBox.isSelected(),
+                            isProvenBox.isSelected(),
                             Integer.parseInt(numPeTextField.getText()),
-                            Integer.parseInt(numWithdrawls.getText())
+                            Integer.parseInt(numWithdrawlsTextField.getText()),
+                            Integer.parseInt(numStrikesTextField.getText())
                             );
 
                         System.out.println(owTable.getSelectionModel().getSelectedItem());
@@ -486,6 +565,8 @@ public class GUI extends Application {
                     Write.addOwner(
                         ownerTextField.getText(),
                         addressTextField.getText(),
+                        isProvenBox.isSelected(),
+                        isFixedBox.isSelected(),
                         Integer.parseInt(numPeTextField.getText()),
                         Integer.parseInt(numStrikesTextField.getText()),
                         Integer.parseInt(numWithdrawlsTextField.getText())

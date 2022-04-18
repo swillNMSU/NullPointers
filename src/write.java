@@ -29,15 +29,16 @@ public class Write {
      * Constructs a new owner based on input and adds it to the list of owners. 
      * TODO: Sort the list after adding.
      */
-    public static void addOwner(String name, String addr, /*add booles*/ int numP, int strikes, int numR){
+    public static void addOwner(String name, String addr, boolean incProof, boolean fixed, int numP, int strikes, int numR){
         Owner newOwner = new Owner();
         newOwner.setName(name);
         newOwner.setAddress(addr);
-        newOwner.setIncomeProof(true); // TODO: defaults to true, still need to decide on ui execution.
-        newOwner.setIsFixed(true);  // same as above
+        newOwner.setIncomeProof(incProof); // TODO: defaults to true, still need to decide on ui execution.
+        newOwner.setIsFixed(fixed);  // same as above
         newOwner.setNumPets(numP);
         newOwner.setStrikes(strikes);
         newOwner.setNumRecieved(numR);
+        newOwner.setQualifiedForService();
         Driver.owners.add(newOwner); 
         Collections.sort(Driver.owners, new OwnerComparator());
 

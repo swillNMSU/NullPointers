@@ -41,6 +41,7 @@ public class Read {
                 nOwner.setNumPets(Integer.parseInt(ownerData[4]));
                 nOwner.setIsFixed(Boolean.parseBoolean(ownerData[5]));
                 nOwner.setAddress(ownerData[6]);
+                nOwner.setQualifiedForService();
                 Driver.owners.add(nOwner); 
                 line = br.readLine();      
             }
