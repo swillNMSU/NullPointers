@@ -11,5 +11,5 @@
         "c:\\Classes\\Spring 2021\\Software Dev\\GUI Development\\JavaFX\\javafx-sdk-18\\lib\\javafx-swt.jar",
         "/Users/johngilbert/Downloads/javafx-sdk-18/lib/**/*.jar"
     ],
-    "java.jdt.ls.vmargs": "-XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx8G -Xms100m"
+    "java.jdt.ls.vmargs": "-XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx16G -Xms100m"
 }

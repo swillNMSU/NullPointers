@@ -349,7 +349,9 @@ public class GUI extends Application {
         TextField ownerTextField = new TextField(ow.getName()); 
         grid.add(ownerTextField, 1, 1);
         if (!addingNew) ownerTextField.setVisible(false);
-        else ownerTextField.setText("");
+        else {
+            ownerTextField.setText("");
+        }
 
         Text nameErr = displayErr(grid, "*", 5, 1);
 
@@ -484,6 +486,8 @@ public class GUI extends Application {
             public void handle(ActionEvent e){
                 numWithdrawls.setVisible(false);
                 numWithdrawlsTextField.setVisible(true);
+                numWithdrawlsTextField.requestFocus();
+                numWithdrawlsTextField.selectAll();
             }
         });
         //#endregion
@@ -581,6 +585,10 @@ public class GUI extends Application {
         editSc = new Scene(grid, 300, 275);
         ps.setScene(editSc);
         ps.show();    
+
+        if (addingNew) {
+            ownerTextField.requestFocus();
+        }
         //#endregion
 
         //#endregion
