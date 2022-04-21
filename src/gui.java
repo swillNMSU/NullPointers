@@ -32,7 +32,12 @@ import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
+import javafx.stage.Popup;
+import javafx.stage.PopupWindow;
 import javafx.stage.Stage;
+import java.time.format.DateTimeFormatter;
+import java.time.LocalDateTime;
 
 /**
  * TODO:
@@ -40,12 +45,11 @@ import javafx.stage.Stage;
  *      Color each owner in table red if they dont have proof of income, as well
  *      Search by address
  *      Hover over attributes and click to edit
- *      Save window
- *      Based on date, check if person is qualified for more withdrawls.
- *      Add delete method
- *      Bug in save, two were saved.
- *      Check for memory leak
  *      
+ *      Add delete method
+ *      Check for memory leak
+ *      Reset withdrawls at the first of every month
+ *      Set listeners if any text fields are altered, then cannot save.
  *      
  */
 
@@ -53,18 +57,21 @@ import javafx.stage.Stage;
 public class GUI extends Application {
 
     
-    Owner selectedOwner;
+    Owner selectedOwner, delOwner;
     Stage ps;
     Scene mainMenu, editSc, addSc;
     ScrollPane sp = new ScrollPane();
     double width = 500, height = 600; // global sizes for scenes.
     Validator dVal = new Validator();
     boolean addingNew = false;
-    TableView<Owner> owTable;
+    static TableView<Owner> owTable;
+    boolean canSave = true;
 
     // debugging feilds
     final boolean debug = true;
     Scene currScene;
+    boolean hasSaved = true;
+    static boolean noSave = false;
 
     public static void main(String[] args) {
         launch(args);
@@ -175,11 +182,18 @@ public class GUI extends Application {
         scenetitle.setFont(Font.font("Telugu MN", 20));
         grid.add(scenetitle, 1, 0, 2, 1);
 
-        Button addBtn = new Button("Add New");
+        Button addBtn = new Button("Add");
         HBox tAddHB = new HBox(10);
         tAddHB.setAlignment(Pos.BOTTOM_RIGHT);
         tAddHB.getChildren().add(addBtn);
         grid.add(tAddHB, 1, 5);
+
+        Button deleteBtn = new Button("Delete");
+        HBox delHb = new HBox(10);
+        delHb.setAlignment(Pos.BOTTOM_RIGHT);
+        delHb.getChildren().add(deleteBtn);
+        grid.add(delHb, 1, 9);
+        deleteBtn.setDisable(true);
 
         Button archiveBtn = new Button("Archive");
         HBox archHB = new HBox(10);
@@ -205,7 +219,6 @@ public class GUI extends Application {
                 owTable.getItems().clear();
                 for (Owner ows : query)
                     owTable.getItems().add(ows);
-
             }
         });
 
@@ -216,6 +229,16 @@ public class GUI extends Application {
                 selectedOwner = null;
                 ps.setScene(editSc);
                 initializeScenes();
+            }
+        });
+
+        deleteBtn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e){
+                delOwner = owTable.getSelectionModel().getSelectedItem();
+                displayPopup("Are you sure you wish to delete " + delOwner.getName() + " from you records? This action cannot be undone.",
+                 "Delete", "delete");
+                searchTextField.setText("");
             }
         });
 
@@ -230,7 +253,11 @@ public class GUI extends Application {
         owTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
                 editButton.setDisable(false);
-            } else editButton.setDisable(true);
+                deleteBtn.setDisable(false);
+            } else {
+                editButton.setDisable(true);
+                deleteBtn.setDisable(true);
+            }
         });
 
         editButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -272,6 +299,8 @@ public class GUI extends Application {
             });
             return row ;
         });
+
+
         
         mainMenu = new Scene(grid, 300, 275);
         
@@ -284,6 +313,9 @@ public class GUI extends Application {
     
     public void initializeScenes(){
         Owner ow = new Owner("");
+
+       
+    
 
         //#region EditScene
         if (selectedOwner != null) {
@@ -327,9 +359,8 @@ public class GUI extends Application {
         isFixedBox.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e){
-                System.out.println(owTable.getSelectionModel().getSelectedItem().getIsFixed());
                 owTable.getSelectionModel().getSelectedItem().setIsFixed(isFixedBox.isSelected());
-            }
+                hasSaved = false;            }
         });
 
         Label isProvenLabel = new Label("Proof of Income");
@@ -338,6 +369,14 @@ public class GUI extends Application {
         HBox isProveHB = new HBox(isProvenBox);
         isProvenBox.setSelected(ow.getIncomeProof());
         grid.add(isProveHB, 1, 7);
+
+        isProvenBox.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e){
+                owTable.getSelectionModel().getSelectedItem().setIsFixed(isProvenBox.isSelected());
+                hasSaved = false;            }
+        });
+
 
         //#region name
         Label ownerNameL = new Label("Name:");
@@ -366,7 +405,7 @@ public class GUI extends Application {
             public void handle(ActionEvent e){
                 ownerName.setVisible(false);
                 ownerTextField.setVisible(true);
-            }
+                hasSaved = false;            }
         });
         //#endregion
 
@@ -395,7 +434,7 @@ public class GUI extends Application {
             public void handle(ActionEvent e){
                 ownerAddr.setVisible(false);
                 addressTextField.setVisible(true);
-            }
+                hasSaved = false;            }
         });
 
         //#endregion
@@ -425,7 +464,7 @@ public class GUI extends Application {
             public void handle(ActionEvent e){
                 ownerNumPets.setVisible(false);
                 numPeTextField.setVisible(true);
-            }
+                hasSaved = false;            }
         });
 
         //#endregion
@@ -455,7 +494,7 @@ public class GUI extends Application {
             public void handle(ActionEvent e){
                 ownerStrikes.setVisible(false);
                 numStrikesTextField.setVisible(true);
-            }
+                hasSaved = false;            }
         });
 
         //#endregion
@@ -488,6 +527,7 @@ public class GUI extends Application {
                 numWithdrawlsTextField.setVisible(true);
                 numWithdrawlsTextField.requestFocus();
                 numWithdrawlsTextField.selectAll();
+                hasSaved = false;
             }
         });
         //#endregion
@@ -497,11 +537,19 @@ public class GUI extends Application {
             @Override
             public void handle(ActionEvent e){
                 // Confirm if data hasn't been saved
-                System.out.println("Back to Main menu.");
-                ps.setScene(mainMenu);
-                owTable.getItems().clear();
-                for (Owner ows : Driver.owners)
-                    owTable.getItems().add(ows);
+                if (canSave && !hasSaved){
+                    displayPopup("Information has been changed without saving.\n Are you sure you want to go back?",
+                     "Are you sure?", "checkSave");
+                     if (noSave) ps.setScene(mainMenu);
+                     noSave = false;
+                }
+                else { // has been saved
+                    System.out.println("Back to Main menu.");
+                    ps.setScene(mainMenu);
+                    owTable.getItems().clear();
+                    for (Owner ows : Driver.owners)
+                        owTable.getItems().add(ows);
+                }
             }
         });
         //#endregion
@@ -514,9 +562,8 @@ public class GUI extends Application {
         saveBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) { // IF there is at least a name entered.
-                boolean canSave = true;
                 
-                
+                canSave = true;
 
                 if (dVal.checkNameFields(ownerTextField.getText())){
                     nameErr.setVisible(true);
@@ -560,34 +607,48 @@ public class GUI extends Application {
                             );
 
                         System.out.println(owTable.getSelectionModel().getSelectedItem());
+                        Write.writeToCSV(Driver.writeFile);
+                        hasSaved = true;
                         isSaved.setText("Saved");
                         isSaved.setVisible(true);
-                        Write.writeToCSV(Driver.writeFile);
                     }
                 }
                 else {
-                    Write.addOwner(
-                        ownerTextField.getText(),
-                        addressTextField.getText(),
-                        isProvenBox.isSelected(),
-                        isFixedBox.isSelected(),
-                        Integer.parseInt(numPeTextField.getText()),
-                        Integer.parseInt(numStrikesTextField.getText()),
-                        Integer.parseInt(numWithdrawlsTextField.getText())
-                    );
-                    Text newAdded = new Text("Person successfully added");
-                    newAdded.setFill(Color.BLUE);
-                    grid.add(newAdded, 2, 8);
+                    if(!canSave) {
+                        isSaved.setText("Invalid entry");
+                        isSaved.setVisible(true);
+                    }
+                    else {
+                        Write.addOwner(
+                            ownerTextField.getText(),
+                            addressTextField.getText(),
+                            isProvenBox.isSelected(),
+                            isFixedBox.isSelected(),
+                            Integer.parseInt(numPeTextField.getText()),
+                            Integer.parseInt(numStrikesTextField.getText()),
+                            Integer.parseInt(numWithdrawlsTextField.getText())
+                        );
+                        hasSaved = true;
+                        Text newAdded = new Text("Person successfully added");
+                        newAdded.setFill(Color.BLUE);
+                        grid.add(newAdded, 2, 8);
+                    }
                 }
             }
         });
 
         editSc = new Scene(grid, 300, 275);
+
         ps.setScene(editSc);
         ps.show();    
 
         if (addingNew) {
             ownerTextField.requestFocus();
+            editBtn0.setVisible(false);
+            editBtn1.setVisible(false);
+            editBtn2.setVisible(false);
+            editBtn3.setVisible(false);
+            editBtn4.setVisible(false);
         }
         //#endregion
 
@@ -601,6 +662,62 @@ public class GUI extends Application {
         er.setText(err);
         gr.add(er, width, height);
         return er;
+    }
+
+    public static void displayPopup(String message, String title, String arg){
+        Stage popWindow = new Stage();
+        popWindow.initModality(Modality.APPLICATION_MODAL);
+        popWindow.setMinWidth(450);
+        popWindow.setMinHeight(300);
+        popWindow.setTitle(title);
+        Label mess = new Label(message);
+        Button nButton = new Button("No");
+
+        Button yesBt = new Button("Yes");
+        VBox layout = new VBox(10);
+        
+        layout.setAlignment(Pos.CENTER);
+
+        if (arg == "checkSave")
+        {
+            
+            layout.getChildren().addAll(mess, yesBt, nButton); 
+            yesBt.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent e){
+                    popWindow.close();
+                    noSave = true;
+                }
+            });
+        }
+        if (arg == "delete"){
+            popWindow.setMaxHeight(200);
+            
+            layout.getChildren().addAll(mess, nButton, yesBt);
+            nButton.requestFocus();
+
+            yesBt.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent e){
+                    System.out.println(owTable.getSelectionModel().getSelectedItem());
+                    Write.delete(owTable.getSelectionModel().getSelectedItem());
+                    popWindow.close();
+                }
+            });
+            nButton.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent e){
+                    popWindow.close();
+                }
+            });
+        }
+
+        Scene scene = new Scene(layout);
+        popWindow.setScene(scene);
+        
+        popWindow.showAndWait();
+         
+
     }
 
 }
