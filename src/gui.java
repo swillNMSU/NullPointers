@@ -53,7 +53,6 @@ import javafx.stage.Stage;
 public class GUI extends Application {
 
     
-  //  Owner testOwner = new Owner("tFName tLName");
     Owner selectedOwner;
     Stage ps;
     Scene mainMenu, editSc, addSc;
@@ -61,7 +60,6 @@ public class GUI extends Application {
     double width = 500, height = 600; // global sizes for scenes.
     Validator dVal = new Validator();
     boolean addingNew = false;
-
     TableView<Owner> owTable;
 
     // debugging feilds
@@ -196,7 +194,6 @@ public class GUI extends Application {
         grid.add(searchTextField, 2, 7);
 
         // add listener if row is selected.
-
 
         searchTextField.textProperty().addListener(new ChangeListener<String>()  {
             @Override
@@ -404,7 +401,7 @@ public class GUI extends Application {
         //#endregion
 
         //#region NumPets
-        Label numPetsL = new Label("Number of Pets:");
+        Label numPetsL = new Label("Pets:");
         grid.add(numPetsL, 0, 3);
 
         Label ownerNumPets = new Label(String.valueOf(ow.getNumPets()));
