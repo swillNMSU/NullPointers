@@ -6,6 +6,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.*;
+import java.time.format.DateTimeFormatter;
+
 
 /*
 Tools to implement our CSV file.
@@ -26,7 +28,7 @@ public class Read {
      */
     public static void readCSV(){
         try{
-            File theFile = new File("src/csvWriteTest.csv");
+            File theFile = new File("src/testReset.csv");
             FileReader fr = new FileReader(theFile);
             BufferedReader br = new BufferedReader(fr);
             String line = br.readLine();
@@ -82,5 +84,60 @@ public class Read {
         return result;
     }
 
+    public static boolean checkForReset() {
+        String[] months = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+        Date currDate = new Date();
+        Boolean newYear = false;
+        int currMonth = -1, monthSinceReset = -1;
+
+        try{
+            File metaFile = new File("meta/.metadata.csv");
+            FileReader fr = new FileReader(metaFile);
+            BufferedReader br = new BufferedReader(fr);
+            String line = br.readLine();
+            
+            while(line != null){    
+                System.out.println("HERE");
+                if (line.charAt(0) == '#') { line = br.readLine(); continue; }
+                System.out.println(line);
+
+                String[] lineData = line.split(":");
+                if (lineData[0].equals("ResetWithdrawls")) { // handle withdrawls and dates.
+                    String[] dateData = lineData[1].split(",");
+                    
+                    for (int i = 0; i < months.length; i++) {
+                        if (months[i].equals(dateData[0])) {
+                            currMonth = i;
+                            System.out.println(currMonth);
+                        }
+                        if (months[i].equals(dateData[1])) {
+                            monthSinceReset = i;
+                            System.out.println(monthSinceReset);
+                        }
+                    }
+                    if (currDate.getYear() > Integer.parseInt(dateData[2])) {
+                            newYear = true;
+                    }
+
+                    if (newYear) {
+                        if(currMonth < monthSinceReset) 
+                            return true;
+                    }
+                    else {
+                        if (currMonth > monthSinceReset)
+                            return true;
+                    }
+                    return false;
+                }
+                line = br.readLine();      
+            }
+            br.close();
+
+        } catch(IOException ioe) {
+            ioe.printStackTrace();
+        }
+        return false;
+
+    }
 
 }

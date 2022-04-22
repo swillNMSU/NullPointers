@@ -1,7 +1,10 @@
 package src;
 
 import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Collections;
@@ -168,11 +171,14 @@ public class Write {
      * Method creates and archive of the current log. Repeated code in writetoCSV, could stand to implement better.
      * File saved as CSV, titled todays date and time. TODO: make a directory.
      */
-    public static void archiveCurrent(){
+    public static void archiveCurrent(String arg){
         Date date = new Date();
-        String fName = date.toString() + "csv";
+        String fName = date.toString() + ".csv";
+
+        if (arg == "withdrawlReset") fName = "reset_" + fName;
+        
         try {
-            File f = new File(fName);
+            File f = new File("archive/" + fName);
             if (f.createNewFile()){
                 System.out.println("New archive csv created: " + fName);
                 try {
@@ -207,6 +213,52 @@ public class Write {
 
     public static void save(){
         writeToCSV(Driver.writeFile);
+    }
+
+    public static boolean updateDateMetadata() {
+        String[] months = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+        Date currDate = new Date();
+        File tempFile = new File("meta/temp.csv");
+
+
+        try{
+            File metaFile = new File("meta/.metadata.csv");
+            FileReader fr = new FileReader(metaFile);
+            FileWriter fw = new FileWriter(tempFile);
+            BufferedReader br = new BufferedReader(fr);
+            BufferedWriter bw = new BufferedWriter(fw);
+            String line = br.readLine();
+            
+            while(line != null){    
+               
+                if (line.charAt(0) == '#') { 
+                    bw.write(line + "\n"); 
+                    line = br.readLine(); 
+                    continue; 
+                }
+                String[] lineData = line.split(":");
+                if (lineData[0].equals("ResetWithdrawls")) { // handle withdrawls and dates.
+                    String[] dateData = lineData[1].split(",");
+                    System.out.println(currDate.getMonth());
+                    String newLine = "ResetWithdrawls:"+months[currDate.getMonth()]+","+months[currDate.getMonth()]+",2022\n";
+                    bw.write(newLine);
+                }
+                line = br.readLine();      
+            }
+            br.close();
+            bw.close();
+            boolean successful = tempFile.renameTo(metaFile);
+            return successful;
+        } catch(IOException ioe) {
+            ioe.printStackTrace();
+            return false;
+        }
+    }
+
+    public static void main(String[] args){
+        System.out.println("BEGIN");
+        updateDateMetadata();
+       
     }
 
 }

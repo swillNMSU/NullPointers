@@ -6,6 +6,20 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch Write",
+            "request": "launch",
+            "mainClass": "src.Write",
+            "projectName": "NullPointers_fac2e31"
+        },
+        {
+            "type": "java",
+            "name": "Launch Read",
+            "request": "launch",
+            "mainClass": "src.Read",
+            "projectName": "NullPointers_fac2e31"
+        },
+        {
+            "type": "java",
             "name": "Launch GUI",
             "request": "launch",
             "vmArgs": "--module-path /Users/johngilbert/Downloads/javafx-sdk-18/lib --add-modules javafx.controls,javafx.fxml",

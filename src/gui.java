@@ -41,15 +41,17 @@ import java.time.LocalDateTime;
 
 /**
  * TODO:
- *      Next, organize code. this is disorganized and causeing properties to be set in the wrong place. 
- *      Color each owner in table red if they dont have proof of income, as well
- *      Search by address
- *      Hover over attributes and click to edit
  *      
- *      Add delete method
+ *      Color each owner in table red if they dont have proof of income, as well
+ *      Search by address?
+ *      Display archives
+ *
+ *      export as excel sheet
+ *      add withdrawl reset button
  *      Check for memory leak
  *      Reset withdrawls at the first of every month
- *      Set listeners if any text fields are altered, then cannot save.
+ *      
+ *      Click on table elemnt and have that highlighted on edit screen
  *      
  */
 
@@ -66,6 +68,8 @@ public class GUI extends Application {
     boolean addingNew = false;
     static TableView<Owner> owTable;
     boolean canSave = true;
+    boolean withdrawlReset = Read.checkForReset();
+
 
     // debugging feilds
     final boolean debug = true;
@@ -134,9 +138,7 @@ public class GUI extends Application {
        
 
         Read.readCSV();
-        for (Owner ows : Driver.owners) {
-            owTable.getItems().add(ows);
-        }
+        updateOwnerTable();
          // ALTER COLOR if Owner is inelligable
         //  owTable.setRowFactory(tv -> new TableRow<Owner>() {
         //     @Override
@@ -278,13 +280,12 @@ public class GUI extends Application {
         archiveBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e){
-                Write.archiveCurrent();
-                Text archSuccess = new Text("Done");
+                Write.archiveCurrent("");
+                Text archSuccess = new Text("*");
                 archSuccess.setFill(Color.GREEN);
-                grid.add(archSuccess, 4, 9);
+                grid.add(archSuccess, 4, 10);
             }
         });
-
 
         owTable.setRowFactory( tv -> {
             TableRow<Owner> row = new TableRow<>();
@@ -301,22 +302,22 @@ public class GUI extends Application {
         });
 
 
-        
         mainMenu = new Scene(grid, 300, 275);
         
         //mainMenu.setBorderpain
 
         primaryStage.setScene(mainMenu);
         primaryStage.show();
+        if (withdrawlReset == true) {
+            displayPopup("Would you like to reset withdrawls to zero?", "Reset Withdrawls", "resetWithdrawls");
+        }
+
     }
 
     
     public void initializeScenes(){
         Owner ow = new Owner("");
-
-       
     
-
         //#region EditScene
         if (selectedOwner != null) {
             System.out.println(selectedOwner);
@@ -332,8 +333,8 @@ public class GUI extends Application {
         grid.setVgap(10);
         grid.setPadding(new Insets(25, 25, 25, 25));
 
-        Text scenetitle = new Text("Owner Information");
-        scenetitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+        Text scenetitle = new Text("Patron Information");
+        scenetitle.setFont(Font.font("Telugu MN", FontWeight.NORMAL, 20));
         grid.add(scenetitle, 0, 0, 2, 1);
 
         // BUTTONS
@@ -381,90 +382,51 @@ public class GUI extends Application {
         //#region name
         Label ownerNameL = new Label("Name:");
         grid.add(ownerNameL, 0, 1);
-
-        Label ownerName = new Label(ow.getName());
-        grid.add(ownerName, 1, 1);
-
         TextField ownerTextField = new TextField(ow.getName()); 
         grid.add(ownerTextField, 1, 1);
-        if (!addingNew) ownerTextField.setVisible(false);
-        else {
-            ownerTextField.setText("");
-        }
-
+        if (addingNew) ownerTextField.setText("");
         Text nameErr = displayErr(grid, "*", 5, 1);
 
-        Button editBtn0 = new Button("Edit");
-        HBox editHB0 = new HBox(10);
-        editHB0.setAlignment(Pos.CENTER_LEFT);
-        editHB0.getChildren().add(editBtn0);
-        grid.add(editHB0, 3, 1);
-
-        editBtn0.setOnAction(new EventHandler<ActionEvent>() {
+        ownerTextField.textProperty().addListener(new ChangeListener<String>()  {
             @Override
-            public void handle(ActionEvent e){
-                ownerName.setVisible(false);
-                ownerTextField.setVisible(true);
-                hasSaved = false;            }
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                hasSaved = false;
+            }
         });
+
         //#endregion
 
         //#region Address
         Label addrL = new Label("Address:");
         grid.add(addrL, 0, 2);
-
-        Label ownerAddr = new Label(ow.getAddress());
-        grid.add(ownerAddr, 1, 2);
-
         TextField addressTextField = new TextField(ow.getAddress());
         grid.add(addressTextField, 1, 2);
-        if (!addingNew) addressTextField.setVisible(false);
-        else addressTextField.setText("");
-
+        if (addingNew) addressTextField.setText("");
         Text addrErr = displayErr(grid, "*", 5, 2);
 
-        Button editBtn1 = new Button("Edit");
-        HBox editHB1 = new HBox(10);
-        editHB1.setAlignment(Pos.CENTER_LEFT);
-        editHB1.getChildren().add(editBtn1);
-        grid.add(editHB1, 3, 2);
-
-        editBtn1.setOnAction(new EventHandler<ActionEvent>() {
+        addressTextField.textProperty().addListener(new ChangeListener<String>()  {
             @Override
-            public void handle(ActionEvent e){
-                ownerAddr.setVisible(false);
-                addressTextField.setVisible(true);
-                hasSaved = false;            }
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                hasSaved = false;
+            }
         });
+
 
         //#endregion
 
         //#region NumPets
         Label numPetsL = new Label("Pets:");
         grid.add(numPetsL, 0, 3);
-
-        Label ownerNumPets = new Label(String.valueOf(ow.getNumPets()));
-        grid.add(ownerNumPets, 1, 3);
-
         TextField numPeTextField = new TextField(String.valueOf(ow.getNumPets()));
         grid.add(numPeTextField, 1, 3);
-        if (!addingNew) numPeTextField.setVisible(false);
-        else numPeTextField.setText("");
-
+        if (addingNew) numPeTextField.setText("");
         Text petErr = displayErr(grid, "*", 5, 3);
 
-        Button editBtn2 = new Button("Edit");
-        HBox editHB2 = new HBox(10);
-        editHB2.setAlignment(Pos.CENTER_LEFT);
-        editHB2.getChildren().add(editBtn2);
-        grid.add(editHB2, 3, 3);
-
-        editBtn2.setOnAction(new EventHandler<ActionEvent>() {
+        numPeTextField.textProperty().addListener(new ChangeListener<String>()  {
             @Override
-            public void handle(ActionEvent e){
-                ownerNumPets.setVisible(false);
-                numPeTextField.setVisible(true);
-                hasSaved = false;            }
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                hasSaved = false;
+            }
         });
 
         //#endregion
@@ -472,29 +434,16 @@ public class GUI extends Application {
         //#region Strikes
         Label numStrikesL = new Label("Strikes:");
         grid.add(numStrikesL, 0, 4);
-
-        Label ownerStrikes = new Label(String.valueOf(ow.getStrikes()));
-        grid.add(ownerStrikes, 1, 4);
-
         TextField numStrikesTextField = new TextField(String.valueOf(ow.getStrikes()));
         grid.add(numStrikesTextField, 1, 4);
-        if (!addingNew) numStrikesTextField.setVisible(false);
-        else numStrikesTextField.setText("");
-        
+        if (addingNew) numStrikesTextField.setText("");
         Text strikeErr = displayErr(grid, "*", 5, 4);
 
-        Button editBtn3 = new Button("Edit");
-        HBox editHB3 = new HBox(10);
-        editHB3.setAlignment(Pos.CENTER_LEFT);
-        editHB3.getChildren().add(editBtn3);
-        grid.add(editHB3, 3, 4);
-
-        editBtn3.setOnAction(new EventHandler<ActionEvent>() {
+        numStrikesTextField.textProperty().addListener(new ChangeListener<String>()  {
             @Override
-            public void handle(ActionEvent e){
-                ownerStrikes.setVisible(false);
-                numStrikesTextField.setVisible(true);
-                hasSaved = false;            }
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                hasSaved = false;
+            }
         });
 
         //#endregion
@@ -502,41 +451,25 @@ public class GUI extends Application {
         //#region Withdrawls
         Label numWithdrawlsL = new Label("Withdrawls:");
         grid.add(numWithdrawlsL, 0, 5);
-
-        Label numWithdrawls = new Label(String.valueOf(ow.getNumRecieved()));
-        grid.add(numWithdrawls, 1, 5);
-
         TextField numWithdrawlsTextField = new TextField(String.valueOf(ow.getNumRecieved()));
         grid.add(numWithdrawlsTextField, 1, 5);
-        if (!addingNew) numWithdrawlsTextField.setVisible(false);
-        else numWithdrawlsTextField.setText("");
-        
-
+        if (addingNew) numWithdrawlsTextField.setText("");
         Text withdrawlErr = displayErr(grid, "*", 5, 5);
-    
-        Button editBtn4 = new Button("Edit");
-        HBox editHB4 = new HBox(10);
-        editHB4.setAlignment(Pos.CENTER_LEFT);
-        editHB4.getChildren().add(editBtn4);
-        grid.add(editHB4, 3, 5);
 
-        editBtn4.setOnAction(new EventHandler<ActionEvent>() {
+        numWithdrawlsTextField.textProperty().addListener(new ChangeListener<String>()  {
             @Override
-            public void handle(ActionEvent e){
-                numWithdrawls.setVisible(false);
-                numWithdrawlsTextField.setVisible(true);
-                numWithdrawlsTextField.requestFocus();
-                numWithdrawlsTextField.selectAll();
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                 hasSaved = false;
             }
         });
+
         //#endregion
         
         //#region save button
         backBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e){
-                // Confirm if data hasn't been saved
+                // Confirm  data hasn't been saved
                 if (canSave && !hasSaved){
                     displayPopup("Information has been changed without saving.\n Are you sure you want to go back?",
                      "Are you sure?", "checkSave");
@@ -570,10 +503,11 @@ public class GUI extends Application {
                     canSave = false;
                 } else {nameErr.setVisible(false);}
 
-                if (dVal.checkAddress(addressTextField.getText())){
-                    addrErr.setVisible(true);
-                    canSave = false;
-                } else {addrErr.setVisible(false);}
+                // no address validator 
+                // if (dVal.checkAddress(addressTextField.getText())){
+                //     addrErr.setVisible(true);
+                //     canSave = false;
+                // } else {addrErr.setVisible(false);}
 
                 if (dVal.checkNumPets(numPeTextField.getText())){
                     petErr.setVisible(true);
@@ -629,7 +563,7 @@ public class GUI extends Application {
                             Integer.parseInt(numWithdrawlsTextField.getText())
                         );
                         hasSaved = true;
-                        Text newAdded = new Text("Person successfully added");
+                        Text newAdded = new Text("Saved");
                         newAdded.setFill(Color.BLUE);
                         grid.add(newAdded, 2, 8);
                     }
@@ -638,17 +572,13 @@ public class GUI extends Application {
         });
 
         editSc = new Scene(grid, 300, 275);
-
+        ownerTextField.requestFocus();
+        ownerTextField.selectAll();
         ps.setScene(editSc);
         ps.show();    
 
         if (addingNew) {
             ownerTextField.requestFocus();
-            editBtn0.setVisible(false);
-            editBtn1.setVisible(false);
-            editBtn2.setVisible(false);
-            editBtn3.setVisible(false);
-            editBtn4.setVisible(false);
         }
         //#endregion
 
@@ -680,7 +610,6 @@ public class GUI extends Application {
 
         if (arg == "checkSave")
         {
-            
             layout.getChildren().addAll(mess, yesBt, nButton); 
             yesBt.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
@@ -689,13 +618,18 @@ public class GUI extends Application {
                     noSave = true;
                 }
             });
+            nButton.requestFocus();
+            nButton.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent e){
+                    popWindow.close();
+                }
+            });
         }
         if (arg == "delete"){
             popWindow.setMaxHeight(200);
-            
             layout.getChildren().addAll(mess, nButton, yesBt);
             nButton.requestFocus();
-
             yesBt.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent e){
@@ -712,12 +646,45 @@ public class GUI extends Application {
             });
         }
 
+        if (arg == "resetWithdrawls") {
+            popWindow.setMaxHeight(200);
+            Label txt = new Label("It's the start of the month.");
+            layout.getChildren().addAll(txt,mess, yesBt, nButton);
+
+            nButton.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent e){
+                    // TODO: more actions likely
+                    popWindow.close();
+                }
+            });
+
+            yesBt.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent e){
+                    System.out.println("Setting all owners withdrawls to 0");
+                    Write.archiveCurrent("withdrawlReset");
+                    for (Owner ows : Driver.owners) {
+                        ows.setNumRecieved(0);
+                    }
+                    Write.writeToCSV(Driver.writeFile);
+                    Write.updateDateMetadata();
+                    popWindow.close();
+                }
+            });
+        }
+
         Scene scene = new Scene(layout);
         popWindow.setScene(scene);
-        
         popWindow.showAndWait();
          
 
+    }
+
+    public void updateOwnerTable() {
+        for (Owner ows : Driver.owners) {
+            owTable.getItems().add(ows);
+        }
     }
 
 }
