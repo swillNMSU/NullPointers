@@ -22,7 +22,7 @@
             "type": "java",
             "name": "Launch GUI",
             "request": "launch",
-            "vmArgs": "--module-path /Users/johngilbert/Downloads/javafx-sdk-18/lib --add-modules javafx.controls,javafx.fxml",
+            "vmArgs": "--module-path /Users/johngilbert/Downloads/javafx-sdk-18/lib --add-modules javafx.controls,javafx.fxml --add-exports javafx.graphics/com.sun.javafx.sg.prism=ALL-UNNAMED",
             "mainClass": "src.GUI",
             "projectName": "NullPointers_fac2e31"
         },

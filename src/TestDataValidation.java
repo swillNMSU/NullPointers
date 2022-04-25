@@ -1,19 +1,19 @@
 package src;
 import java.util.*;
 public class TestDataValidation{
-    public static void main(String[] args) {
+    // public static void main(String[] args) {
         
-        Scanner scan = new Scanner(System.in);
-        // need to test this method with input
-        String validFirstName = getPersontName(scan,"Please enter your First name");
-        //String valiMiddName = getPersontName(scan, "Please enter your Last name");
-        //String validLastName = getPersontName(scan, "Please enter your middle name");
-        // this method for last and middle name will be the same as 
-        // need to test this method with input
-        System.out.println(validFirstName);
-        //char validYN = getFixedStatus(scan);
-        getNumOfVisit(scan);
-    }
+    //     Scanner scan = new Scanner(System.in);
+    //     // need to test this method with input
+    //     String validFirstName = getPersontName(scan,"Please enter your First name");
+    //     //String valiMiddName = getPersontName(scan, "Please enter your Last name");
+    //     //String validLastName = getPersontName(scan, "Please enter your middle name");
+    //     // this method for last and middle name will be the same as 
+    //     // need to test this method with input
+    //     System.out.println(validFirstName);
+    //     //char validYN = getFixedStatus(scan);
+    //     getNumOfVisit(scan);
+    // }
 
     /** This method perameter Are a Scanner called name that will take the input for a string
      *  The other paramter is a string that holds the message for first, middle, and last name
