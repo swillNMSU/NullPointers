@@ -41,7 +41,7 @@ public class Validator {
         return false;
     }
 
-    public boolean checkPickUps(String isValidNum){
+    public boolean checkPickUps(String isValidNum) {
         boolean notValidPickUps = true;
         int errorIndex = 1;
         if(isEmptyInput(isValidNum))
@@ -67,7 +67,7 @@ public class Validator {
         }
     
         int isOkayNumInput = Integer.parseInt(isValidNum);
-        if(isOkayNumInput > 7){
+        if(isOkayNumInput > 8){
             System.out.println("You can no longer get food until next year");
             return true;
         }
@@ -114,7 +114,7 @@ public class Validator {
         for(int i = 0; i < isValidAddress.length() && notValidAddress; i++){
             if(isValidAddress.charAt(i) != ' ' && (isValidAddress.charAt(i) < 'A' || isValidAddress.charAt(i) > 'Z')
                 && (isValidAddress.charAt(i) < 'a' || isValidAddress.charAt(i) > 'z') && (isValidAddress.charAt(i) < '0' || 
-                isValidAddress.charAt(i) > '9')
+                isValidAddress.charAt(i) > '9') && isValidAddress.charAt(i) != '.'
             ){
                 notValidAddress = false;
                 invalidIndex = i + invalidIndex;

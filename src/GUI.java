@@ -135,7 +135,7 @@ public class GUI extends Application {
         owTable.getColumns().add(column7);
         owTable.getColumns().add(column8);
 
-       
+       // owTable.getSelectionModel().setCellSelectionEnabled(true);
 
         Read.readCSV();
         updateOwnerTable();
@@ -295,6 +295,7 @@ public class GUI extends Application {
                     selectedOwner = row.getItem();
                     System.out.println(selectedOwner + "\n\n\n\n"); //BUG: checking
                     ps.setScene(editSc);
+                    System.out.println(owTable.getFocusModel().getFocusedIndex()+"HERE\n\n");
                     initializeScenes();
                 }
             });
@@ -540,7 +541,7 @@ public class GUI extends Application {
                             Integer.parseInt(numStrikesTextField.getText())
                             );
 
-                        System.out.println(owTable.getSelectionModel().getSelectedItem());
+                        // System.out.println(owTable.getSelectionModel().getSele
                         Write.writeToCSV(Driver.writeFile);
                         hasSaved = true;
                         isSaved.setText("Saved");
