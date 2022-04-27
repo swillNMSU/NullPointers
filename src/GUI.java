@@ -1,5 +1,6 @@
 package src;
 
+import java.util.ArrayList;
 import java.util.List;
 import javafx.application.Application;
 import javafx.beans.binding.Bindings;
@@ -19,10 +20,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -44,12 +48,17 @@ import java.time.LocalDateTime;
  *      
  *      Color each owner in table red if they dont have proof of income, as well
  *      Search by address?
- *      Display archives
+ *      Display archives:
+ *              Scrollpane showing available archives. Scrollpane showing 
  *
  *      export as excel sheet
  *      add withdrawl reset button
- *      Check for memory leak
- *      Reset withdrawls at the first of every month
+ *    
+ *      Reset withdrawls at the first of every YEAR (AUGUST TO AUGUST)
+ *      Add Statistics page
+ *      Add Settings/Info Page
+ *      Resize and clean windows to properties that fit best
+ *      Color coding
  *      
  *      Click on table elemnt and have that highlighted on edit screen
  *      
@@ -69,6 +78,9 @@ public class GUI extends Application {
     static TableView<Owner> owTable;
     boolean canSave = true;
     boolean withdrawlReset = Read.checkForReset();
+    Insets insets = new Insets(20);
+
+    Pos align = Pos.CENTER_LEFT;
 
 
     // debugging feilds
@@ -106,6 +118,7 @@ public class GUI extends Application {
 
          //#region Table
         owTable = new TableView<>();
+        
         owTable.prefHeightProperty().bind(ps.heightProperty());
         owTable.prefWidthProperty().bind(ps.widthProperty());
         TableColumn<Owner, String> column1 = new TableColumn<>("Name");
@@ -138,33 +151,24 @@ public class GUI extends Application {
        // owTable.getSelectionModel().setCellSelectionEnabled(true);
 
         Read.readCSV();
-        updateOwnerTable();
-         // ALTER COLOR if Owner is inelligable
-        //  owTable.setRowFactory(tv -> new TableRow<Owner>() {
-        //     @Override
-        //     public void updateItem(Owner item, boolean empty) {
-        //         super.updateItem(item, empty) ;
-        //         if (item == null) {
-        //             setStyle("-fx-background-color: red;");
-        //         } else if (!item.getIncomeProof() || item.getStrikes() > 3) {
-        //             setStyle("-fx-background-color: red;");
-        //         } else {
-        //             setStyle("-fx-background-color: red;");
-        //         }
-        //     }
-        // });
 
         
+        updateOwnerTable();
+
+        
+        
+
         
         owTable.refresh();
 
         VBox vBox = new VBox(owTable);
+        vBox.setAlignment(Pos.CENTER_RIGHT);
         vBox.setPrefWidth(10);
 
         //#endregion
 
         GridPane grid = new GridPane();
-        grid.setAlignment(Pos.CENTER);
+        grid.setAlignment(align);
         grid.setHgap(10);
         grid.setVgap(10);
         grid.setPadding(new Insets(25, 25, 25, 25));
@@ -180,26 +184,32 @@ public class GUI extends Application {
         grid.setStyle("-fx-background-color: light grey;");
 
         Text scenetitle = new Text("Patron List");
-        grid.setAlignment(Pos.CENTER);
+        grid.setAlignment(align);
         scenetitle.setFont(Font.font("Telugu MN", 20));
         grid.add(scenetitle, 1, 0, 2, 1);
 
         Button addBtn = new Button("Add");
         HBox tAddHB = new HBox(10);
-        tAddHB.setAlignment(Pos.BOTTOM_RIGHT);
+        tAddHB.setAlignment(align);
         tAddHB.getChildren().add(addBtn);
         grid.add(tAddHB, 1, 5);
 
         Button deleteBtn = new Button("Delete");
         HBox delHb = new HBox(10);
-        delHb.setAlignment(Pos.BOTTOM_RIGHT);
+        delHb.setAlignment(align);
         delHb.getChildren().add(deleteBtn);
         grid.add(delHb, 1, 9);
         deleteBtn.setDisable(true);
 
+        Button infoBtn = new Button("?");
+        HBox infoHB = new HBox(10);
+        infoHB.setAlignment(align);
+        infoHB.getChildren().add(infoBtn);
+        grid.add(infoBtn, 4, 11);
+
         Button archiveBtn = new Button("Archive");
         HBox archHB = new HBox(10);
-        archHB.setAlignment(Pos.BOTTOM_RIGHT);
+        archHB.setAlignment(align);
         archHB.getChildren().add(archiveBtn);
         grid.add(archiveBtn, 3, 10);
 
@@ -244,10 +254,16 @@ public class GUI extends Application {
             }
         });
 
+        infoBtn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e){
+                displayInfoWindow();
+            }
+        });
 
         Button editButton = new Button("Edit");
         HBox editHb = new HBox(10);
-        editHb.setAlignment(Pos.BOTTOM_RIGHT);
+        editHb.setAlignment(align);
         editHb.getChildren().add(editButton);
         grid.add(editHb, 3, 9);
         editButton.setDisable(true);
@@ -287,6 +303,7 @@ public class GUI extends Application {
             }
         });
 
+
         owTable.setRowFactory( tv -> {
             TableRow<Owner> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
@@ -295,15 +312,16 @@ public class GUI extends Application {
                     selectedOwner = row.getItem();
                     System.out.println(selectedOwner + "\n\n\n\n"); //BUG: checking
                     ps.setScene(editSc);
-                    System.out.println(owTable.getFocusModel().getFocusedIndex()+"HERE\n\n");
                     initializeScenes();
                 }
             });
             return row ;
         });
+        
 
 
         mainMenu = new Scene(grid, 300, 275);
+        
         
         //mainMenu.setBorderpain
 
@@ -329,7 +347,7 @@ public class GUI extends Application {
         ps.setHeight(800);
         ps.setWidth(1000);
         GridPane grid = new GridPane();
-        grid.setAlignment(Pos.CENTER);
+        grid.setAlignment(align);
         grid.setHgap(10);
         grid.setVgap(10);
         grid.setPadding(new Insets(25, 25, 25, 25));
@@ -341,13 +359,13 @@ public class GUI extends Application {
         // BUTTONS
         Button saveBtn = new Button("Save");
         HBox hbBtn = new HBox(10);
-        hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
+        hbBtn.setAlignment(align);
         hbBtn.getChildren().add(saveBtn);
         grid.add(hbBtn, 1, 8);
 
         Button backBtn = new Button("Back");
         HBox bHitB = new HBox(10);
-        bHitB.setAlignment(Pos.BOTTOM_LEFT);
+        bHitB.setAlignment(align);
         bHitB.getChildren().add(backBtn);
         grid.add(bHitB, 0, 8);
 
@@ -607,7 +625,7 @@ public class GUI extends Application {
         Button yesBt = new Button("Yes");
         VBox layout = new VBox(10);
         
-        layout.setAlignment(Pos.CENTER);
+        layout.setAlignment(Pos.CENTER_LEFT);
 
         if (arg == "checkSave")
         {
@@ -678,8 +696,92 @@ public class GUI extends Application {
         Scene scene = new Scene(layout);
         popWindow.setScene(scene);
         popWindow.showAndWait();
-         
+    }
 
+    public void displayInfoWindow() {
+        Stage infoStage = new Stage();
+
+
+        TabPane tabPane = new TabPane();
+        tabPane.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
+
+        Tab stat = new Tab("Statistics");
+        VBox statVB = new VBox();
+        Tab sett = new Tab("Settings");
+        VBox settVB = new VBox();
+        Tab help = new Tab("Help");
+        VBox helpVB = new VBox();
+
+        //#region Statistics
+        int petsFed = 0;
+        for(Owner ow : Driver.owners) petsFed += ow.getNumPets();
+        Label patrons = new Label("Total Patrons:\t"+Driver.owners.size());
+        Label withD = new Label("Average monthly withdrawls:\t"+Driver.owners.size());
+        Label pFed = new Label("Pets fed:\t"+petsFed);
+
+
+
+        statVB.getChildren().addAll(patrons, withD, pFed);
+        statVB.setPadding(insets);
+        stat.setContent(statVB);
+
+         //#endregion
+
+         //#region Settings
+        /**
+         * Reset witdrawls
+         * dark theme?
+         */
+
+        Button resetWithdrawlsButton = new Button("Reset Withdrawls to Zero");
+        HBox rwHB = new HBox();
+        rwHB.setAlignment(align);
+        rwHB.getChildren().add(resetWithdrawlsButton);
+
+
+
+
+        settVB.getChildren().addAll(rwHB);
+        settVB.setPadding(insets);
+        sett.setContent(settVB);
+
+         //#endregion
+
+         //#region help
+         Label controls = new Label("Controls:");
+         Label contExpl = new Label(
+             "\tDouble click on patron list to edit.\n\t" +
+             "TODO"
+         );
+         
+         helpVB.getChildren().addAll(controls, contExpl);
+         helpVB.setPadding(insets);
+         help.setContent(helpVB);
+
+
+         //#endregion
+
+
+        tabPane.getTabs().add(stat);
+        tabPane.getTabs().add(sett);
+        tabPane.getTabs().add(help);
+
+        VBox vBox = new VBox(tabPane);
+        Scene scene = new Scene(vBox);
+        
+
+        infoStage.setScene(scene);
+        infoStage.setTitle("JavaFX App");
+        infoStage.initModality(Modality.APPLICATION_MODAL); //TODO: what is info modality?
+        infoStage.setMinWidth(600);
+        infoStage.setMinHeight(400);
+        infoStage.setTitle("Information");
+        Label mess = new Label("TEMP MESSAGE");
+        Button nButton = new Button("No");
+
+        
+
+        infoStage.show();
     }
 
     public void updateOwnerTable() {
