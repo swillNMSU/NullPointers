@@ -224,6 +224,7 @@ public class GUI extends Application {
         searchTextField.textProperty().addListener(new ChangeListener<String>()  {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                //if length of search is increasing, pass back result. No need to search the entirety of the feild
                 if (searchTextField.getText() == "")
                     for (Owner ows : Driver.owners)
                         owTable.getItems().add(ows);
