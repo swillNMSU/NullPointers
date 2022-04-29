@@ -25,9 +25,12 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -41,6 +44,9 @@ import javafx.stage.Popup;
 import javafx.stage.PopupWindow;
 import javafx.stage.Stage;
 import java.time.format.DateTimeFormatter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.time.LocalDateTime;
 
 /**
@@ -60,6 +66,11 @@ import java.time.LocalDateTime;
  *      Resize and clean windows to properties that fit best
  *      Color coding
  *      
+ *      Change question mark to gear icon
+ * 
+ *      Maybe have an option to flag an owner as already banned
+ *      If searching, select top result
+ * 
  *      Click on table elemnt and have that highlighted on edit screen
  *      
  */
@@ -69,16 +80,17 @@ public class GUI extends Application {
 
     
     Owner selectedOwner, delOwner;
-    Stage ps;
-    Scene mainMenu, editSc, addSc;
+    static Stage ps;
+    Scene mainMenu, editSc, addSc, archiveScene;
     ScrollPane sp = new ScrollPane();
     double width = 500, height = 600; // global sizes for scenes.
     Validator dVal = new Validator();
     boolean addingNew = false;
     static TableView<Owner> owTable;
-    boolean canSave = true;
+    static TableView<Owner> archivedOwTable;
+    boolean canSave = true, searching = false;
     boolean withdrawlReset = Read.checkForReset();
-    Insets insets = new Insets(20);
+    static Insets insets = new Insets(20);
 
     Pos align = Pos.CENTER_LEFT;
 
@@ -112,7 +124,7 @@ public class GUI extends Application {
         ps = primaryStage;
         ps.setHeight(height);
         ps.setWidth(width);
-        initializeScenes();
+        initializeEditScene();
 
          //#region mainMenu
 
@@ -150,19 +162,16 @@ public class GUI extends Application {
 
        // owTable.getSelectionModel().setCellSelectionEnabled(true);
 
-        Read.readCSV();
+        Read.readCSV("src/testReset.csv", true);
 
         
-        updateOwnerTable();
-
-        
-        
+        updateOwnerTable(true);
 
         
         owTable.refresh();
 
         VBox vBox = new VBox(owTable);
-        vBox.setAlignment(Pos.CENTER_RIGHT);
+        vBox.setAlignment(Pos.CENTER);
         vBox.setPrefWidth(10);
 
         //#endregion
@@ -205,13 +214,13 @@ public class GUI extends Application {
         HBox infoHB = new HBox(10);
         infoHB.setAlignment(align);
         infoHB.getChildren().add(infoBtn);
-        grid.add(infoBtn, 4, 11);
+        grid.add(infoBtn, 4, 10);
 
         Button archiveBtn = new Button("Archive");
         HBox archHB = new HBox(10);
         archHB.setAlignment(align);
         archHB.getChildren().add(archiveBtn);
-        grid.add(archiveBtn, 3, 10);
+        grid.add(archiveBtn, 1, 10);
 
         Label searchL = new Label("Search");
         grid.add(searchL, 1, 7);
@@ -220,10 +229,17 @@ public class GUI extends Application {
         grid.add(searchTextField, 2, 7);
 
         // add listener if row is selected.
+        Button editButton = new Button("Edit");
+        HBox editHb = new HBox(10);
+        editHb.setAlignment(align);
+        editHb.getChildren().add(editButton);
+        grid.add(editHb, 2, 5);
+        editButton.setDisable(true);
 
         searchTextField.textProperty().addListener(new ChangeListener<String>()  {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                searching = true;
                 //if length of search is increasing, pass back result. No need to search the entirety of the feild
                 if (searchTextField.getText() == "")
                     for (Owner ows : Driver.owners)
@@ -232,6 +248,8 @@ public class GUI extends Application {
                 owTable.getItems().clear();
                 for (Owner ows : query)
                     owTable.getItems().add(ows);
+                owTable.getSelectionModel().selectFirst();
+                searching = false; // at the end
             }
         });
 
@@ -241,7 +259,7 @@ public class GUI extends Application {
                 addingNew = true;
                 selectedOwner = null;
                 ps.setScene(editSc);
-                initializeScenes();
+                initializeEditScene();
             }
         });
 
@@ -262,12 +280,6 @@ public class GUI extends Application {
             }
         });
 
-        Button editButton = new Button("Edit");
-        HBox editHb = new HBox(10);
-        editHb.setAlignment(align);
-        editHb.getChildren().add(editButton);
-        grid.add(editHb, 3, 9);
-        editButton.setDisable(true);
 
         owTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
@@ -289,7 +301,7 @@ public class GUI extends Application {
                     //error check before swinthing scenes.
                     System.out.println(selectedOwner);
                     ps.setScene(editSc);
-                    initializeScenes();
+                    initializeEditScene();
                 }
             }
         });
@@ -313,17 +325,16 @@ public class GUI extends Application {
                     selectedOwner = row.getItem();
                     System.out.println(selectedOwner + "\n\n\n\n"); //BUG: checking
                     ps.setScene(editSc);
-                    initializeScenes();
+                    initializeEditScene();
                 }
             });
+           
+            
             return row ;
         });
-        
-
-
+    
         mainMenu = new Scene(grid, 300, 275);
-        
-        
+            
         //mainMenu.setBorderpain
 
         primaryStage.setScene(mainMenu);
@@ -335,7 +346,7 @@ public class GUI extends Application {
     }
 
     
-    public void initializeScenes(){
+    public void initializeEditScene(){
         Owner ow = new Owner("");
     
         //#region EditScene
@@ -590,7 +601,7 @@ public class GUI extends Application {
                 }
             }
         });
-
+        grid.setAlignment(Pos.CENTER);
         editSc = new Scene(grid, 300, 275);
         ownerTextField.requestFocus();
         ownerTextField.selectAll();
@@ -603,6 +614,44 @@ public class GUI extends Application {
         //#endregion
 
         //#endregion
+    } // end initializeEditScene()
+
+
+    public void initializeArchiveScene() {
+        List<File> archives = Read.getArchives();
+        TableView<File> archiveTable = new TableView<>();
+        archiveTable.prefHeight(200);
+        archiveTable.prefWidth(200);
+        archiveTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
+        TableColumn<File, String> col1 = new TableColumn<>("name");
+        col1.setCellValueFactory(new PropertyValueFactory<>("name"));
+        archiveTable.getColumns().add(col1);
+
+        archiveTable.setRowFactory( tv -> {
+            TableRow<File> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && (! row.isEmpty()) ) {
+                    displaySelectedArchive(row.getItem());
+                    System.out.println("HERERER\n\n\n\n\n\n");
+                    
+                }
+            });     
+            return row ;
+        });
+        
+        updateArchiveTable(archives, archiveTable);
+        VBox layout = new VBox();
+        layout.setPadding(insets);
+        layout.getChildren().add(archiveTable);
+
+    
+
+
+
+        archives = null; // if we hit back
+        
+        archiveScene = new Scene(layout);
     }
 
     public Text displayErr(GridPane gr, String err, int width, int height){
@@ -694,13 +743,35 @@ public class GUI extends Application {
             });
         }
 
+        if (arg == "report"){
+            Label repLabel = new Label("Report an issue:");
+            TextArea commentField = new TextArea();
+            commentField.setWrapText(true);
+            commentField.setPrefHeight(200); commentField.setPrefWidth(100);
+            Button repBtn = new Button("Save Report");
+
+            repBtn.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent e){
+                    Write.emitReport(commentField.getText());
+                    popWindow.close();
+                }
+            });
+            layout.getChildren().addAll(repLabel, commentField, repBtn);
+        }
+
+        layout.setPadding(insets);
+
         Scene scene = new Scene(layout);
         popWindow.setScene(scene);
         popWindow.showAndWait();
+        
     }
 
     public void displayInfoWindow() {
         Stage infoStage = new Stage();
+
+        infoStage.setAlwaysOnTop(true);
 
 
         TabPane tabPane = new TabPane();
@@ -713,6 +784,7 @@ public class GUI extends Application {
         Tab help = new Tab("Help");
         VBox helpVB = new VBox();
 
+
         //#region Statistics
         int petsFed = 0;
         for(Owner ow : Driver.owners) petsFed += ow.getNumPets();
@@ -720,9 +792,26 @@ public class GUI extends Application {
         Label withD = new Label("Average monthly withdrawls:\t"+Driver.owners.size());
         Label pFed = new Label("Pets fed:\t"+petsFed);
 
+        Button statbackBtn = new Button("Back");
+        HBox statbkHB = new HBox();
+        statbkHB.setAlignment(align);
+        statbkHB.getChildren().add(statbackBtn);
 
+        Button vArchiveButton = new Button("View Archives");
+        HBox varcHB = new HBox();
+        varcHB.setAlignment(align);
+        varcHB.getChildren().add(vArchiveButton);
 
-        statVB.getChildren().addAll(patrons, withD, pFed);
+        vArchiveButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e){
+                initializeArchiveScene();
+                ps.setScene(archiveScene);
+                infoStage.close();
+            }
+        });
+
+        statVB.getChildren().addAll(patrons, withD, pFed, vArchiveButton,   statbackBtn);
         statVB.setPadding(insets);
         stat.setContent(statVB);
 
@@ -739,10 +828,14 @@ public class GUI extends Application {
         rwHB.setAlignment(align);
         rwHB.getChildren().add(resetWithdrawlsButton);
 
+        Button settbackBtn = new Button("Back");
+        HBox settbkHB = new HBox();
+        settbkHB.setAlignment(align);
+        settbkHB.getChildren().add(settbackBtn);
 
 
 
-        settVB.getChildren().addAll(rwHB);
+        settVB.getChildren().addAll(rwHB,     settbackBtn);
         settVB.setPadding(insets);
         sett.setContent(settVB);
 
@@ -754,11 +847,27 @@ public class GUI extends Application {
              "\tDouble click on patron list to edit.\n\t" +
              "TODO"
          );
+         Button reportBtn = new Button("Report an Issue");
+         HBox reportHB = new HBox();
+         reportHB.setAlignment(align);
+         reportHB.getChildren().add(reportBtn);
+
+         Button helpbackBtn = new Button("Back");
+         HBox hbkHB = new HBox();
+         hbkHB.setAlignment(align);
+         hbkHB.getChildren().add(helpbackBtn);
          
-         helpVB.getChildren().addAll(controls, contExpl);
+         helpVB.getChildren().addAll(controls, contExpl,    helpbackBtn);
+         helpVB.getChildren().add(reportBtn);
          helpVB.setPadding(insets);
          help.setContent(helpVB);
 
+         reportBtn.setOnAction(new EventHandler<ActionEvent>() {
+             @Override
+             public void handle(ActionEvent e){
+                displayPopup("Please record and save your comment here:", "Report", "report");
+             }
+         });
 
          //#endregion
 
@@ -769,7 +878,6 @@ public class GUI extends Application {
 
         VBox vBox = new VBox(tabPane);
         Scene scene = new Scene(vBox);
-        
 
         infoStage.setScene(scene);
         infoStage.setTitle("JavaFX App");
@@ -780,14 +888,81 @@ public class GUI extends Application {
         Label mess = new Label("TEMP MESSAGE");
         Button nButton = new Button("No");
 
-        
-
         infoStage.show();
+    } // end display popup
+
+    public static void displaySelectedArchive(File selArc) {
+        Stage archivestage = new Stage();
+        try {
+            
+            FileReader fr = new FileReader(selArc);
+            archivedOwTable = new TableView<>();
+
+            archivedOwTable.setPrefHeight(200);
+            archivedOwTable.setPrefWidth(200);
+            TableColumn<Owner, String> column1 = new TableColumn<>("Name");
+            TableColumn<Owner, String> column2 = new TableColumn<>("Address");
+            TableColumn<Owner, String> column3 = new TableColumn<>("Pets");
+            TableColumn<Owner, String> column4 = new TableColumn<>("Strikes");
+            TableColumn<Owner, String> column5 = new TableColumn<>("Withdrawls");
+            TableColumn<Owner, Boolean> column6 = new TableColumn<>("Fixed");
+            TableColumn<Owner, Boolean> column7 = new TableColumn<>("Income");
+            TableColumn<Owner, Boolean> column8 = new TableColumn<>("Qualified");
+
+            column1.setCellValueFactory(new PropertyValueFactory<>("name"));
+            column2.setCellValueFactory(new PropertyValueFactory<>("address"));
+            column3.setCellValueFactory(new PropertyValueFactory<>("numPets"));
+            column4.setCellValueFactory(new PropertyValueFactory<>("strikes"));
+            column5.setCellValueFactory(new PropertyValueFactory<>("numRecieved"));
+            column6.setCellValueFactory(new PropertyValueFactory<>("isFixed"));
+            column7.setCellValueFactory(new PropertyValueFactory<>("incomeProof")); // change to string maybe
+            column8.setCellValueFactory(new PropertyValueFactory<>("qualifiedForService"));
+
+            archivedOwTable.getColumns().add(column1);
+            archivedOwTable.getColumns().add(column2);
+            archivedOwTable.getColumns().add(column3);
+            archivedOwTable.getColumns().add(column4);
+            archivedOwTable.getColumns().add(column5);
+            archivedOwTable.getColumns().add(column6);
+            archivedOwTable.getColumns().add(column7);
+            archivedOwTable.getColumns().add(column8);
+            
+            System.out.println(selArc.getPath()+"\n\n\n\n\n\n\n\n\n");
+            
+            Read.readCSV(selArc.getPath(), false);
+            
+            archivedOwTable.refresh();
+            
+            
+
+            VBox arVB =  new VBox();
+            arVB.getChildren().add(archivedOwTable);  
+            Scene selectedArchiveScene = new Scene(arVB);
+            
+
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            displayPopup("Error: Unable to open file", "Error", "unabletoopenfile");
+        }
     }
 
-    public void updateOwnerTable() {
-        for (Owner ows : Driver.owners) {
-            owTable.getItems().add(ows);
+    public void updateOwnerTable(boolean fromMain) {
+        if (fromMain) {
+            for (Owner ows : Driver.owners) {
+                owTable.getItems().add(ows);
+            }
+        }
+        else {
+            for (Owner ows : Driver.currentArchives) {
+                owTable.getItems().add(ows);
+            }
+        }
+    }
+
+    public void updateArchiveTable(List<File> archs, TableView<File> table) {
+        for (File ar : archs) {
+            table.getItems().add(ar);
         }
     }
 

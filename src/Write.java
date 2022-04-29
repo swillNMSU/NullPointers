@@ -175,7 +175,7 @@ public class Write {
         Date date = new Date();
         String fName = date.toString() + ".csv";
 
-        if (arg == "withdrawlReset") fName = "reset_" + fName;
+        //if (arg == "withdrawlReset") fName = "reset_" + fName;
         
         try {
             File f = new File("archive/" + fName);
@@ -239,7 +239,7 @@ public class Write {
                 String[] lineData = line.split(":");
                 if (lineData[0].equals("ResetWithdrawls")) { // handle withdrawls and dates.
                     String[] dateData = lineData[1].split(",");
-                    System.out.println(currDate.getMonth());
+                    System.out.println(currDate.getMonth()); //TODO: Change to Aug to Aug, check if year is different.
                     String newLine = "ResetWithdrawls:"+months[currDate.getMonth()]+","+months[currDate.getMonth()]+",2022\n";
                     bw.write(newLine);
                 }
@@ -252,6 +252,39 @@ public class Write {
         } catch(IOException ioe) {
             ioe.printStackTrace();
             return false;
+        }
+    }
+
+    public static void emitReport(String report){
+        
+        try{
+            File commentF = new File("meta/comments.txt");
+            FileWriter fw = new FileWriter(commentF, true);
+            BufferedWriter bw = new BufferedWriter(fw);
+           
+            bw.write("\n" + report);
+            // while(line != null){    
+               
+            //     if (line.charAt(0) == '#') { 
+            //         bw.write(line + "\n"); 
+            //         line = br.readLine(); 
+            //         continue; 
+            //     }
+            //     String[] lineData = line.split(":");
+            //     if (lineData[0].equals("ResetWithdrawls")) { // handle withdrawls and dates.
+            //         String[] dateData = lineData[1].split(",");
+            //         System.out.println(currDate.getMonth()); //TODO: Change to Aug to Aug, check if year is different.
+            //         String newLine = "ResetWithdrawls:"+months[currDate.getMonth()]+","+months[currDate.getMonth()]+",2022\n";
+            //         bw.write(newLine);
+            //     }
+            //     line = br.readLine();      
+            // }
+            bw.close();
+            
+           
+        } catch(IOException ioe) {
+            ioe.printStackTrace();
+            
         }
     }
 

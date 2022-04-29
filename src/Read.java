@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.util.ArrayList;
+
+import javax.annotation.processing.Filer;
+
 import java.util.*;
 import java.time.format.DateTimeFormatter;
 
@@ -26,9 +29,9 @@ public class Read {
      *      ',' seperates these substrings into the objects data members,
      *      which are then converted to the appropriate type and stored in the objects
      */
-    public static void readCSV(){
+    public static void readCSV(String pathtoFile, boolean toDriver) {
         try{
-            File theFile = new File("src/testReset.csv");
+            File theFile = new File(pathtoFile);
             FileReader fr = new FileReader(theFile);
             BufferedReader br = new BufferedReader(fr);
             String line = br.readLine();
@@ -44,13 +47,17 @@ public class Read {
                 nOwner.setIsFixed(Boolean.parseBoolean(ownerData[5]));
                 nOwner.setAddress(ownerData[6]);
                 nOwner.setQualifiedForService();
-                Driver.owners.add(nOwner); 
+                if (toDriver) Driver.owners.add(nOwner); 
+                else { 
+                    Driver.currentArchives.add(nOwner);
+                }
                 line = br.readLine();      
             }
             br.close();
             Collections.sort(Driver.owners, new OwnerComparator());
             
         } catch(IOException ioe) {
+           
             ioe.printStackTrace();
         }
     }
@@ -140,4 +147,23 @@ public class Read {
 
     }
 
+    /**
+     * Retrieve an array of files from on the archives
+     */
+    public static List<File> getArchives() {
+        List<File> archs = new ArrayList<>();
+        String[] pathnames;        
+        File f = new File("archive");
+        pathnames = f.list();
+        for (String path : pathnames){
+            // if (path.contains("reset_")){
+            //     String[] pn = path.split("_");
+            //     path = pn[1];
+            // }
+            System.out.println(path);
+            File archiveFile = new File("archive/"+ path);
+            archs.add(archiveFile);
+        }
+        return archs;   
+    }
 }

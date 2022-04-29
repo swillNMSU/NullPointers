@@ -158,12 +158,10 @@ public class TestDataValidation{
             System.out.println("You can not enter a value less then 0");
             return true;
         }
-
         if(isValidNumVisit > 7){
             System.out.println("You have reached your limit of dog and cat food");
             return true;
         }
-
         return false;
     }
 }
