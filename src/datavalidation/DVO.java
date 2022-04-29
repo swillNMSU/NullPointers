@@ -1,3 +1,6 @@
+package src.datavalidation;
+
+import src.Owner;
 
 public class DVO {
     Owner ownerInformation;

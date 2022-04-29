@@ -31,10 +31,13 @@ public class Read {
      */
     public static void readCSV(String pathtoFile, boolean toDriver) {
         try{
+            
+
             File theFile = new File(pathtoFile);
             FileReader fr = new FileReader(theFile);
             BufferedReader br = new BufferedReader(fr);
             String line = br.readLine();
+            line = br.readLine(); //skip first line
             
             while(line != null){    
                 
@@ -54,10 +57,9 @@ public class Read {
                 line = br.readLine();      
             }
             br.close();
-            Collections.sort(Driver.owners, new OwnerComparator());
-            
+            if (toDriver) Collections.sort(Driver.owners, new OwnerComparator());
+            else Collections.sort(Driver.currentArchives, new OwnerComparator());
         } catch(IOException ioe) {
-           
             ioe.printStackTrace();
         }
     }
@@ -105,13 +107,15 @@ public class Read {
             
             while(line != null){    
                 System.out.println("HERE");
-                if (line.charAt(0) == '#') { line = br.readLine(); continue; }
+                if (line.charAt(0) == '#') { line = br.readLine(); continue; } // skip lines with #
                 System.out.println(line);
 
                 String[] lineData = line.split(":");
                 if (lineData[0].equals("ResetWithdrawls")) { // handle withdrawls and dates.
                     String[] dateData = lineData[1].split(",");
                     
+                    if (dateData[0] == "Aug")
+
                     for (int i = 0; i < months.length; i++) {
                         if (months[i].equals(dateData[0])) {
                             currMonth = i;

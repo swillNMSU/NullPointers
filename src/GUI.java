@@ -43,6 +43,8 @@ import javafx.stage.Modality;
 import javafx.stage.Popup;
 import javafx.stage.PopupWindow;
 import javafx.stage.Stage;
+import src.datavalidation.driver;
+
 import java.time.format.DateTimeFormatter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -57,8 +59,8 @@ import java.time.LocalDateTime;
  *      Display archives:
  *              Scrollpane showing available archives. Scrollpane showing 
  *
- *      export as excel sheet
- *      add withdrawl reset button
+ *      
+ *      
  *    
  *      Reset withdrawls at the first of every YEAR (AUGUST TO AUGUST)
  *      Add Statistics page
@@ -81,7 +83,10 @@ public class GUI extends Application {
     
     Owner selectedOwner, delOwner;
     static Stage ps;
-    Scene mainMenu, editSc, addSc, archiveScene;
+    static Scene mainMenu;
+    Scene editSc;
+    Scene addSc;
+    static Scene archiveScene;
     ScrollPane sp = new ScrollPane();
     double width = 500, height = 600; // global sizes for scenes.
     Validator dVal = new Validator();
@@ -92,7 +97,7 @@ public class GUI extends Application {
     boolean withdrawlReset = Read.checkForReset();
     static Insets insets = new Insets(20);
 
-    Pos align = Pos.CENTER_LEFT;
+    static Pos align = Pos.CENTER_LEFT;
 
 
     // debugging feilds
@@ -160,8 +165,6 @@ public class GUI extends Application {
         owTable.getColumns().add(column7);
         owTable.getColumns().add(column8);
 
-       // owTable.getSelectionModel().setCellSelectionEnabled(true);
-
         Read.readCSV("src/testReset.csv", true);
 
         
@@ -194,7 +197,7 @@ public class GUI extends Application {
 
         Text scenetitle = new Text("Patron List");
         grid.setAlignment(align);
-        scenetitle.setFont(Font.font("Telugu MN", 20));
+        scenetitle.setFont(Font.font("Telugu MN", 34));
         grid.add(scenetitle, 1, 0, 2, 1);
 
         Button addBtn = new Button("Add");
@@ -617,7 +620,7 @@ public class GUI extends Application {
     } // end initializeEditScene()
 
 
-    public void initializeArchiveScene() {
+    public static void initializeArchiveScene() {
         List<File> archives = Read.getArchives();
         TableView<File> archiveTable = new TableView<>();
         archiveTable.prefHeight(200);
@@ -675,7 +678,7 @@ public class GUI extends Application {
         Button yesBt = new Button("Yes");
         VBox layout = new VBox(10);
         
-        layout.setAlignment(Pos.CENTER_LEFT);
+        layout.setAlignment(Pos.CENTER);
 
         if (arg == "checkSave")
         {
@@ -697,8 +700,8 @@ public class GUI extends Application {
         }
         if (arg == "delete"){
             popWindow.setMaxHeight(200);
-            layout.getChildren().addAll(mess, nButton, yesBt);
-            nButton.requestFocus();
+            layout.getChildren().addAll(mess, yesBt, nButton);
+            
             yesBt.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent e){
@@ -713,6 +716,7 @@ public class GUI extends Application {
                     popWindow.close();
                 }
             });
+            nButton.requestFocus();
         }
 
         if (arg == "resetWithdrawls") {
@@ -743,7 +747,38 @@ public class GUI extends Application {
             });
         }
 
+        if (arg == "resetWithdrawlsFromSett") {
+            popWindow.setMaxHeight(200);
+            popWindow.setAlwaysOnTop(true);
+            //Label txt = new Label("It's the start of the month.");
+            mess.setAlignment(Pos.CENTER);
+            layout.getChildren().addAll(mess, yesBt, nButton);
+
+            nButton.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent e){
+                    // TODO: more actions likely
+                    popWindow.close();
+                }
+            });
+
+            yesBt.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent e){
+                    System.out.println("Setting all owners withdrawls to 0");
+                    Write.archiveCurrent("withdrawlReset");
+                    for (Owner ows : Driver.owners) {
+                        ows.setNumRecieved(0);
+                    }
+                    Write.writeToCSV(Driver.writeFile);
+                    Write.updateDateMetadata();
+                    popWindow.close();
+                }
+            });
+        }
+
         if (arg == "report"){
+            popWindow.setAlwaysOnTop(true);
             Label repLabel = new Label("Report an issue:");
             TextArea commentField = new TextArea();
             commentField.setWrapText(true);
@@ -768,7 +803,7 @@ public class GUI extends Application {
         
     }
 
-    public void displayInfoWindow() {
+    public static void displayInfoWindow() {
         Stage infoStage = new Stage();
 
         infoStage.setAlwaysOnTop(true);
@@ -796,6 +831,13 @@ public class GUI extends Application {
         HBox statbkHB = new HBox();
         statbkHB.setAlignment(align);
         statbkHB.getChildren().add(statbackBtn);
+
+        statbackBtn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e){
+               infoStage.close();
+            }
+        });
 
         Button vArchiveButton = new Button("View Archives");
         HBox varcHB = new HBox();
@@ -828,12 +870,25 @@ public class GUI extends Application {
         rwHB.setAlignment(align);
         rwHB.getChildren().add(resetWithdrawlsButton);
 
+        resetWithdrawlsButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e){
+               displayPopup("Are you sure you would like to reset all Patron's yearly withdrawls to 0?\n" +
+               "This action cannot be undone.", "Are you sure?", "resetWithdrawlsFromSett");
+            }
+        });
+
         Button settbackBtn = new Button("Back");
         HBox settbkHB = new HBox();
         settbkHB.setAlignment(align);
         settbkHB.getChildren().add(settbackBtn);
 
-
+        settbackBtn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e){
+               infoStage.close();
+            }
+        });
 
         settVB.getChildren().addAll(rwHB,     settbackBtn);
         settVB.setPadding(insets);
@@ -856,9 +911,15 @@ public class GUI extends Application {
          HBox hbkHB = new HBox();
          hbkHB.setAlignment(align);
          hbkHB.getChildren().add(helpbackBtn);
+
+         helpbackBtn.setOnAction(new EventHandler<ActionEvent>() {
+             @Override
+             public void handle(ActionEvent e){
+                infoStage.close();
+             }
+         });
          
-         helpVB.getChildren().addAll(controls, contExpl,    helpbackBtn);
-         helpVB.getChildren().add(reportBtn);
+         helpVB.getChildren().addAll(controls, contExpl, reportBtn, helpbackBtn);
          helpVB.setPadding(insets);
          help.setContent(helpVB);
 
@@ -927,17 +988,49 @@ public class GUI extends Application {
             archivedOwTable.getColumns().add(column7);
             archivedOwTable.getColumns().add(column8);
             
-            System.out.println(selArc.getPath()+"\n\n\n\n\n\n\n\n\n");
+            archivedOwTable.setPrefHeight(400);
             
             Read.readCSV(selArc.getPath(), false);
-            
+            updateOwnerTable(false);
+            archivedOwTable.setSelectionModel(null);
             archivedOwTable.refresh();
-            
-            
 
             VBox arVB =  new VBox();
-            arVB.getChildren().add(archivedOwTable);  
+            arVB.setPadding(insets);
+            System.out.println(selArc.getName());
+
+            Button backToSeButton = new Button("Back");
+            HBox backTBox = new HBox();
+            backTBox.setAlignment(align);
+            backTBox.getChildren().add(backToSeButton);
+
+            Button exportToExcelButton = new Button("Export to Excel");
+            HBox exportHB = new HBox();
+            exportHB.setAlignment(align);
+            exportHB.getChildren().add(exportToExcelButton);
+
+            backToSeButton.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent e){
+                    ps.setScene(mainMenu);
+                    displayInfoWindow();
+                }
+            });
+
+            exportToExcelButton.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent e) {
+
+                }
+            });
+           
+            
+            Label filName = new Label("Viewing archive from:  " + selArc.getName().substring(0, selArc.getName().length() - 16));
+;
+            
+            arVB.getChildren().addAll(filName,archivedOwTable,backToSeButton);  
             Scene selectedArchiveScene = new Scene(arVB);
+            ps.setScene(selectedArchiveScene);
             
 
         } catch (FileNotFoundException e) {
@@ -947,7 +1040,7 @@ public class GUI extends Application {
         }
     }
 
-    public void updateOwnerTable(boolean fromMain) {
+    public static void updateOwnerTable(boolean fromMain) {
         if (fromMain) {
             for (Owner ows : Driver.owners) {
                 owTable.getItems().add(ows);
@@ -955,12 +1048,12 @@ public class GUI extends Application {
         }
         else {
             for (Owner ows : Driver.currentArchives) {
-                owTable.getItems().add(ows);
+                archivedOwTable.getItems().add(ows);
             }
         }
     }
 
-    public void updateArchiveTable(List<File> archs, TableView<File> table) {
+    public static void updateArchiveTable(List<File> archs, TableView<File> table) {
         for (File ar : archs) {
             table.getItems().add(ar);
         }

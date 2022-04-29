@@ -145,6 +145,7 @@ public class Write {
         
         try {
             FileWriter fw = new FileWriter(f);
+            fw.write("Name,Address,Pets,Strikes,Withdrawls,Fixed Status,Income Qualification,Overall Qualification\n");
             for (Owner ow : Driver.owners){
                 
                 String line = ow.getName() + "," + ow.getIncomeProof() + "," +
@@ -183,10 +184,12 @@ public class Write {
                 System.out.println("New archive csv created: " + fName);
                 try {
                     FileWriter fw = new FileWriter(f);
+                    fw.write("Name,Address,Pets,Strikes,Withdrawls,Fixed Status,Income Qualification,Overall Qualification\n");
                     for (Owner ow : Driver.owners){
                         
-                        String line = ow.getLastThenFirst() + "," + ow.getIncomeProof() + "," +
-                            ow.getStrikes() + "," + ow.getNumRecieved() + "," + ow.getNumPets();
+                        String line = ow.getName() + "," + ow.getIncomeProof() + "," +
+                        ow.getStrikes() + "," + ow.getNumRecieved() + "," + ow.getNumPets() + "," + ow.getIsFixed() + "," + 
+                        ow.getAddress();
                         try {
                             fw.write(line + "\n");
                             fw.flush();
@@ -239,7 +242,7 @@ public class Write {
                 String[] lineData = line.split(":");
                 if (lineData[0].equals("ResetWithdrawls")) { // handle withdrawls and dates.
                     String[] dateData = lineData[1].split(",");
-                    System.out.println(currDate.getMonth()); //TODO: Change to Aug to Aug, check if year is different.
+        
                     String newLine = "ResetWithdrawls:"+months[currDate.getMonth()]+","+months[currDate.getMonth()]+",2022\n";
                     bw.write(newLine);
                 }
@@ -261,27 +264,10 @@ public class Write {
             File commentF = new File("meta/comments.txt");
             FileWriter fw = new FileWriter(commentF, true);
             BufferedWriter bw = new BufferedWriter(fw);
-           
-            bw.write("\n" + report);
-            // while(line != null){    
-               
-            //     if (line.charAt(0) == '#') { 
-            //         bw.write(line + "\n"); 
-            //         line = br.readLine(); 
-            //         continue; 
-            //     }
-            //     String[] lineData = line.split(":");
-            //     if (lineData[0].equals("ResetWithdrawls")) { // handle withdrawls and dates.
-            //         String[] dateData = lineData[1].split(",");
-            //         System.out.println(currDate.getMonth()); //TODO: Change to Aug to Aug, check if year is different.
-            //         String newLine = "ResetWithdrawls:"+months[currDate.getMonth()]+","+months[currDate.getMonth()]+",2022\n";
-            //         bw.write(newLine);
-            //     }
-            //     line = br.readLine();      
-            // }
+           Date currDate = new Date();
+            bw.write(currDate.toString());
+            bw.write("\n" + report + "\n\n");
             bw.close();
-            
-           
         } catch(IOException ioe) {
             ioe.printStackTrace();
             

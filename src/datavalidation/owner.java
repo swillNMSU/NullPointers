@@ -1,3 +1,4 @@
+package src.datavalidation;
 public class owner {
 
     private String name, incomeProof;
