@@ -31,6 +31,7 @@ import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -79,7 +80,6 @@ import java.time.LocalDateTime;
 
 
 public class GUI extends Application {
-
     
     Owner selectedOwner, delOwner;
     static Stage ps;
@@ -88,7 +88,7 @@ public class GUI extends Application {
     Scene addSc;
     static Scene archiveScene;
     ScrollPane sp = new ScrollPane();
-    double width = 500, height = 600; // global sizes for scenes.
+    final double width = 400, height = 600; // global sizes for scenes.
     Validator dVal = new Validator();
     boolean addingNew = false;
     static TableView<Owner> owTable;
@@ -96,13 +96,7 @@ public class GUI extends Application {
     boolean canSave = true, searching = false;
     boolean withdrawlReset = Read.checkForReset();
     static Insets insets = new Insets(20);
-
     static Pos align = Pos.CENTER_LEFT;
-
-
-    // debugging feilds
-    final boolean debug = true;
-    Scene currScene;
     boolean hasSaved = true;
     static boolean noSave = false;
 
@@ -115,22 +109,12 @@ public class GUI extends Application {
  * they can be collapsed and expanded.
  */
     @Override
-    public void start(Stage primaryStage) {
-        
-        // #region test owner - delete when done
-        // testOwner.setAddress("1115 Branson Ave");
-        // testOwner.setIncomeProof(true);
-        // testOwner.setNumPets(2);
-        // testOwner.setNumRecieved(1);
-        // testOwner.setIsFixed(true);
-        // testOwner.setStrikes(0);
-        //#endregion
-        
+    public void start(Stage primaryStage) {     
         ps = primaryStage;
         ps.setHeight(height);
         ps.setWidth(width);
         initializeEditScene();
-
+        
          //#region mainMenu
 
          //#region Table
@@ -165,12 +149,8 @@ public class GUI extends Application {
         owTable.getColumns().add(column7);
         owTable.getColumns().add(column8);
 
-        Read.readCSV("src/testReset.csv", true);
-
-        
+        Read.readCSV("src/testReset.csv", true);    
         updateOwnerTable(true);
-
-        
         owTable.refresh();
 
         VBox vBox = new VBox(owTable);
@@ -178,13 +158,11 @@ public class GUI extends Application {
         vBox.setPrefWidth(10);
 
         //#endregion
-
         GridPane grid = new GridPane();
         grid.setAlignment(align);
         grid.setHgap(10);
         grid.setVgap(10);
         grid.setPadding(new Insets(25, 25, 25, 25));
-        
         
         sp.setFitToWidth(true);
         sp.setFitToHeight(true);
@@ -217,7 +195,7 @@ public class GUI extends Application {
         HBox infoHB = new HBox(10);
         infoHB.setAlignment(align);
         infoHB.getChildren().add(infoBtn);
-        grid.add(infoBtn, 4, 10);
+        grid.add(infoBtn, 2, 10);
 
         Button archiveBtn = new Button("Archive");
         HBox archHB = new HBox(10);
@@ -313,12 +291,11 @@ public class GUI extends Application {
             @Override
             public void handle(ActionEvent e){
                 Write.archiveCurrent("");
-                Text archSuccess = new Text("*");
-                archSuccess.setFill(Color.GREEN);
-                grid.add(archSuccess, 4, 10);
+                //Text archSuccess = new Text("*");
+                //archSuccess.setFill(Color.GREEN);
+                //grid.add(archSuccess, 4, 10);
             }
         });
-
 
         owTable.setRowFactory( tv -> {
             TableRow<Owner> row = new TableRow<>();
@@ -330,37 +307,27 @@ public class GUI extends Application {
                     ps.setScene(editSc);
                     initializeEditScene();
                 }
-            });
-           
-            
+            });   
             return row ;
         });
     
         mainMenu = new Scene(grid, 300, 275);
-            
-        //mainMenu.setBorderpain
-
         primaryStage.setScene(mainMenu);
         primaryStage.show();
         if (withdrawlReset == true) {
             displayPopup("Would you like to reset withdrawls to zero?", "Reset Withdrawls", "resetWithdrawls");
         }
-
     }
-
     
     public void initializeEditScene(){
         Owner ow = new Owner("");
     
         //#region EditScene
-        if (selectedOwner != null) {
-            System.out.println(selectedOwner);
-            ow = selectedOwner;
-        }
-
+        if (selectedOwner != null) ow = selectedOwner;
+        
         ps.setTitle("Patron List");
         ps.setHeight(800);
-        ps.setWidth(1000);
+        ps.setWidth(950);
         GridPane grid = new GridPane();
         grid.setAlignment(align);
         grid.setHgap(10);
@@ -412,7 +379,6 @@ public class GUI extends Application {
                 hasSaved = false;            }
         });
 
-
         //#region name
         Label ownerNameL = new Label("Name:");
         grid.add(ownerNameL, 0, 1);
@@ -427,7 +393,6 @@ public class GUI extends Application {
                 hasSaved = false;
             }
         });
-
         //#endregion
 
         //#region Address
@@ -445,7 +410,6 @@ public class GUI extends Application {
             }
         });
 
-
         //#endregion
 
         //#region NumPets
@@ -462,7 +426,6 @@ public class GUI extends Application {
                 hasSaved = false;
             }
         });
-
         //#endregion
 
         //#region Strikes
@@ -479,7 +442,6 @@ public class GUI extends Application {
                 hasSaved = false;
             }
         });
-
         //#endregion
 
         //#region Withdrawls
@@ -489,14 +451,12 @@ public class GUI extends Application {
         grid.add(numWithdrawlsTextField, 1, 5);
         if (addingNew) numWithdrawlsTextField.setText("");
         Text withdrawlErr = displayErr(grid, "*", 5, 5);
-
         numWithdrawlsTextField.textProperty().addListener(new ChangeListener<String>()  {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                 hasSaved = false;
             }
         });
-
         //#endregion
         
         //#region save button
@@ -525,23 +485,14 @@ public class GUI extends Application {
         grid.add(isSaved, 1, 9);
         isSaved.setVisible(false);
         isSaved.setFill(Color.BLUEVIOLET);
-
         saveBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) { // IF there is at least a name entered.
-                
                 canSave = true;
-
                 if (dVal.checkNameFields(ownerTextField.getText())){
                     nameErr.setVisible(true);
                     canSave = false;
                 } else {nameErr.setVisible(false);}
-
-                // no address validator 
-                // if (dVal.checkAddress(addressTextField.getText())){
-                //     addrErr.setVisible(true);
-                //     canSave = false;
-                // } else {addrErr.setVisible(false);}
 
                 if (dVal.checkNumPets(numPeTextField.getText())){
                     petErr.setVisible(true);
@@ -573,8 +524,6 @@ public class GUI extends Application {
                             Integer.parseInt(numWithdrawlsTextField.getText()),
                             Integer.parseInt(numStrikesTextField.getText())
                             );
-
-                        // System.out.println(owTable.getSelectionModel().getSele
                         Write.writeToCSV(Driver.writeFile);
                         hasSaved = true;
                         isSaved.setText("Saved");
@@ -617,8 +566,7 @@ public class GUI extends Application {
         //#endregion
 
         //#endregion
-    } // end initializeEditScene()
-
+    } // end initializeEditScene
 
     public static void initializeArchiveScene() {
         List<File> archives = Read.getArchives();
@@ -630,7 +578,6 @@ public class GUI extends Application {
         TableColumn<File, String> col1 = new TableColumn<>("name");
         col1.setCellValueFactory(new PropertyValueFactory<>("name"));
         archiveTable.getColumns().add(col1);
-
         archiveTable.setRowFactory( tv -> {
             TableRow<File> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
@@ -648,12 +595,7 @@ public class GUI extends Application {
         layout.setPadding(insets);
         layout.getChildren().add(archiveTable);
 
-    
-
-
-
-        archives = null; // if we hit back
-        
+        archives = null; // if we hit back 
         archiveScene = new Scene(layout);
     }
 
@@ -677,7 +619,6 @@ public class GUI extends Application {
 
         Button yesBt = new Button("Yes");
         VBox layout = new VBox(10);
-        
         layout.setAlignment(Pos.CENTER);
 
         if (arg == "checkSave")
@@ -761,7 +702,6 @@ public class GUI extends Application {
                     popWindow.close();
                 }
             });
-
             yesBt.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent e){
@@ -794,21 +734,16 @@ public class GUI extends Application {
             });
             layout.getChildren().addAll(repLabel, commentField, repBtn);
         }
-
         layout.setPadding(insets);
-
         Scene scene = new Scene(layout);
         popWindow.setScene(scene);
-        popWindow.showAndWait();
-        
+        popWindow.showAndWait();  
     }
 
     public static void displayInfoWindow() {
         Stage infoStage = new Stage();
-
         infoStage.setAlwaysOnTop(true);
-
-
+        int prefHeight = 350;
         TabPane tabPane = new TabPane();
         tabPane.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
 
@@ -819,7 +754,6 @@ public class GUI extends Application {
         Tab help = new Tab("Help");
         VBox helpVB = new VBox();
 
-
         //#region Statistics
         int petsFed = 0;
         for(Owner ow : Driver.owners) petsFed += ow.getNumPets();
@@ -829,7 +763,7 @@ public class GUI extends Application {
 
         Button statbackBtn = new Button("Back");
         HBox statbkHB = new HBox();
-        statbkHB.setAlignment(align);
+        statbkHB.setAlignment(Pos.BOTTOM_LEFT);
         statbkHB.getChildren().add(statbackBtn);
 
         statbackBtn.setOnAction(new EventHandler<ActionEvent>() {
@@ -853,18 +787,20 @@ public class GUI extends Application {
             }
         });
 
-        statVB.getChildren().addAll(patrons, withD, pFed, vArchiveButton,   statbackBtn);
+        statVB.getChildren().addAll(patrons, withD, pFed, vArchiveButton);
         statVB.setPadding(insets);
-        stat.setContent(statVB);
+
+        BorderPane statisticsRoot = new BorderPane();
+        statisticsRoot.setPadding(insets);
+        statisticsRoot.setCenter(statVB);
+        statisticsRoot.setBottom(statbackBtn);
+        statisticsRoot.setPrefHeight(prefHeight);
+        //statisticsRoot.prefWidthProperty().bind(tabPane.widthProperty());
+        stat.setContent(statisticsRoot);
 
          //#endregion
 
          //#region Settings
-        /**
-         * Reset witdrawls
-         * dark theme?
-         */
-
         Button resetWithdrawlsButton = new Button("Reset Withdrawls to Zero");
         HBox rwHB = new HBox();
         rwHB.setAlignment(align);
@@ -882,7 +818,6 @@ public class GUI extends Application {
         HBox settbkHB = new HBox();
         settbkHB.setAlignment(align);
         settbkHB.getChildren().add(settbackBtn);
-
         settbackBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e){
@@ -890,10 +825,15 @@ public class GUI extends Application {
             }
         });
 
-        settVB.getChildren().addAll(rwHB,     settbackBtn);
+        settVB.getChildren().addAll(rwHB );
         settVB.setPadding(insets);
-        sett.setContent(settVB);
 
+        BorderPane settingsRoot = new BorderPane();
+        settingsRoot.setPadding(insets);
+        settingsRoot.setCenter(settVB);
+        settingsRoot.setBottom(settbackBtn);
+        settingsRoot.setPrefHeight(prefHeight);
+        sett.setContent(settingsRoot);
          //#endregion
 
          //#region help
@@ -919,7 +859,7 @@ public class GUI extends Application {
              }
          });
          
-         helpVB.getChildren().addAll(controls, contExpl, reportBtn, helpbackBtn);
+         helpVB.getChildren().addAll(controls, contExpl, reportBtn);
          helpVB.setPadding(insets);
          help.setContent(helpVB);
 
@@ -930,8 +870,13 @@ public class GUI extends Application {
              }
          });
 
+        BorderPane helpBorderPane = new BorderPane();
+        helpBorderPane.setPadding(insets);
+        helpBorderPane.setCenter(helpVB);
+        helpBorderPane.setBottom(helpbackBtn);
+        helpBorderPane.setPrefHeight(prefHeight);
+        help.setContent(helpBorderPane);
          //#endregion
-
 
         tabPane.getTabs().add(stat);
         tabPane.getTabs().add(sett);
@@ -958,7 +903,6 @@ public class GUI extends Application {
             
             FileReader fr = new FileReader(selArc);
             archivedOwTable = new TableView<>();
-
             archivedOwTable.setPrefHeight(200);
             archivedOwTable.setPrefWidth(200);
             TableColumn<Owner, String> column1 = new TableColumn<>("Name");
@@ -1016,22 +960,19 @@ public class GUI extends Application {
                     displayInfoWindow();
                 }
             });
-
-            exportToExcelButton.setOnAction(new EventHandler<ActionEvent>() {
+            exportToExcelButton.setOnAction(new EventHandler<ActionEvent>() { // TODO:
                 @Override
                 public void handle(ActionEvent e) {
 
                 }
             });
-           
             
-            Label filName = new Label("Viewing archive from:  " + selArc.getName().substring(0, selArc.getName().length() - 16));
-;
+            Label filName = new Label("Viewing archive from:  " + 
+                selArc.getName().substring(0, selArc.getName().length() - 16));
             
             arVB.getChildren().addAll(filName,archivedOwTable,backToSeButton);  
             Scene selectedArchiveScene = new Scene(arVB);
-            ps.setScene(selectedArchiveScene);
-            
+            ps.setScene(selectedArchiveScene);    
 
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
@@ -1041,22 +982,15 @@ public class GUI extends Application {
     }
 
     public static void updateOwnerTable(boolean fromMain) {
-        if (fromMain) {
-            for (Owner ows : Driver.owners) {
-                owTable.getItems().add(ows);
-            }
-        }
-        else {
-            for (Owner ows : Driver.currentArchives) {
-                archivedOwTable.getItems().add(ows);
-            }
-        }
+        if (fromMain) 
+            for (Owner ows : Driver.owners) owTable.getItems().add(ows);  
+        else for (Owner ows : Driver.currentArchives) 
+                archivedOwTable.getItems().add(ows);   
     }
 
     public static void updateArchiveTable(List<File> archs, TableView<File> table) {
-        for (File ar : archs) {
+        for (File ar : archs) 
             table.getItems().add(ar);
-        }
     }
 
 }
