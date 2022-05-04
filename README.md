@@ -9,6 +9,7 @@ A simple UI that displays important information about people who use a free pet 
 **.idea folder**: Used to store our module configurations for the UI, to combine our multiple frameworks into the UI.
 **archive folder**: Created to store saved data of all owners profiles when archive button is selected by user in .csv files.
 **src folder**: All files that were used as the main structure for the UI.
+**meta folder**: Used to store our user settings
 
 # Installation Of UI
 In order to install our UI 
