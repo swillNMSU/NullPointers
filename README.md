@@ -1,4 +1,4 @@
-## Project Team Null Pointers Website
+## Project Team Null Pointers
 
 # Project Website
 https://diegomorales30.github.io/NullPointersWebsite/
