@@ -19,7 +19,7 @@ public class driver{
     public static void getPersontName(Scanner name,String message, owner personsInfoOwner){
         System.out.println(message);
         String inputname = name.nextLine();
-        while(DVO.checkNameFields(inputname)){
+        while(DataTester.checkNameFields(inputname)){
             System.out.println(message);
             inputname = name.nextLine();
             
@@ -31,7 +31,7 @@ public class driver{
     public static void getPersonIncome(Scanner incom, String message,owner personInfo){
         System.out.println(message);
         String incomeInput = incom.nextLine();
-        while(DVO.checkNameFields(incomeInput)){
+        while(DataTester.checkNameFields(incomeInput)){
             System.out.println(message);
             incomeInput = incom.nextLine();
         }
@@ -41,7 +41,7 @@ public class driver{
     public static void getNumPets(Scanner numPet, String message, owner personInfo){
         System.out.println(message);
         String input = numPet.nextLine();
-        while(DVO.checkNumPets(input)){
+        while(DataTester.checkNumPets(input)){
             System.out.println(message);
             input = numPet.nextLine();
         }
@@ -52,7 +52,7 @@ public class driver{
     public static void getNumPickUp(Scanner petFoodGiven, String message, owner personInfo) {
         System.out.println(message);
         String input = petFoodGiven.nextLine();
-        while(DVO.checkPickUps(input)){
+        while(DataTester.checkPickUps(input)){
             System.out.println(message);
             input = petFoodGiven.nextLine();
         }
@@ -64,7 +64,7 @@ public class driver{
     public static void getAddress(Scanner addressInput, String message,owner personInfo){
         System.out.println(message);
         String input = addressInput.nextLine();
-        while(DVO.checkAddress(input)){
+        while(DataTester.checkAddress(input)){
             System.out.println(message);
             input = addressInput.nextLine();
         }
@@ -73,7 +73,7 @@ public class driver{
     public static void getStrikes(Scanner strikesInput, String message){
         System.out.println(message);
         String input = strikesInput.nextLine();
-        while(DVO.checkStrikes(input)){
+        while(DataTester.checkStrikes(input)){
             System.out.println(message);
             input = strikesInput.nextLine();
         }
