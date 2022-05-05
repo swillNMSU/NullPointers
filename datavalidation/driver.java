@@ -6,7 +6,7 @@ import java.util.*;
  *  This Driver class was to test the DataTest to make sure that the methods are working
  *  correctly on catching invalid data.
  */
-public class driver{
+public class Driver{
     public static void main(String[] args) {
         Scanner scan = new Scanner(System.in);
         owner person = new owner(null);
