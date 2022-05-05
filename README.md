@@ -10,7 +10,7 @@ A simple UI that displays important information about people who use a free pet 
 
 # User Navigation of GitHub Page
 **.idea folder**: Used to store our module configurations for the UI, to combine our multiple frameworks into the UI.
-**archive folder**: Stores saved data of all owners profiles when the archive button is selected by the user in within .csv files.
+**archive folder**: Stores saved data of all owners profiles when the archive button is selected by the user inside .csv files.
 **src folder**: All files that were used as the main structure for the UI.
 **meta folder**: Used to store our user settings
 
