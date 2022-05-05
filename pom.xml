@@ -2,6 +2,6 @@
   <modelVersion>4.0.0</modelVersion>
  
   <groupId>com.NullPointers.app</groupId>
-  <artifactId>PatronList</artifactId>
+  <artifactId>NullPointers</artifactId>
   <version>1.0.0</version>
 </project>
