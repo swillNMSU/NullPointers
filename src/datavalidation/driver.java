@@ -1,6 +1,4 @@
 package src.datavalidation;
-import src.owner;
-import src.DataTest;
 import java.util.*;
 public class driver{
     public static void main(String[] args) {
