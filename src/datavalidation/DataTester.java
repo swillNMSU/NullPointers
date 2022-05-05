@@ -245,68 +245,60 @@ public class DataTester {
         return false;
     }  
 
-    // this is what is needed for checking the strikes
-    static boolean checkStrikes(String isValidStrikes){
+
+    /**
+     * 
+     * @param isValidStrikes
+     *  Is a string that the user inputs
+     * @return
+     *  returns true if invalid and false if tehe input is valid
+     * 
+     *  Precondition: The string input from the parameter isValidStriked can be empty or not
+     * 
+     *  Postcondtion: The post condition for this method is that it return true if the date is
+     *  invalid, and will return false if the data is valid.
+     * 
+     *  This method is used to check the strikes that each owner has gotten. The input is a string
+     *  so we check to see if it is empty, if it is we return true, else false. The for loop goes
+     *  through the input string and checks for the negative symbol or another character that is not
+     *  a number. If it finds any of these it will return true. If none of these character are found and
+     *  it is just numbers then it will return false for valid input.
+     */
+    static boolean checkStrikes(String isValidStrikes) {
         boolean isInValid = true;
         int invalidInput = 1;
-
-        // need to check if empty
-        if(isValidStrikes.isEmpty()){
+        
+        if (isValidStrikes.isEmpty()) {
             System.out.println("You can not have an empty value");
             return true;
-
         }
-        // if string not empty then go through each index find the error
-        for(int i = 0; i < isValidStrikes.length()  && isInValid;i++){
-
-            if(isValidStrikes.charAt(0) == '-'){
+        
+        for (int i = 0; i < isValidStrikes.length() && isInValid; i++) {
+            if (isValidStrikes.charAt(0) == '-') {
                 System.out.print("Negative numbers are not allowed: ");
                 System.out.println("Error at " + invalidInput);
                 return true;
             }
-
-            if(isValidStrikes.charAt(i) < '0' || isValidStrikes.charAt(i) > '9'){
+            if (isValidStrikes.charAt(i) < '0' || isValidStrikes.charAt(i) > '9') {
                 invalidInput = i + invalidInput;
                 isInValid = false;
             }
         }
-
-        // first if to check if the method is invalid from the string.
-        if(!isInValid){
+        
+        if (!isInValid) {
             System.out.print("You have an invalid input at " + invalidInput);
             return true;
         }
-
-        // The string of input is okay
+        
         int checkNumber = Integer.parseInt(isValidStrikes);
-
-        if(checkNumber < 0){
+        if (checkNumber < 0) {
             System.out.println("You can not have a negative number of strikes");
             return true;
         }
-
-        else if(checkNumber > 3){
+        else if (checkNumber > 3) {
             System.out.println("You can not get any pet food after you show proof");
             return true;
         }
         return false;
     }
-
-    /*static boolean checkStrikes(String isValidYOrN,owner personInfo){
-        if(isEmptyInput(isValidYOrN))
-            return true;
-        for(int i = 0; i < isValidYOrN.length();i++){
-            if(isValidYOrN.charAt(0) != 'y' || isValidYOrN.charAt(0) == 'n'){
-                System.out.println("Invalid input for input status please change");
-                return true;
-            }
-        }
-
-        if(personInfo.getStrikes() >= 3){
-            System.out.println("This owener has meet thier strikes");
-            return true;
-        }
-
-        return false;
-    }*/
 }
