@@ -19,7 +19,7 @@ public class driver{
     public static void getPersontName(Scanner name,String message, owner personsInfoOwner){
         System.out.println(message);
         String inputname = name.nextLine();
-        while(DataTester.checkNameFields(inputname)){
+        while(DataTest.checkNameFields(inputname)){
             System.out.println(message);
             inputname = name.nextLine();
             
