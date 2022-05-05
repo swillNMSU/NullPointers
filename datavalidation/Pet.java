@@ -1,5 +1,5 @@
-package datavalidation;
-public class pet {
+//package datavalidation;
+public class Pet {
     private boolean fixedPet;
     private String name;
     private String breed;

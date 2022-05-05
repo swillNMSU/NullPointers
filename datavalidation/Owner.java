@@ -1,5 +1,5 @@
-package datavalidation;
-public class owner {
+//package datavalidation;
+public class Owner {
 
     private String name, incomeProof;
     public static int numPets, strikes, numRecieved;
