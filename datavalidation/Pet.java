@@ -5,7 +5,7 @@ public class Pet {
     private String breed;
 
 
-    public pet(String nm, String brd, boolean isFixed){
+    public Pet(String nm, String brd, boolean isFixed){
         this.name = nm;
         this.breed = brd;
         this.fixedPet = isFixed;

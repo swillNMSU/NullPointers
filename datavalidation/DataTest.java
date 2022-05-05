@@ -9,7 +9,7 @@ package datavalidation;
  * 
  */
 public class DataTest {
-    owner ownerInformation;
+    Owner ownerInformation;
     /**
      * 
      * @param isItEmpty

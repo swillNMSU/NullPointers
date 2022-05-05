@@ -6,7 +6,7 @@ public class Owner {
     public static boolean isFixed;
 
 
-    public owner(String _name){
+    public Owner(String _name){
         setName(_name);
         setIncomeProof(null);
         setNumPets(0);
