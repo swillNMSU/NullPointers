@@ -1,4 +1,4 @@
-package src.datavalidation;
+package datavalidation;
 
 import java.util.*;
 

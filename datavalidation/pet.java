@@ -1,4 +1,4 @@
-package src.datavalidation;
+package datavalidation;
 public class pet {
     private boolean fixedPet;
     private String name;
