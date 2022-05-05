@@ -9,7 +9,7 @@ import src.owner;
  * 
  */
 public class DataTest {
-    Owner ownerInformation;
+    owner ownerInformation;
     /**
      * 
      * @param isItEmpty
