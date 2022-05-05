@@ -31,7 +31,7 @@ public class driver{
     public static void getPersonIncome(Scanner incom, String message,owner personInfo){
         System.out.println(message);
         String incomeInput = incom.nextLine();
-        while(DataTester.checkNameFields(incomeInput)){
+        while(DataTest.checkNameFields(incomeInput)){
             System.out.println(message);
             incomeInput = incom.nextLine();
         }
@@ -41,7 +41,7 @@ public class driver{
     public static void getNumPets(Scanner numPet, String message, owner personInfo){
         System.out.println(message);
         String input = numPet.nextLine();
-        while(DataTester.checkNumPets(input)){
+        while(DataTest.checkNumPets(input)){
             System.out.println(message);
             input = numPet.nextLine();
         }
@@ -52,7 +52,7 @@ public class driver{
     public static void getNumPickUp(Scanner petFoodGiven, String message, owner personInfo) {
         System.out.println(message);
         String input = petFoodGiven.nextLine();
-        while(DataTester.checkPickUps(input)){
+        while(DataTest.checkPickUps(input)){
             System.out.println(message);
             input = petFoodGiven.nextLine();
         }
@@ -64,7 +64,7 @@ public class driver{
     public static void getAddress(Scanner addressInput, String message,owner personInfo){
         System.out.println(message);
         String input = addressInput.nextLine();
-        while(DataTester.checkAddress(input)){
+        while(DataTest.checkAddress(input)){
             System.out.println(message);
             input = addressInput.nextLine();
         }
@@ -73,7 +73,7 @@ public class driver{
     public static void getStrikes(Scanner strikesInput, String message){
         System.out.println(message);
         String input = strikesInput.nextLine();
-        while(DataTester.checkStrikes(input)){
+        while(DataTest.checkStrikes(input)){
             System.out.println(message);
             input = strikesInput.nextLine();
         }
