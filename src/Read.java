@@ -105,8 +105,7 @@ public class Read {
             BufferedReader br = new BufferedReader(fr);
             String line = br.readLine();
             
-            while(line != null){    
-                System.out.println("HERE");
+            while(line != null){
                 if (line.charAt(0) == '#') { line = br.readLine(); continue; } // skip lines with #
                 System.out.println(line);
 

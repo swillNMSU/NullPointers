@@ -241,7 +241,7 @@ public class Write {
                 }
                 String[] lineData = line.split(":");
                 if (lineData[0].equals("ResetWithdrawls")) { // handle withdrawls and dates.
-                    String[] dateData = lineData[1].split(",");
+                    //String[] dateData = lineData[1].split(",");
         
                     String newLine = "ResetWithdrawls:"+months[currDate.getMonth()]+","+months[currDate.getMonth()]+",2022\n";
                     bw.write(newLine);

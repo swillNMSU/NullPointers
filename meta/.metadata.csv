@@ -1,2 +1,3 @@
-#               currMonth, Last month it was reset,currYear
+# Setting Specs
 ResetWithdrawls:Apr,Apr,2022
+setting:notifyReset,true

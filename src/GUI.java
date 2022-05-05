@@ -1,12 +1,7 @@
 package src;
 
-import java.util.ArrayList;
 import java.util.List;
 import javafx.application.Application;
-import javafx.beans.binding.Bindings;
-import javafx.beans.binding.BooleanBinding;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -14,8 +9,6 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
@@ -29,58 +22,50 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
-import javafx.stage.Popup;
-import javafx.stage.PopupWindow;
 import javafx.stage.Stage;
-import src.datavalidation.driver;
-
-import java.time.format.DateTimeFormatter;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.time.LocalDateTime;
+import java.io.IOException;
 
 /**
+ * Script to run the GUI. The primary stage (ps) is called to switch scenes.
+ * Upon open, mainMenu is loaded immmediately. 
+ * 
+ * Primary goal is for quick and easy database management.
+ * 
  * TODO:
- *      
- *      Color each owner in table red if they dont have proof of income, as well
- *      Search by address?
- *      Display archives:
- *              Scrollpane showing available archives. Scrollpane showing 
- *
- *      
- *      
- *    
- *      Reset withdrawls at the first of every YEAR (AUGUST TO AUGUST)
- *      Add Statistics page
- *      Add Settings/Info Page
- *      Resize and clean windows to properties that fit best
- *      Color coding
- *      
- *      Change question mark to gear icon
+ * Color each owner in table red if they dont have proof of income, as well
+ * Search by address?
+ * Display archives:
+ * Scrollpane showing available archives. Scrollpane showing
+ * Reset withdrawls at the first of every YEAR (AUGUST TO AUGUST)
+ * Add Statistics page
  * 
- *      Maybe have an option to flag an owner as already banned
- *      If searching, select top result
+ * Resize and clean windows to properties that fit best
+ * Color coding
  * 
- *      Click on table elemnt and have that highlighted on edit screen
- *      
+ * Change question mark to gear icon
+ * 
+ * Maybe have an option to flag an owner as already banned
+ * If searching, select top result
+ * 
+ * Click on table elemnt and have that highlighted on edit screen
+ * 
  */
 
-
 public class GUI extends Application {
-    
+
     Owner selectedOwner, delOwner;
     static Stage ps;
     static Scene mainMenu;
@@ -100,26 +85,34 @@ public class GUI extends Application {
     boolean hasSaved = true;
     static boolean noSave = false;
 
+    //Settings
+    static boolean notifyReset;
+
+    /**
+     * Launches our GUI.
+     * @param args
+     */
     public static void main(String[] args) {
+        getSettings(); // surround with try catch
         launch(args);
     }
-/**
- * This sets the scene for the main menu.
- * FYI I'm using regions to make scrolling easier. In case you havent encountered them, 
- * they can be collapsed and expanded.
- */
+
+    /**
+     * This sets the scene for the main menu.
+     * Primary element is the Tableview for the owner database. 
+     */
     @Override
-    public void start(Stage primaryStage) {     
+    public void start(Stage primaryStage) {
         ps = primaryStage;
         ps.setHeight(height);
         ps.setWidth(width);
         initializeEditScene();
-        
-         //#region mainMenu
 
-         //#region Table
+        // #region mainMenu
+
+        // #region Table
         owTable = new TableView<>();
-        
+
         owTable.prefHeightProperty().bind(ps.heightProperty());
         owTable.prefWidthProperty().bind(ps.widthProperty());
         TableColumn<Owner, String> column1 = new TableColumn<>("Name");
@@ -149,7 +142,7 @@ public class GUI extends Application {
         owTable.getColumns().add(column7);
         owTable.getColumns().add(column8);
 
-        Read.readCSV("src/testReset.csv", true);    
+        Read.readCSV("src/testReset.csv", true);
         updateOwnerTable(true);
         owTable.refresh();
 
@@ -157,17 +150,17 @@ public class GUI extends Application {
         vBox.setAlignment(Pos.CENTER);
         vBox.setPrefWidth(10);
 
-        //#endregion
+        // #endregion
         GridPane grid = new GridPane();
         grid.setAlignment(align);
         grid.setHgap(10);
         grid.setVgap(10);
         grid.setPadding(new Insets(25, 25, 25, 25));
-        
+
         sp.setFitToWidth(true);
         sp.setFitToHeight(true);
 
-        sp.setPrefSize(ps.getWidth()*.7, ps.getHeight()*.6);
+        sp.setPrefSize(ps.getWidth() * .7, ps.getHeight() * .6);
         sp.setContent(vBox);
         grid.add(sp, 2, 8);
 
@@ -197,7 +190,7 @@ public class GUI extends Application {
         infoHB.getChildren().add(infoBtn);
         grid.add(infoBtn, 2, 10);
 
-        Button archiveBtn = new Button("Archive");
+        Button archiveBtn = new Button("Archive"); //TODO: Ask if they want to call the archive anything special, add revert
         HBox archHB = new HBox(10);
         archHB.setAlignment(align);
         archHB.getChildren().add(archiveBtn);
@@ -217,11 +210,12 @@ public class GUI extends Application {
         grid.add(editHb, 2, 5);
         editButton.setDisable(true);
 
-        searchTextField.textProperty().addListener(new ChangeListener<String>()  {
+        searchTextField.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                 searching = true;
-                //if length of search is increasing, pass back result. No need to search the entirety of the feild
+                // if length of search is increasing, pass back result. No need to search the
+                // entirety of the feild
                 if (searchTextField.getText() == "")
                     for (Owner ows : Driver.owners)
                         owTable.getItems().add(ows);
@@ -236,7 +230,7 @@ public class GUI extends Application {
 
         addBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
-            public void handle(ActionEvent e){
+            public void handle(ActionEvent e) {
                 addingNew = true;
                 selectedOwner = null;
                 ps.setScene(editSc);
@@ -246,21 +240,22 @@ public class GUI extends Application {
 
         deleteBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
-            public void handle(ActionEvent e){
+            public void handle(ActionEvent e) {
                 delOwner = owTable.getSelectionModel().getSelectedItem();
-                displayPopup("Are you sure you wish to delete " + delOwner.getName() + " from you records? This action cannot be undone.",
-                 "Delete", "delete");
+                displayPopup(
+                        "Are you sure you wish to delete " + delOwner.getName()
+                                + " from you records? This action cannot be undone.",
+                        "Delete", "delete");
                 searchTextField.setText("");
             }
         });
 
         infoBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
-            public void handle(ActionEvent e){
+            public void handle(ActionEvent e) {
                 displayInfoWindow();
             }
         });
-
 
         owTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
@@ -274,12 +269,12 @@ public class GUI extends Application {
 
         editButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
-            public void handle(ActionEvent e){
+            public void handle(ActionEvent e) {
                 addingNew = false;
                 if (owTable.getSelectionModel().getSelectedItem() != null) {
                     selectedOwner = owTable.getSelectionModel().getSelectedItem();
                     editButton.setDisable(false);
-                    //error check before swinthing scenes.
+                    // error check before swinthing scenes.
                     System.out.println(selectedOwner);
                     ps.setScene(editSc);
                     initializeEditScene();
@@ -289,28 +284,28 @@ public class GUI extends Application {
 
         archiveBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
-            public void handle(ActionEvent e){
+            public void handle(ActionEvent e) {
                 Write.archiveCurrent("");
-                //Text archSuccess = new Text("*");
-                //archSuccess.setFill(Color.GREEN);
-                //grid.add(archSuccess, 4, 10);
+                // Text archSuccess = new Text("*");
+                // archSuccess.setFill(Color.GREEN);
+                // grid.add(archSuccess, 4, 10);
             }
         });
 
-        owTable.setRowFactory( tv -> {
+        owTable.setRowFactory(tv -> {
             TableRow<Owner> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
-                if (event.getClickCount() == 2 && (! row.isEmpty()) ) {
+                if (event.getClickCount() == 2 && (!row.isEmpty())) {
                     addingNew = false;
                     selectedOwner = row.getItem();
-                    System.out.println(selectedOwner + "\n\n\n\n"); //BUG: checking
+                    System.out.println(selectedOwner + "\n\n\n\n"); // BUG: checking
                     ps.setScene(editSc);
                     initializeEditScene();
                 }
-            });   
-            return row ;
+            });
+            return row;
         });
-    
+
         mainMenu = new Scene(grid, 300, 275);
         primaryStage.setScene(mainMenu);
         primaryStage.show();
@@ -318,13 +313,14 @@ public class GUI extends Application {
             displayPopup("Would you like to reset withdrawls to zero?", "Reset Withdrawls", "resetWithdrawls");
         }
     }
-    
-    public void initializeEditScene(){
+
+    public void initializeEditScene() {
         Owner ow = new Owner("");
-    
-        //#region EditScene
-        if (selectedOwner != null) ow = selectedOwner;
-        
+
+        // #region EditScene
+        if (selectedOwner != null)
+            ow = selectedOwner;
+
         ps.setTitle("Patron List");
         ps.setHeight(800);
         ps.setWidth(950);
@@ -337,6 +333,12 @@ public class GUI extends Application {
         Text scenetitle = new Text("Patron Information");
         scenetitle.setFont(Font.font("Telugu MN", FontWeight.NORMAL, 20));
         grid.add(scenetitle, 0, 0, 2, 1);
+        // if (ow.getQualifiedForService() == false) {
+        //     Label banned = new Label("This person is currently banned from out services.");
+        //     banned.setTextFill(Color.RED);
+        //     grid.add(banned, 0,0,2,2);
+        // }
+       
 
         // BUTTONS
         Button saveBtn = new Button("Save");
@@ -360,9 +362,10 @@ public class GUI extends Application {
 
         isFixedBox.setOnAction(new EventHandler<ActionEvent>() {
             @Override
-            public void handle(ActionEvent e){
+            public void handle(ActionEvent e) {
                 owTable.getSelectionModel().getSelectedItem().setIsFixed(isFixedBox.isSelected());
-                hasSaved = false;            }
+                hasSaved = false;
+            }
         });
 
         Label isProvenLabel = new Label("Proof of Income");
@@ -374,103 +377,109 @@ public class GUI extends Application {
 
         isProvenBox.setOnAction(new EventHandler<ActionEvent>() {
             @Override
-            public void handle(ActionEvent e){
+            public void handle(ActionEvent e) {
                 owTable.getSelectionModel().getSelectedItem().setIsFixed(isProvenBox.isSelected());
-                hasSaved = false;            }
+                hasSaved = false;
+            }
         });
 
-        //#region name
+        // #region name
         Label ownerNameL = new Label("Name:");
         grid.add(ownerNameL, 0, 1);
-        TextField ownerTextField = new TextField(ow.getName()); 
+        TextField ownerTextField = new TextField(ow.getName());
         grid.add(ownerTextField, 1, 1);
-        if (addingNew) ownerTextField.setText("");
+        if (addingNew)
+            ownerTextField.setText("");
         Text nameErr = displayErr(grid, "*", 5, 1);
 
-        ownerTextField.textProperty().addListener(new ChangeListener<String>()  {
+        ownerTextField.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                 hasSaved = false;
             }
         });
-        //#endregion
+        // #endregion
 
-        //#region Address
+        // #region Address
         Label addrL = new Label("Address:");
         grid.add(addrL, 0, 2);
         TextField addressTextField = new TextField(ow.getAddress());
         grid.add(addressTextField, 1, 2);
-        if (addingNew) addressTextField.setText("");
-        Text addrErr = displayErr(grid, "*", 5, 2);
+        if (addingNew)
+            addressTextField.setText("");
+        //Text addrErr = displayErr(grid, "*", 5, 2);
 
-        addressTextField.textProperty().addListener(new ChangeListener<String>()  {
+        addressTextField.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                 hasSaved = false;
             }
         });
 
-        //#endregion
+        // #endregion
 
-        //#region NumPets
+        // #region NumPets
         Label numPetsL = new Label("Pets:");
         grid.add(numPetsL, 0, 3);
         TextField numPeTextField = new TextField(String.valueOf(ow.getNumPets()));
         grid.add(numPeTextField, 1, 3);
-        if (addingNew) numPeTextField.setText("");
+        if (addingNew)
+            numPeTextField.setText("");
         Text petErr = displayErr(grid, "*", 5, 3);
 
-        numPeTextField.textProperty().addListener(new ChangeListener<String>()  {
+        numPeTextField.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                 hasSaved = false;
             }
         });
-        //#endregion
+        // #endregion
 
-        //#region Strikes
+        // #region Strikes
         Label numStrikesL = new Label("Strikes:");
         grid.add(numStrikesL, 0, 4);
         TextField numStrikesTextField = new TextField(String.valueOf(ow.getStrikes()));
         grid.add(numStrikesTextField, 1, 4);
-        if (addingNew) numStrikesTextField.setText("");
+        if (addingNew)
+            numStrikesTextField.setText("");
         Text strikeErr = displayErr(grid, "*", 5, 4);
 
-        numStrikesTextField.textProperty().addListener(new ChangeListener<String>()  {
+        numStrikesTextField.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                 hasSaved = false;
             }
         });
-        //#endregion
+        // #endregion
 
-        //#region Withdrawls
+        // #region Withdrawls
         Label numWithdrawlsL = new Label("Withdrawls:");
         grid.add(numWithdrawlsL, 0, 5);
         TextField numWithdrawlsTextField = new TextField(String.valueOf(ow.getNumRecieved()));
         grid.add(numWithdrawlsTextField, 1, 5);
-        if (addingNew) numWithdrawlsTextField.setText("");
+        if (addingNew)
+            numWithdrawlsTextField.setText("");
         Text withdrawlErr = displayErr(grid, "*", 5, 5);
-        numWithdrawlsTextField.textProperty().addListener(new ChangeListener<String>()  {
+        numWithdrawlsTextField.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                 hasSaved = false;
             }
         });
-        //#endregion
-        
-        //#region save button
+        // #endregion
+
+        // #region save button
         backBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
-            public void handle(ActionEvent e){
-                // Confirm  data hasn't been saved
-                if (canSave && !hasSaved){
+            public void handle(ActionEvent e) {
+                // Confirm data hasn't been saved
+                if (canSave && !hasSaved) {
                     displayPopup("Information has been changed without saving.\n Are you sure you want to go back?",
-                     "Are you sure?", "checkSave");
-                     if (noSave) ps.setScene(mainMenu);
-                     noSave = false;
-                }
-                else { // has been saved
+                            "Are you sure?", "checkSave");
+                    if (noSave)
+                        ps.setScene(mainMenu);
+                    noSave = false;
+                } else { // has been saved
                     System.out.println("Back to Main menu.");
                     ps.setScene(mainMenu);
                     owTable.getItems().clear();
@@ -479,8 +488,8 @@ public class GUI extends Application {
                 }
             }
         });
-        //#endregion
-        
+        // #endregion
+
         Text isSaved = new Text("Saved");
         grid.add(isSaved, 1, 9);
         isSaved.setVisible(false);
@@ -489,62 +498,65 @@ public class GUI extends Application {
             @Override
             public void handle(ActionEvent e) { // IF there is at least a name entered.
                 canSave = true;
-                if (dVal.checkNameFields(ownerTextField.getText())){
+                if (dVal.checkNameFields(ownerTextField.getText())) {
                     nameErr.setVisible(true);
                     canSave = false;
-                } else {nameErr.setVisible(false);}
+                } else {
+                    nameErr.setVisible(false);
+                }
 
-                if (dVal.checkNumPets(numPeTextField.getText())){
+                if (dVal.checkNumPets(numPeTextField.getText())) {
                     petErr.setVisible(true);
                     canSave = false;
-                } else {petErr.setVisible(false);}
+                } else {
+                    petErr.setVisible(false);
+                }
 
-                if (dVal.checkPickUps(numStrikesTextField.getText())){ //TODO
+                if (dVal.checkPickUps(numStrikesTextField.getText())) { // TODO
                     strikeErr.setVisible(true);
                     canSave = false;
-                } else { strikeErr.setVisible(false);}
-                
-                if (dVal.checkPickUps(numWithdrawlsTextField.getText())){
+                } else {
+                    strikeErr.setVisible(false);
+                }
+
+                if (dVal.checkPickUps(numWithdrawlsTextField.getText())) {
                     withdrawlErr.setVisible(true);
                     canSave = false;
-                } else { withdrawlErr.setVisible(false);}
-                
+                } else {
+                    withdrawlErr.setVisible(false);
+                }
+
                 if (!addingNew) {
-                    if (!canSave){
+                    if (!canSave) {
                         isSaved.setText("Invalid entry");
                         isSaved.setVisible(true);
-                    }
-                    else {
+                    } else {
                         owTable.getSelectionModel().getSelectedItem().setAllFeilds(
-                            ownerTextField.getText(),
-                            addressTextField.getText(),
-                            isFixedBox.isSelected(),
-                            isProvenBox.isSelected(),
-                            Integer.parseInt(numPeTextField.getText()),
-                            Integer.parseInt(numWithdrawlsTextField.getText()),
-                            Integer.parseInt(numStrikesTextField.getText())
-                            );
+                                ownerTextField.getText(),
+                                addressTextField.getText(),
+                                isFixedBox.isSelected(),
+                                isProvenBox.isSelected(),
+                                Integer.parseInt(numPeTextField.getText()),
+                                Integer.parseInt(numWithdrawlsTextField.getText()),
+                                Integer.parseInt(numStrikesTextField.getText()));
                         Write.writeToCSV(Driver.writeFile);
                         hasSaved = true;
                         isSaved.setText("Saved");
                         isSaved.setVisible(true);
                     }
-                }
-                else {
-                    if(!canSave) {
+                } else {
+                    if (!canSave) {
                         isSaved.setText("Invalid entry");
                         isSaved.setVisible(true);
-                    }
-                    else {
+                    } else {
                         Write.addOwner(
-                            ownerTextField.getText(),
-                            addressTextField.getText(),
-                            isProvenBox.isSelected(),
-                            isFixedBox.isSelected(),
-                            Integer.parseInt(numPeTextField.getText()),
-                            Integer.parseInt(numStrikesTextField.getText()),
-                            Integer.parseInt(numWithdrawlsTextField.getText())
-                        );
+                                ownerTextField.getText(),
+                                addressTextField.getText(),
+                                isProvenBox.isSelected(),
+                                isFixedBox.isSelected(),
+                                Integer.parseInt(numPeTextField.getText()),
+                                Integer.parseInt(numStrikesTextField.getText()),
+                                Integer.parseInt(numWithdrawlsTextField.getText()));
                         hasSaved = true;
                         Text newAdded = new Text("Saved");
                         newAdded.setFill(Color.BLUE);
@@ -558,14 +570,14 @@ public class GUI extends Application {
         ownerTextField.requestFocus();
         ownerTextField.selectAll();
         ps.setScene(editSc);
-        ps.show();    
+        ps.show();
 
         if (addingNew) {
             ownerTextField.requestFocus();
         }
-        //#endregion
+        // #endregion
 
-        //#endregion
+        // #endregion
     } // end initializeEditScene
 
     public static void initializeArchiveScene() {
@@ -575,31 +587,44 @@ public class GUI extends Application {
         archiveTable.prefWidth(200);
         archiveTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
-        TableColumn<File, String> col1 = new TableColumn<>("name");
+        TableColumn<File, String> col1 = new TableColumn<>("Archives");
         col1.setCellValueFactory(new PropertyValueFactory<>("name"));
         archiveTable.getColumns().add(col1);
-        archiveTable.setRowFactory( tv -> {
+        archiveTable.setRowFactory(tv -> {
             TableRow<File> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
-                if (event.getClickCount() == 2 && (! row.isEmpty()) ) {
+                if (event.getClickCount() == 2 && (!row.isEmpty())) {
                     displaySelectedArchive(row.getItem());
-                    System.out.println("HERERER\n\n\n\n\n\n");
-                    
-                }
-            });     
-            return row ;
-        });
-        
-        updateArchiveTable(archives, archiveTable);
-        VBox layout = new VBox();
-        layout.setPadding(insets);
-        layout.getChildren().add(archiveTable);
 
-        archives = null; // if we hit back 
+                }
+            });
+            return row;
+        });
+
+        Button backToMainButton = new Button("Back");
+        HBox btmHB = new HBox();
+        btmHB.setAlignment(align);
+        btmHB.getChildren().add(backToMainButton);
+
+        backToMainButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e){
+                ps.setScene(mainMenu);
+                displayInfoWindow();
+            }
+        });
+
+        updateArchiveTable(archives, archiveTable);
+        VBox layout = new VBox(10);
+        
+        layout.getChildren().add(archiveTable);
+        layout.getChildren().add(backToMainButton);
+        layout.setPadding(insets);
+        archives = null; // if we hit back
         archiveScene = new Scene(layout);
     }
 
-    public Text displayErr(GridPane gr, String err, int width, int height){
+    public Text displayErr(GridPane gr, String err, int width, int height) {
         Text er = new Text();
         er.setVisible(false);
         er.setFill(Color.FIREBRICK);
@@ -608,7 +633,7 @@ public class GUI extends Application {
         return er;
     }
 
-    public static void displayPopup(String message, String title, String arg){
+    public static void displayPopup(String message, String title, String arg) {
         Stage popWindow = new Stage();
         popWindow.initModality(Modality.APPLICATION_MODAL);
         popWindow.setMinWidth(450);
@@ -621,12 +646,11 @@ public class GUI extends Application {
         VBox layout = new VBox(10);
         layout.setAlignment(Pos.CENTER);
 
-        if (arg == "checkSave")
-        {
-            layout.getChildren().addAll(mess, yesBt, nButton); 
+        if (arg == "checkSave") {
+            layout.getChildren().addAll(mess, yesBt, nButton);
             yesBt.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
-                public void handle(ActionEvent e){
+                public void handle(ActionEvent e) {
                     popWindow.close();
                     noSave = true;
                 }
@@ -634,26 +658,28 @@ public class GUI extends Application {
             nButton.requestFocus();
             nButton.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
-                public void handle(ActionEvent e){
+                public void handle(ActionEvent e) {
                     popWindow.close();
                 }
             });
         }
-        if (arg == "delete"){
+        if (arg == "delete") {
             popWindow.setMaxHeight(200);
             layout.getChildren().addAll(mess, yesBt, nButton);
-            
+
             yesBt.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
-                public void handle(ActionEvent e){
+                public void handle(ActionEvent e) {
                     System.out.println(owTable.getSelectionModel().getSelectedItem());
                     Write.delete(owTable.getSelectionModel().getSelectedItem());
+                    updateOwnerTable(true);
+                    owTable.refresh();
                     popWindow.close();
                 }
             });
             nButton.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
-                public void handle(ActionEvent e){
+                public void handle(ActionEvent e) {
                     popWindow.close();
                 }
             });
@@ -663,11 +689,11 @@ public class GUI extends Application {
         if (arg == "resetWithdrawls") {
             popWindow.setMaxHeight(200);
             Label txt = new Label("It's the start of the month.");
-            layout.getChildren().addAll(txt,mess, yesBt, nButton);
+            layout.getChildren().addAll(txt, mess, yesBt, nButton);
 
             nButton.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
-                public void handle(ActionEvent e){
+                public void handle(ActionEvent e) {
                     // TODO: more actions likely
                     popWindow.close();
                 }
@@ -675,7 +701,7 @@ public class GUI extends Application {
 
             yesBt.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
-                public void handle(ActionEvent e){
+                public void handle(ActionEvent e) {
                     System.out.println("Setting all owners withdrawls to 0");
                     Write.archiveCurrent("withdrawlReset");
                     for (Owner ows : Driver.owners) {
@@ -691,20 +717,20 @@ public class GUI extends Application {
         if (arg == "resetWithdrawlsFromSett") {
             popWindow.setMaxHeight(200);
             popWindow.setAlwaysOnTop(true);
-            //Label txt = new Label("It's the start of the month.");
+            // Label txt = new Label("It's the start of the month.");
             mess.setAlignment(Pos.CENTER);
             layout.getChildren().addAll(mess, yesBt, nButton);
 
             nButton.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
-                public void handle(ActionEvent e){
+                public void handle(ActionEvent e) {
                     // TODO: more actions likely
                     popWindow.close();
                 }
             });
             yesBt.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
-                public void handle(ActionEvent e){
+                public void handle(ActionEvent e) {
                     System.out.println("Setting all owners withdrawls to 0");
                     Write.archiveCurrent("withdrawlReset");
                     for (Owner ows : Driver.owners) {
@@ -717,17 +743,18 @@ public class GUI extends Application {
             });
         }
 
-        if (arg == "report"){
+        if (arg == "report") {
             popWindow.setAlwaysOnTop(true);
             Label repLabel = new Label("Report an issue:");
             TextArea commentField = new TextArea();
             commentField.setWrapText(true);
-            commentField.setPrefHeight(200); commentField.setPrefWidth(100);
+            commentField.setPrefHeight(200);
+            commentField.setPrefWidth(100);
             Button repBtn = new Button("Save Report");
 
             repBtn.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
-                public void handle(ActionEvent e){
+                public void handle(ActionEvent e) {
                     Write.emitReport(commentField.getText());
                     popWindow.close();
                 }
@@ -737,7 +764,7 @@ public class GUI extends Application {
         layout.setPadding(insets);
         Scene scene = new Scene(layout);
         popWindow.setScene(scene);
-        popWindow.showAndWait();  
+        popWindow.showAndWait();
     }
 
     public static void displayInfoWindow() {
@@ -748,19 +775,20 @@ public class GUI extends Application {
         tabPane.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
 
         Tab stat = new Tab("Statistics");
-        VBox statVB = new VBox();
+        VBox statVB = new VBox(8);
         Tab sett = new Tab("Settings");
-        VBox settVB = new VBox();
+        VBox settVB = new VBox(10);
         Tab help = new Tab("Help");
-        VBox helpVB = new VBox();
+        VBox helpVB = new VBox(12);
 
-        //#region Statistics
+        // #region Statistics
         int petsFed = 0;
-        for(Owner ow : Driver.owners) petsFed += ow.getNumPets();
-        Label patrons = new Label("Total Patrons:\t"+Driver.owners.size());
-        Label withD = new Label("Average monthly withdrawls:\t"+Driver.owners.size());
-        Label pFed = new Label("Pets fed:\t"+petsFed);
-
+        for (Owner ow : Driver.owners)
+            petsFed += ow.getNumPets();
+        Label patrons = new Label("Total Patrons:\t" + Driver.owners.size());
+        Label withD = new Label("Average monthly withdrawls:\t" + Driver.owners.size());
+        Label pFed = new Label("Pets fed per month:\t" + petsFed);
+        Label poundsNeeded = new Label("Average Pound of food distributed: TODO-need info from client");
         Button statbackBtn = new Button("Back");
         HBox statbkHB = new HBox();
         statbkHB.setAlignment(Pos.BOTTOM_LEFT);
@@ -768,8 +796,8 @@ public class GUI extends Application {
 
         statbackBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
-            public void handle(ActionEvent e){
-               infoStage.close();
+            public void handle(ActionEvent e) {
+                infoStage.close();
             }
         });
 
@@ -780,14 +808,14 @@ public class GUI extends Application {
 
         vArchiveButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
-            public void handle(ActionEvent e){
+            public void handle(ActionEvent e) {
                 initializeArchiveScene();
                 ps.setScene(archiveScene);
                 infoStage.close();
             }
         });
 
-        statVB.getChildren().addAll(patrons, withD, pFed, vArchiveButton);
+        statVB.getChildren().addAll(patrons, withD, pFed, poundsNeeded, vArchiveButton);
         statVB.setPadding(insets);
 
         BorderPane statisticsRoot = new BorderPane();
@@ -795,12 +823,12 @@ public class GUI extends Application {
         statisticsRoot.setCenter(statVB);
         statisticsRoot.setBottom(statbackBtn);
         statisticsRoot.setPrefHeight(prefHeight);
-        //statisticsRoot.prefWidthProperty().bind(tabPane.widthProperty());
+        // statisticsRoot.prefWidthProperty().bind(tabPane.widthProperty());
         stat.setContent(statisticsRoot);
 
-         //#endregion
+        // #endregion
 
-         //#region Settings
+        // #region Settings
         Button resetWithdrawlsButton = new Button("Reset Withdrawls to Zero");
         HBox rwHB = new HBox();
         rwHB.setAlignment(align);
@@ -808,9 +836,9 @@ public class GUI extends Application {
 
         resetWithdrawlsButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
-            public void handle(ActionEvent e){
-               displayPopup("Are you sure you would like to reset all Patron's yearly withdrawls to 0?\n" +
-               "This action cannot be undone.", "Are you sure?", "resetWithdrawlsFromSett");
+            public void handle(ActionEvent e) {
+                displayPopup("Are you sure you would like to reset all Patron's yearly withdrawls to 0?\n" +
+                        "This action cannot be undone.", "Are you sure?", "resetWithdrawlsFromSett");
             }
         });
 
@@ -820,12 +848,26 @@ public class GUI extends Application {
         settbkHB.getChildren().add(settbackBtn);
         settbackBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
-            public void handle(ActionEvent e){
-               infoStage.close();
+            public void handle(ActionEvent e) {
+                infoStage.close();
             }
         });
 
-        settVB.getChildren().addAll(rwHB );
+        CheckBox notifyResetCB = new CheckBox("Remind me to reset withdrawls");
+        HBox notifyResetHB = new HBox();
+        notifyResetHB.setAlignment(align);
+        notifyResetHB.getChildren().add(notifyResetCB);
+        notifyResetCB.setSelected(notifyReset);
+        settVB.getChildren().add(notifyResetCB);
+
+        notifyResetCB.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                notifyReset = notifyResetCB.isSelected();
+            }
+        });
+
+        settVB.getChildren().addAll(rwHB);
         settVB.setPadding(insets);
 
         BorderPane settingsRoot = new BorderPane();
@@ -834,41 +876,40 @@ public class GUI extends Application {
         settingsRoot.setBottom(settbackBtn);
         settingsRoot.setPrefHeight(prefHeight);
         sett.setContent(settingsRoot);
-         //#endregion
+        // #endregion
 
-         //#region help
-         Label controls = new Label("Controls:");
-         Label contExpl = new Label(
-             "\tDouble click on patron list to edit.\n\t" +
-             "TODO"
-         );
-         Button reportBtn = new Button("Report an Issue");
-         HBox reportHB = new HBox();
-         reportHB.setAlignment(align);
-         reportHB.getChildren().add(reportBtn);
+        // #region help
+        Label controls = new Label("Controls:");
+        Label contExpl = new Label(
+                "\tDouble click on patron list to edit.\n\t" +
+                        "\n\tSpace fires selected button.");
+        Button reportBtn = new Button("Report an Issue");
+        HBox reportHB = new HBox();
+        reportHB.setAlignment(align);
+        reportHB.getChildren().add(reportBtn);
 
-         Button helpbackBtn = new Button("Back");
-         HBox hbkHB = new HBox();
-         hbkHB.setAlignment(align);
-         hbkHB.getChildren().add(helpbackBtn);
+        Button helpbackBtn = new Button("Back");
+        HBox hbkHB = new HBox();
+        hbkHB.setAlignment(align);
+        hbkHB.getChildren().add(helpbackBtn);
 
-         helpbackBtn.setOnAction(new EventHandler<ActionEvent>() {
-             @Override
-             public void handle(ActionEvent e){
+        helpbackBtn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
                 infoStage.close();
-             }
-         });
-         
-         helpVB.getChildren().addAll(controls, contExpl, reportBtn);
-         helpVB.setPadding(insets);
-         help.setContent(helpVB);
+            }
+        });
 
-         reportBtn.setOnAction(new EventHandler<ActionEvent>() {
-             @Override
-             public void handle(ActionEvent e){
+        helpVB.getChildren().addAll(controls, contExpl, reportBtn);
+        helpVB.setPadding(insets);
+        help.setContent(helpVB);
+
+        reportBtn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
                 displayPopup("Please record and save your comment here:", "Report", "report");
-             }
-         });
+            }
+        });
 
         BorderPane helpBorderPane = new BorderPane();
         helpBorderPane.setPadding(insets);
@@ -876,7 +917,7 @@ public class GUI extends Application {
         helpBorderPane.setBottom(helpbackBtn);
         helpBorderPane.setPrefHeight(prefHeight);
         help.setContent(helpBorderPane);
-         //#endregion
+        // #endregion
 
         tabPane.getTabs().add(stat);
         tabPane.getTabs().add(sett);
@@ -887,20 +928,20 @@ public class GUI extends Application {
 
         infoStage.setScene(scene);
         infoStage.setTitle("JavaFX App");
-        infoStage.initModality(Modality.APPLICATION_MODAL); //TODO: what is info modality?
+        infoStage.initModality(Modality.APPLICATION_MODAL); // TODO: what is info modality?
         infoStage.setMinWidth(600);
         infoStage.setMinHeight(400);
         infoStage.setTitle("Information");
-        Label mess = new Label("TEMP MESSAGE");
-        Button nButton = new Button("No");
+        //Label mess = new Label("TEMP MESSAGE");
+        //Button nButton = new Button("No");
 
         infoStage.show();
     } // end display popup
 
     public static void displaySelectedArchive(File selArc) {
-        Stage archivestage = new Stage();
+        //Stage archivestage = new Stage();
         try {
-            
+
             FileReader fr = new FileReader(selArc);
             archivedOwTable = new TableView<>();
             archivedOwTable.setPrefHeight(200);
@@ -931,15 +972,15 @@ public class GUI extends Application {
             archivedOwTable.getColumns().add(column6);
             archivedOwTable.getColumns().add(column7);
             archivedOwTable.getColumns().add(column8);
-            
+
             archivedOwTable.setPrefHeight(400);
-            
+
             Read.readCSV(selArc.getPath(), false);
             updateOwnerTable(false);
             archivedOwTable.setSelectionModel(null);
             archivedOwTable.refresh();
 
-            VBox arVB =  new VBox();
+            VBox arVB = new VBox(10);
             arVB.setPadding(insets);
             System.out.println(selArc.getName());
 
@@ -955,7 +996,7 @@ public class GUI extends Application {
 
             backToSeButton.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
-                public void handle(ActionEvent e){
+                public void handle(ActionEvent e) {
                     ps.setScene(mainMenu);
                     displayInfoWindow();
                 }
@@ -966,13 +1007,13 @@ public class GUI extends Application {
 
                 }
             });
-            
-            Label filName = new Label("Viewing archive from:  " + 
-                selArc.getName().substring(0, selArc.getName().length() - 16));
-            
-            arVB.getChildren().addAll(filName,archivedOwTable,backToSeButton);  
+
+            Label filName = new Label("Viewing archive from:  " +
+                    selArc.getName().substring(0, selArc.getName().length() - 16));
+            filName.setFont(Font.font(20));
+            arVB.getChildren().addAll(filName, archivedOwTable, backToSeButton);
             Scene selectedArchiveScene = new Scene(arVB);
-            ps.setScene(selectedArchiveScene);    
+            ps.setScene(selectedArchiveScene);
 
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
@@ -982,15 +1023,84 @@ public class GUI extends Application {
     }
 
     public static void updateOwnerTable(boolean fromMain) {
-        if (fromMain) 
-            for (Owner ows : Driver.owners) owTable.getItems().add(ows);  
-        else for (Owner ows : Driver.currentArchives) 
-                archivedOwTable.getItems().add(ows);   
+        if (fromMain)
+            for (Owner ows : Driver.owners)
+                owTable.getItems().add(ows);
+        else
+            for (Owner ows : Driver.currentArchives)
+                archivedOwTable.getItems().add(ows);
     }
 
     public static void updateArchiveTable(List<File> archs, TableView<File> table) {
-        for (File ar : archs) 
+        for (File ar : archs)
             table.getItems().add(ar);
     }
 
+    public static void getSettings() { //TODO set settings
+        try {
+          File metaFile = new File("meta/.metadata.csv");
+          FileReader fr = new FileReader(metaFile);
+          BufferedReader br = new BufferedReader(fr);
+          String line = br.readLine();
+    
+          while (line != null) {
+            if (line.charAt(0) == '#') {
+              line = br.readLine();
+              continue;
+            } // skip lines with #
+            System.out.println(line);
+    
+            String[] lineData = line.split(":");
+            if (lineData[0].equals("setting")) { // fill array
+                String[] settingData = lineData[1].split(",");
+                System.out.println(settingData[0] + "\n\n\n");
+                if (settingData[0].equals("notifyReset")) {
+                    System.out.println(settingData[1] + "\n\n\n\n");
+                    notifyReset = Boolean.parseBoolean(settingData[1]);
+                }
+
+            }
+              line = br.readLine();
+             
+          }
+          br.close();
+        } catch (IOException ioe) {
+          ioe.printStackTrace();
+        }
+      }
+
+      public static void setSettings() {
+        try {
+          File metaFile = new File("meta/.metadata.csv");
+          FileReader fr = new FileReader(metaFile);
+          BufferedReader br = new BufferedReader(fr);
+          String line = br.readLine();
+    
+          while (line != null) {
+            if (line.charAt(0) == '#') {
+              line = br.readLine();
+              continue;
+            } // skip lines with #
+            System.out.println(line);
+    
+            String[] lineData = line.split(":");
+            if (lineData[0].equals("setting")) { // fill array
+                String[] settingData = lineData[1].split(",");
+                System.out.println(settingData[0] + "\n\n\n");
+                if (settingData[0].equals("notifyReset")) {
+                    System.out.println(settingData[1] + "\n\n\n\n");
+                    notifyReset = Boolean.parseBoolean(settingData[1]);
+                }
+
+            }
+
+              line = br.readLine();
+            
+            
+          }
+          br.close();
+        } catch (IOException ioe) {
+          ioe.printStackTrace();
+        }
+      }
 }
