@@ -1,6 +1,7 @@
 package src.datavalidation;
 
-import src.Owner;
+import src.owner;
+import src.DataTest;
 
 
 /** This class was were I would test the method and when they were working correctly with the testing I did
