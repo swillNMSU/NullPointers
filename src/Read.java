@@ -76,7 +76,9 @@ public class Read {
         for (Owner ow : Driver.owners)
             if (ow.getLastName().toLowerCase().startsWith(search.toLowerCase()) || 
                 ow.getName().toLowerCase().startsWith(search.toLowerCase()))
-                result.add(ow);                            
+                result.add(ow);
+            else if (ow.getAddress().contains(search) || ow.getAddress().contains(search))
+                result.add(ow);                                 
         return result;
     }
 

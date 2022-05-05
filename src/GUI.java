@@ -15,6 +15,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
@@ -47,21 +48,20 @@ import java.io.IOException;
  * TODO:
  * Color each owner in table red if they dont have proof of income, as well
  * Search by address?
- * Display archives:
- * Scrollpane showing available archives. Scrollpane showing
+
+ Toggle search by name/address
  * Reset withdrawls at the first of every YEAR (AUGUST TO AUGUST)
- * Add Statistics page
+
  * 
  * Resize and clean windows to properties that fit best
- * Color coding
- * 
- * Change question mark to gear icon
+ *
  * 
  * Maybe have an option to flag an owner as already banned
  * If searching, select top result
  * 
  * Click on table elemnt and have that highlighted on edit screen
  * 
+ * Fix ding sound when viewing archives
  */
 
 public class GUI extends Application {
@@ -133,6 +133,26 @@ public class GUI extends Application {
         column7.setCellValueFactory(new PropertyValueFactory<>("incomeProof")); // change to string maybe
         column8.setCellValueFactory(new PropertyValueFactory<>("qualifiedForService"));
 
+        column8.setCellFactory(col -> {
+            TableCell<Owner, Boolean> cell = new TableCell<Owner, Boolean>() {
+                @Override
+                public void updateItem(Boolean item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || item == null) {
+                        setText(null);
+                        setGraphic(null);
+                    } else if (item) {
+                        setText(item.toString());
+                        setTextFill(Color.GREEN);
+                    } else {
+                        setText(item.toString());
+                        setTextFill(Color.RED);
+                    }
+                }
+            };
+            return cell;
+        });
+
         owTable.getColumns().add(column1);
         owTable.getColumns().add(column2);
         owTable.getColumns().add(column3);
@@ -143,6 +163,9 @@ public class GUI extends Application {
         owTable.getColumns().add(column8);
 
         Read.readCSV("src/testReset.csv", true);
+    
+        
+
         updateOwnerTable(true);
         owTable.refresh();
 
@@ -196,7 +219,7 @@ public class GUI extends Application {
         archHB.getChildren().add(archiveBtn);
         grid.add(archiveBtn, 1, 10);
 
-        Label searchL = new Label("Search");
+        Label searchL = new Label("Search:");
         grid.add(searchL, 1, 7);
 
         TextField searchTextField = new TextField();
@@ -333,11 +356,11 @@ public class GUI extends Application {
         Text scenetitle = new Text("Patron Information");
         scenetitle.setFont(Font.font("Telugu MN", FontWeight.NORMAL, 20));
         grid.add(scenetitle, 0, 0, 2, 1);
-        // if (ow.getQualifiedForService() == false) {
-        //     Label banned = new Label("This person is currently banned from out services.");
-        //     banned.setTextFill(Color.RED);
-        //     grid.add(banned, 0,0,2,2);
-        // }
+        if (ow.getQualifiedForService() == false) {
+            Label banned = new Label("This person is not qualified for our services.");
+            banned.setTextFill(Color.RED);
+            grid.add(banned, 0,10,2,2);
+        }
        
 
         // BUTTONS
@@ -709,6 +732,8 @@ public class GUI extends Application {
                     }
                     Write.writeToCSV(Driver.writeFile);
                     Write.updateDateMetadata();
+                    // updateOwnerTable(true);
+                    // owTable.refresh();
                     popWindow.close();
                 }
             });
@@ -881,8 +906,8 @@ public class GUI extends Application {
         // #region help
         Label controls = new Label("Controls:");
         Label contExpl = new Label(
-                "\tDouble click on patron list to edit.\n\t" +
-                        "\n\tSpace fires selected button.");
+                "\tDouble click on patron list to edit.\n" +
+                        "\tSpace fires selected button.\n\tSearch prioritizes names but also returns addresses.");
         Button reportBtn = new Button("Report an Issue");
         HBox reportHB = new HBox();
         reportHB.setAlignment(align);
