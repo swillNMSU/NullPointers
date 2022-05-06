@@ -1,4 +1,4 @@
-package datavalidation.src;
+//package datavalidation;
 
 import java.util.*;
 
@@ -100,7 +100,16 @@ public class DataValidation{
         return userInput.charAt(0);
     }
 
-    
+    /**
+     *  The purpose of this method is to check what the input was a valid input either Yes or No
+     *  This method checks to see if the input is empty, and the first character of the input to 
+     *  make sure it is a : Y,y,N, or n. If it is not any of these the method will return true and
+     *  the loop in getFixedStatus will keep on running unil false.
+     * 
+     *  Precondition: Is that the parametor inputYOrN my be invalid or not
+     *  Postcondition: If the input is invalid then the method will return true, if the input is valid
+     *  then the method will return false.
+     */
     public static boolean isValidYesNo(String inputYOrN){
         
         if(inputYOrN.isEmpty() || inputYOrN.isBlank()){
@@ -119,6 +128,16 @@ public class DataValidation{
 
     }
 
+    /**
+     * This method purpose it get input from the user. If the input is invalid then the loop will
+     * continue to run until proper input is put in. If the input is valid then it will return the
+     * input.
+     * 
+     * Precondition: Is that the input may be invalid if it is then the isValidNumInput method will
+     * check if the input is invalid befor sending it off.
+     * 
+     * Postcondition: This method will return an integer
+     */
     public static int getNumOfVisit(Scanner numInput){
         System.out.println("Enter the number of visits for the owner");
         int inputNumber = numInput.nextInt();
@@ -130,6 +149,13 @@ public class DataValidation{
         return inputNumber;
     }
 
+    /**
+     * This method checks to see if the input is valid or it is not valid at all. This method returns
+     * true if the input is not valid, else false if the input is valid.
+     * 
+     * Precondition: Is that the parametor isValidNumVisit may be invalid or valid
+     * Postcondition: Is that the method returns true if invalid and false if the input is valid.
+     */
     public static boolean isValidNumInput(int isValidNumVisit){
         if(isValidNumVisit < 0){
             System.out.println("You can not enter a value less then 0");
