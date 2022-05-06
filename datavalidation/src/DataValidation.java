@@ -78,6 +78,18 @@ public class DataValidation{
 
 
 
+    /**
+     * This method first ask the user for input and the user puts the input. If the data is invalid then
+     * it will return true and keep running the loop until the user inputs valid data. If the data is valid
+     * then the loop will end becasue the boolean value return was false. This method would return a char
+     * if the input was valid.
+     * 
+     * Precondition: The precondition is handeled with the help of isValidYesNo if this method return true
+     * the value to while loop will keep on running until valid data is put in. If the method isValidYesNo
+     * is false then the loop will end.
+     * 
+     * Postcondition: Is if the input is valid then the method will return a character.
+     */
     public static char getFixedStatus(Scanner input){
         System.out.println("Is your dog or cat fixed \"Y\" for yes and \"N\" for No");
         String userInput = input.nextLine().toLowerCase();
