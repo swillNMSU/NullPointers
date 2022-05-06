@@ -8,7 +8,7 @@ import java.util.*;
 public class Driver{
     public static void main(String[] args) {
         Scanner scan = new Scanner(System.in);
-        Owner person = new owner(null);
+        Owner person = new Owner(null);
         getPersontName(scan,"Please enter your First name",person);
         getPersonIncome(scan,"Please enter the income form",person);
         getNumPets(scan,"Please enter the number of pets you have",person);
