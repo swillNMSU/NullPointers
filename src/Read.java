@@ -106,7 +106,6 @@ public class Read {
             
             while(line != null){
                 if (line.charAt(0) == '#') { line = br.readLine(); continue; } // skip lines with #
-                System.out.println(line);
 
                 String[] lineData = line.split(":");
                 if (lineData[0].equals("ResetWithdrawls")) { // handle withdrawls and dates.
@@ -117,11 +116,9 @@ public class Read {
                     for (int i = 0; i < months.length; i++) {
                         if (months[i].equals(dateData[0])) {
                             currMonth = i;
-                            System.out.println(currMonth);
                         }
                         if (months[i].equals(dateData[1])) {
                             monthSinceReset = i;
-                            System.out.println(monthSinceReset);
                         }
                     }
                     if (currDate.getYear() > Integer.parseInt(dateData[2])) {
@@ -167,7 +164,6 @@ public class Read {
         File f = new File("archive");
         pathnames = f.list();
         for (String path : pathnames){
-            System.out.println(path);
             File archiveFile = new File("archive/"+ path);
             archs.add(archiveFile);
         }

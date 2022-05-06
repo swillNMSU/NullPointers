@@ -39,6 +39,8 @@ import java.io.FileReader;
 import java.io.IOException;
 
 /**
+ * This is our GUI class, made with JavaFX. The purpose of this class is to
+ * 
  * Script to run the GUI. The primary stage (ps) is called to switch scenes.
  * Upon open, mainMenu is loaded immmediately.
  * 
@@ -67,7 +69,7 @@ public class GUI extends Application {
     static Stage ps;
     static Scene mainMenu;
     Scene editSc;
-    Scene addSc;
+   // Scene addSc;
     static Scene archiveScene;
     ScrollPane sp = new ScrollPane();
     final double width = 400, height = 600; // global sizes for scenes.
@@ -131,6 +133,7 @@ public class GUI extends Application {
         column7.setCellValueFactory(new PropertyValueFactory<>("incomeProof")); // change to string maybe
         column8.setCellValueFactory(new PropertyValueFactory<>("qualifiedForService"));
 
+        // Color code our ownerTable. Red indicates problem, green indicates all is well.
         column8.setCellFactory(col -> {
             TableCell<Owner, Boolean> cell = new TableCell<Owner, Boolean>() {
                 @Override
@@ -170,6 +173,7 @@ public class GUI extends Application {
         vBox.setPrefWidth(10);
 
         // #endregion
+
         GridPane grid = new GridPane();
         grid.setAlignment(align);
         grid.setHgap(10);
@@ -209,8 +213,7 @@ public class GUI extends Application {
         infoHB.getChildren().add(infoBtn);
         grid.add(infoBtn, 2, 10);
 
-        Button archiveBtn = new Button("Archive"); // TODO: Ask if they want to call the archive anything special, add
-                                                   // revert
+        Button archiveBtn = new Button("Archive"); 
         HBox archHB = new HBox(10);
         archHB.setAlignment(align);
         archHB.getChildren().add(archiveBtn);
@@ -254,6 +257,7 @@ public class GUI extends Application {
             public void handle(ActionEvent e) {
                 addingNew = true;
                 selectedOwner = null;
+                emitGUIAction("Selected owner set to null.");
                 ps.setScene(editSc);
                 initializeEditScene();
             }
@@ -294,9 +298,9 @@ public class GUI extends Application {
                 addingNew = false;
                 if (owTable.getSelectionModel().getSelectedItem() != null) {
                     selectedOwner = owTable.getSelectionModel().getSelectedItem();
+                    emitGUIAction("Owner " + selectedOwner.getName()+ " stored as selected owner.");
                     editButton.setDisable(false);
                     // error check before swinthing scenes.
-                    System.out.println(selectedOwner);
                     ps.setScene(editSc);
                     initializeEditScene();
                 }
@@ -306,10 +310,13 @@ public class GUI extends Application {
         archiveBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
-                Write.archiveCurrent("");
-                // Text archSuccess = new Text("*");
-                // archSuccess.setFill(Color.GREEN);
-                // grid.add(archSuccess, 4, 10);
+                displayPopup("Would you like to name this archive? If not, the archive will be titled today's date and time.",
+                                "Add a Title?", "newArchive");
+                    Write.archiveCurrent("");
+                    Text archSuccess = new Text("*");
+                    archSuccess.setFill(Color.GREEN);
+                    grid.add(archSuccess, 4, 10);
+                    
             }
         });
 
@@ -319,7 +326,7 @@ public class GUI extends Application {
                 if (event.getClickCount() == 2 && (!row.isEmpty())) {
                     addingNew = false;
                     selectedOwner = row.getItem();
-                    System.out.println(selectedOwner + "\n\n\n\n"); // BUG: checking
+                    emitGUIAction("Owner " + selectedOwner.getName()+ " stored as selected owner.");
                     ps.setScene(editSc);
                     initializeEditScene();
                 }
@@ -501,7 +508,6 @@ public class GUI extends Application {
                         ps.setScene(mainMenu);
                     noSave = false;
                 } else { // has been saved
-                    System.out.println("Back to Main menu.");
                     ps.setScene(mainMenu);
                     owTable.getItems().clear();
                     for (Owner ows : Driver.owners)
@@ -527,7 +533,7 @@ public class GUI extends Application {
                     nameErr.setVisible(false);
                 }
 
-                if ( addressTextField.getText() != "" && dVal.checkAddress(addressTextField.getText())) {
+                if (addressTextField.getText() != "" && dVal.checkAddress(addressTextField.getText())) {
                     addressError.setText(concatErrorMessage());
                     addressError.setVisible(true);
                     canSave = false;
@@ -736,7 +742,6 @@ public class GUI extends Application {
             yesBt.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent e) {
-                    System.out.println("Setting all owners withdrawls to 0");
                     Write.archiveCurrent("withdrawlReset");
                     for (Owner ows : Driver.owners) {
                         ows.setNumRecieved(0);
@@ -767,7 +772,6 @@ public class GUI extends Application {
             yesBt.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent e) {
-                    System.out.println("Setting all owners withdrawls to 0");
                     Write.archiveCurrent("withdrawlReset");
                     for (Owner ows : Driver.owners) {
                         ows.setNumRecieved(0);
@@ -796,6 +800,18 @@ public class GUI extends Application {
                 }
             });
             layout.getChildren().addAll(repLabel, commentField, repBtn);
+        }
+
+        if (arg == "newArchive"){
+            popWindow.setAlwaysOnTop(true);
+            Button cancelButton = new Button("Cancel");
+            Button renameButton = new Button("Rename");
+            // HBox cancelHB = new HBox();
+            // cancelHB.setAlignment(align);
+            // cancelButton.getChildren().add(cancelButton)
+
+
+            layout.getChildren().addAll(mess, renameButton, nButton, cancelButton);
         }
         layout.setPadding(insets);
         Scene scene = new Scene(layout);
@@ -975,77 +991,77 @@ public class GUI extends Application {
     } // end display popup
 
     public static void displaySelectedArchive(File selArc) {
-            archivedOwTable = new TableView<>();
-            archivedOwTable.setPrefHeight(200);
-            archivedOwTable.setPrefWidth(200);
-            TableColumn<Owner, String> column1 = new TableColumn<>("Name");
-            TableColumn<Owner, String> column2 = new TableColumn<>("Address");
-            TableColumn<Owner, String> column3 = new TableColumn<>("Pets");
-            TableColumn<Owner, String> column4 = new TableColumn<>("Strikes");
-            TableColumn<Owner, String> column5 = new TableColumn<>("Withdrawls");
-            TableColumn<Owner, Boolean> column6 = new TableColumn<>("Fixed");
-            TableColumn<Owner, Boolean> column7 = new TableColumn<>("Income");
-            TableColumn<Owner, Boolean> column8 = new TableColumn<>("Qualified");
+        archivedOwTable = new TableView<>();
+        archivedOwTable.setPrefHeight(200);
+        archivedOwTable.setPrefWidth(200);
+        TableColumn<Owner, String> column1 = new TableColumn<>("Name");
+        TableColumn<Owner, String> column2 = new TableColumn<>("Address");
+        TableColumn<Owner, String> column3 = new TableColumn<>("Pets");
+        TableColumn<Owner, String> column4 = new TableColumn<>("Strikes");
+        TableColumn<Owner, String> column5 = new TableColumn<>("Withdrawls");
+        TableColumn<Owner, Boolean> column6 = new TableColumn<>("Fixed");
+        TableColumn<Owner, Boolean> column7 = new TableColumn<>("Income");
+        TableColumn<Owner, Boolean> column8 = new TableColumn<>("Qualified");
 
-            column1.setCellValueFactory(new PropertyValueFactory<>("name"));
-            column2.setCellValueFactory(new PropertyValueFactory<>("address"));
-            column3.setCellValueFactory(new PropertyValueFactory<>("numPets"));
-            column4.setCellValueFactory(new PropertyValueFactory<>("strikes"));
-            column5.setCellValueFactory(new PropertyValueFactory<>("numRecieved"));
-            column6.setCellValueFactory(new PropertyValueFactory<>("isFixed"));
-            column7.setCellValueFactory(new PropertyValueFactory<>("incomeProof")); // change to string maybe
-            column8.setCellValueFactory(new PropertyValueFactory<>("qualifiedForService"));
+        column1.setCellValueFactory(new PropertyValueFactory<>("name"));
+        column2.setCellValueFactory(new PropertyValueFactory<>("address"));
+        column3.setCellValueFactory(new PropertyValueFactory<>("numPets"));
+        column4.setCellValueFactory(new PropertyValueFactory<>("strikes"));
+        column5.setCellValueFactory(new PropertyValueFactory<>("numRecieved"));
+        column6.setCellValueFactory(new PropertyValueFactory<>("isFixed"));
+        column7.setCellValueFactory(new PropertyValueFactory<>("incomeProof")); // change to string maybe
+        column8.setCellValueFactory(new PropertyValueFactory<>("qualifiedForService"));
 
-            archivedOwTable.getColumns().add(column1);
-            archivedOwTable.getColumns().add(column2);
-            archivedOwTable.getColumns().add(column3);
-            archivedOwTable.getColumns().add(column4);
-            archivedOwTable.getColumns().add(column5);
-            archivedOwTable.getColumns().add(column6);
-            archivedOwTable.getColumns().add(column7);
-            archivedOwTable.getColumns().add(column8);
+        archivedOwTable.getColumns().add(column1);
+        archivedOwTable.getColumns().add(column2);
+        archivedOwTable.getColumns().add(column3);
+        archivedOwTable.getColumns().add(column4);
+        archivedOwTable.getColumns().add(column5);
+        archivedOwTable.getColumns().add(column6);
+        archivedOwTable.getColumns().add(column7);
+        archivedOwTable.getColumns().add(column8);
 
-            archivedOwTable.setPrefHeight(400);
+        archivedOwTable.setPrefHeight(400);
 
-            Read.readCSV(selArc.getPath(), false);
-            updateOwnerTable(false);
-            archivedOwTable.setSelectionModel(null);
-            archivedOwTable.refresh();
+        Read.readCSV(selArc.getPath(), false);
+        updateOwnerTable(false);
+        archivedOwTable.setSelectionModel(null);
+        archivedOwTable.refresh();
 
-            VBox arVB = new VBox(10);
-            arVB.setPadding(insets);
-            System.out.println(selArc.getName());
+        VBox arVB = new VBox(10);
+        arVB.setPadding(insets);
+        emitGUIAction("Archive selected: "+ selArc.getName());
 
-            Button backToSeButton = new Button("Back");
-            HBox backTBox = new HBox();
-            backTBox.setAlignment(align);
-            backTBox.getChildren().add(backToSeButton);
+        Button backToSeButton = new Button("Back");
+        HBox backTBox = new HBox();
+        backTBox.setAlignment(align);
+        backTBox.getChildren().add(backToSeButton);
 
-            Button exportToExcelButton = new Button("Export to Excel");
-            HBox exportHB = new HBox();
-            exportHB.setAlignment(align);
-            exportHB.getChildren().add(exportToExcelButton);
+        Button exportToExcelButton = new Button("Export to Excel");
+        HBox exportHB = new HBox();
+        exportHB.setAlignment(align);
+        exportHB.getChildren().add(exportToExcelButton);
 
-            backToSeButton.setOnAction(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent e) {
-                    ps.setScene(mainMenu);
-                    displayInfoWindow();
-                }
-            });
-            exportToExcelButton.setOnAction(new EventHandler<ActionEvent>() { // TODO:
-                @Override
-                public void handle(ActionEvent e) {
+        backToSeButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                ps.setScene(mainMenu);
+                displayInfoWindow();
+            }
+        });
+        exportToExcelButton.setOnAction(new EventHandler<ActionEvent>() { // TODO:
+            @Override
+            public void handle(ActionEvent e) {
 
-                }
-            });
+            }
+        });
 
-            Label filName = new Label("Viewing archive from:  " +
-                    selArc.getName().substring(0, selArc.getName().length() - 16));
-            filName.setFont(Font.font(20));
-            arVB.getChildren().addAll(filName, archivedOwTable, backToSeButton);
-            Scene selectedArchiveScene = new Scene(arVB);
-            ps.setScene(selectedArchiveScene);
+        Label filName = new Label("Viewing archive from:  " +
+                selArc.getName().substring(0, selArc.getName().length() - 16));
+        filName.setFont(Font.font(20));
+        arVB.getChildren().addAll(filName, archivedOwTable, backToSeButton);
+        Scene selectedArchiveScene = new Scene(arVB);
+        ps.setScene(selectedArchiveScene);
 
     }
 
@@ -1063,7 +1079,7 @@ public class GUI extends Application {
             table.getItems().add(ar);
     }
 
-    public static void getSettings() { 
+    public static void getSettings() {
         try {
             File metaFile = new File("meta/.metadata.csv");
             FileReader fr = new FileReader(metaFile);
@@ -1075,14 +1091,11 @@ public class GUI extends Application {
                     line = br.readLine();
                     continue;
                 } // skip lines with #
-                System.out.println(line);
 
                 String[] lineData = line.split(":");
                 if (lineData[0].equals("setting")) { // fill array
                     String[] settingData = lineData[1].split(",");
-                    System.out.println(settingData[0] + "\n\n\n");
                     if (settingData[0].equals("notifyReset")) {
-                        System.out.println(settingData[1] + "\n\n\n\n");
                         notifyReset = Boolean.parseBoolean(settingData[1]);
                     }
 
@@ -1108,14 +1121,11 @@ public class GUI extends Application {
                     line = br.readLine();
                     continue;
                 } // skip lines with #
-                System.out.println(line);
 
                 String[] lineData = line.split(":");
                 if (lineData[0].equals("setting")) { // fill array
                     String[] settingData = lineData[1].split(",");
-                    System.out.println(settingData[0] + "\n\n\n");
                     if (settingData[0].equals("notifyReset")) {
-                        System.out.println(settingData[1] + "\n\n\n\n");
                         notifyReset = Boolean.parseBoolean(settingData[1]);
                     }
 
@@ -1131,8 +1141,11 @@ public class GUI extends Application {
     }
 
     /**
-     * This takes the set error message (done so within Validator methods) and concatinates the message in the
-     * proper way. This sets the message to null after use to avoid misplaces errors. 
+     * This takes the set error message (done so within Validator methods) and
+     * concatinates the message in the
+     * proper way. This sets the message to null after use to avoid misplaces
+     * errors.
+     * 
      * @return String representing error message.
      */
     public String concatErrorMessage() {
@@ -1141,5 +1154,9 @@ public class GUI extends Application {
         String answer = "* " + Driver.errorMessage;
         Driver.errorMessage = null;
         return answer;
+    }
+
+    public static void emitGUIAction(String action){
+        System.out.println("GUI Event: " + action);
     }
 }
