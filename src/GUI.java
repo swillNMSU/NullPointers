@@ -47,7 +47,7 @@ import java.io.IOException;
  * 
  * TODO:
 
- Toggle search by name/address
+
  * Reset withdrawls at the first of every YEAR (AUGUST TO AUGUST)
 
  * 
@@ -700,7 +700,6 @@ public class GUI extends Application {
             yesBt.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent e) {
-                    System.out.println(owTable.getSelectionModel().getSelectedItem());
                     Write.delete(owTable.getSelectionModel().getSelectedItem());
                     updateOwnerTable(true);
                     owTable.refresh();
@@ -1055,9 +1054,10 @@ public class GUI extends Application {
     }
 
     public static void updateOwnerTable(boolean fromMain) {
-        if (fromMain)
+        if (fromMain) {
             for (Owner ows : Driver.owners)
                 owTable.getItems().add(ows);
+        }
         else
             for (Owner ows : Driver.currentArchives)
                 archivedOwTable.getItems().add(ows);
