@@ -187,8 +187,6 @@ public class GUI extends Application {
         sp.setContent(vBox);
         grid.add(sp, 2, 8);
 
-        grid.setStyle("-fx-background-color: light grey;");
-
         Text scenetitle = new Text("Patron List");
         grid.setAlignment(align);
         scenetitle.setFont(Font.font("Telugu MN", 34));
@@ -673,6 +671,13 @@ public class GUI extends Application {
         return er;
     }
 
+    /**
+     * Popup window is created, inset with a new stage and VBox. By default a yes and no button is created and a 
+     * some default customization is applied. 
+     * @param message Label class always displayed unless empty.
+     * @param title Displayed on top pane of window.
+     * @param arg determines additional popup attribues.
+     */
     public static void displayPopup(String message, String title, String arg) {
         Stage popWindow = new Stage();
         popWindow.initModality(Modality.APPLICATION_MODAL);
@@ -819,6 +824,10 @@ public class GUI extends Application {
         popWindow.showAndWait();
     }
 
+    /**
+     * Displays the settings window. Consists of a tabpane. Settings are to be determined
+     * by client after additional discourse.
+     */
     public static void displayInfoWindow() {
         Stage infoStage = new Stage();
         infoStage.setAlwaysOnTop(true);
@@ -1037,22 +1046,11 @@ public class GUI extends Application {
         backTBox.setAlignment(align);
         backTBox.getChildren().add(backToSeButton);
 
-        Button exportToExcelButton = new Button("Export to Excel");
-        HBox exportHB = new HBox();
-        exportHB.setAlignment(align);
-        exportHB.getChildren().add(exportToExcelButton);
-
         backToSeButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
                 ps.setScene(mainMenu);
                 displayInfoWindow();
-            }
-        });
-        exportToExcelButton.setOnAction(new EventHandler<ActionEvent>() { // TODO:
-            @Override
-            public void handle(ActionEvent e) {
-
             }
         });
 
