@@ -108,9 +108,16 @@ public class Owner {
         this.name = name;
     }
 
+    /**
+     * If name is one word, return that word.
+     * @return
+     */
     public String getLastName(){
-        String[] nameSplit = this.name.split(" "); // TODO: error handle
-        return nameSplit[1];
+        if (this.name.contains(" ")){
+            String[] nameSplit = this.name.split(" "); 
+            return nameSplit[1];
+        }
+        else return this.name;
     }
 
     public Boolean getQualifiedForService() {
@@ -118,12 +125,15 @@ public class Owner {
     }
 
     /**
-     * Returns a string, last name comma first.
+     * Returns a string, last name comma first. If name is only one word, that word is returned.
      * @return Last, First
      */
     public String getLastThenFirst(){
-        String[] nameSplit = this.name.split(" ");
-        return nameSplit[1] + ", " + nameSplit[0];
+        if (this.name.contains(" ")){
+            String[] nameSplit = this.name.split(" ");
+            return nameSplit[1] + ", " + nameSplit[0];
+        }
+        else return this.name;
         
     }
 

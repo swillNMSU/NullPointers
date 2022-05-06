@@ -5,11 +5,8 @@ import java.io.IOException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.util.ArrayList;
-
-import javax.annotation.processing.Filer;
-
 import java.util.*;
-import java.time.format.DateTimeFormatter;
+
 
 
 /*
@@ -100,11 +97,11 @@ public class Read {
         Date currDate = new Date();
         Boolean newYear = false;
         int currMonth = -1, monthSinceReset = -1;
-
+        BufferedReader br = null;
         try{
             File metaFile = new File("meta/.metadata.csv");
             FileReader fr = new FileReader(metaFile);
-            BufferedReader br = new BufferedReader(fr);
+            br = new BufferedReader(fr);
             String line = br.readLine();
             
             while(line != null){
@@ -143,13 +140,22 @@ public class Read {
                 }
                 line = br.readLine();      
             }
-            br.close();
+            
+        }
 
-        } catch(IOException ioe) {
+        catch(IOException ioe) {
             ioe.printStackTrace();
         }
-        return false;
 
+        finally {
+            try {
+                br.close();
+            } catch (Exception e) {
+                
+            }
+        }
+        return false;
+        
     }
 
     /**
@@ -161,10 +167,6 @@ public class Read {
         File f = new File("archive");
         pathnames = f.list();
         for (String path : pathnames){
-            // if (path.contains("reset_")){
-            //     String[] pn = path.split("_");
-            //     path = pn[1];
-            // }
             System.out.println(path);
             File archiveFile = new File("archive/"+ path);
             archs.add(archiveFile);

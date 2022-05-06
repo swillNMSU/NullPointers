@@ -82,20 +82,29 @@ public class Validator {
         boolean notValid = true;
         int invalidIntex = 1;
 
-        if (isEmptyInput(isValidName))
+        if (isEmptyInput(isValidName)) {
+            Driver.errorMessage = "Name cannot be empty.";
             return true;
-
+        }
+        //name cannot start or end with space.
+        if (isValidName.charAt(0) == ' ' || isValidName.charAt(isValidName.length() - 1) == ' ') {
+            Driver.errorMessage = "Cannot start or end with space.";
+            return true;
+        }
+        
         for (int i = 0; i < isValidName.length() && notValid; i++) {
             if (isValidName.charAt(i) != ' ' && (isValidName.charAt(i) < 'A' || isValidName.charAt(i) > 'Z') &&
                     (isValidName.charAt(i) < 'a' || isValidName.charAt(i) > 'z')) {
                 notValid = false;
                 invalidIntex = i + 1;
             }
+
         }
 
         if (!notValid) {
-            System.out.print("YOU ENTERED A VALUE THAT WAS NOT \"A-Z\" or \"a-z\": ");
-            System.out.println("The error is at " + invalidIntex);
+            Driver.errorMessage = "Names must only contain letters.";
+            // System.out.print("YOU ENTERED A VALUE THAT WAS NOT \"A-Z\" or \"a-z\": ");
+            // System.out.println("The error is at " + invalidIntex);
             return true;
         }
         return false;
@@ -129,19 +138,20 @@ public class Validator {
 
         for (int i = 0; i < isValidNum.length() && notValidPickUps; i++) {
             if (isValidNum.charAt(0) == '-') {
-                System.out.print("No negative numbers are allowed: ");
-                System.out.println("Error at " + errorIndex);
+                Driver.errorMessage = "No negative numbers are allowed";
+                System.out.println("Error in name at index " + errorIndex);
                 return true;
             }
 
             if (isValidNum.charAt(i) < '0' || isValidNum.charAt(i) > '9') {
+                Driver.errorMessage = "Only digits are allowed.";
                 errorIndex = errorIndex + i;
                 notValidPickUps = false;
             }
         }
 
         if (!notValidPickUps) {
-            System.out.print("You can not have letter or any symboles in this field: ");
+            Driver.errorMessage = "You can not have letter or any symboles in this field: ";
             System.out.println("Error at " + errorIndex);
             return true;
         }
@@ -172,18 +182,18 @@ public class Validator {
      *  a number. If it finds any of these it will return true. If none of these character are found and
      *  it is just numbers then it will return false for valid input.
      */
-    static boolean checkStrikes(String isValidStrikes) {
+    public boolean checkStrikes(String isValidStrikes) {
         boolean isInValid = true;
         int invalidInput = 1;
         
         if (isValidStrikes.isEmpty()) {
-            System.out.println("You can not have an empty value");
+            Driver.errorMessage = "You can not have an empty value";
             return true;
         }
         
         for (int i = 0; i < isValidStrikes.length() && isInValid; i++) {
             if (isValidStrikes.charAt(0) == '-') {
-                System.out.print("Negative numbers are not allowed: ");
+                Driver.errorMessage = "Negative numbers are not allowed.";
                 System.out.println("Error at " + invalidInput);
                 return true;
             }
@@ -194,13 +204,13 @@ public class Validator {
         }
         
         if (!isInValid) {
-            System.out.print("You have an invalid input at " + invalidInput);
+            Driver.errorMessage = "You have an invalid input at character " + invalidInput;
             return true;
         }
         
         int checkNumber = Integer.parseInt(isValidStrikes);
         if (checkNumber < 0) {
-            System.out.println("You can not have a negative number of strikes");
+            Driver.errorMessage = "Strikes cannot be negative.";
             return true;
         }
         else if (checkNumber > 3) {
@@ -235,7 +245,7 @@ public class Validator {
 
         for (int i = 0; i < isValidNumPets.length() && notValidPetNum; i++) {
             if (isValidNumPets.charAt(0) == '-') {
-                System.out.print("Negative numbers are not allowed: ");
+                Driver.errorMessage = "Negative numbers are not allowed";
                 System.out.println("Error at " + errorIndex);
                 return true;
             }
@@ -245,16 +255,17 @@ public class Validator {
             }
         }
         if (!notValidPetNum) {
-            System.out.print("Invalid input can not have letters or characters: ");
+            Driver.errorMessage = "Invalid input can not have letters or characters";
             System.out.println("Error at " + errorIndex);
             return true;
         }
 
-        int isOkayNumInput = Integer.parseInt(isValidNumPets);
-        if (isOkayNumInput == 0) {
-            System.out.println("You can not have 0 pets");
-            return true;
-        }
+        // We should allow zero pets. Just because someone doesn't qualify it doesn't mean they shouldn't be in the records.
+        //int isOkayNumInput = Integer.parseInt(isValidNumPets);
+        // if (isOkayNumInput == 0) {
+        //     Driver.errorMessage = "You can not have 0 pets";
+        //     return true;
+        // }
         return false;
     }
 
@@ -280,6 +291,10 @@ public class Validator {
         int invalidIndex = 1;
         if (isEmptyInput(isValidAddress))
             return true;
+
+        if (isValidAddress.contains(",")){
+            Driver.errorMessage = "Cannot contain comma";
+        }
 
         for (int i = 0; i < isValidAddress.length() && notValidAddress; i++) {
             if (isValidAddress.charAt(i) != ' ' && (isValidAddress.charAt(i) < 'A' || isValidAddress.charAt(i) > 'Z')

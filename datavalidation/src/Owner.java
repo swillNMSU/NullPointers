@@ -5,8 +5,8 @@ package datavalidation.src;
 public class Owner {
 
     private String name, incomeProof;
-    public static int numPets, strikes, numRecieved;
-    public static boolean isFixed;
+    public int numPets, strikes, numRecieved;
+    public boolean isFixed;
 
     /**
      *  The owners class constructer that calls the set methods
