@@ -34,7 +34,7 @@ public class Driver{
      *  DataTest.checkNameField method returns a booleen value true for invalid and false for
      *  valid. It will update the owners name filed.
      */
-    public static void getPersontName(Scanner name,String message, owner personsInfoOwner){
+    public static void getPersontName(Scanner name,String message, Owner personsInfoOwner){
         System.out.println(message);
         String inputname = name.nextLine();
         while(DataTest.checkNameFields(inputname)){
@@ -59,7 +59,7 @@ public class Driver{
      *  user input. The loop will not break unitl false if false then the data is valid and update the 
      * income proof of the owner . If true it will keep on prompting the user to enter until valid.
      */
-    public static void getPersonIncome(Scanner incom, String message,owner personInfo){
+    public static void getPersonIncome(Scanner incom, String message,Owner personInfo){
         System.out.println(message);
         String incomeInput = incom.nextLine();
         while(DataTest.checkNameFields(incomeInput)){
@@ -83,7 +83,7 @@ public class Driver{
      *  input is invalid. If the data is valid then it will be false. Will update the number of pets
      *  in the owners pets filed
      */
-    public static void getNumPets(Scanner numPet, String message, owner personInfo){
+    public static void getNumPets(Scanner numPet, String message, Owner personInfo){
         System.out.println(message);
         String input = numPet.nextLine();
         while(DataTest.checkNumPets(input)){
@@ -108,7 +108,7 @@ public class Driver{
      *  will keep on running. If false then the input is valid. It will updat the recieved filed
      *  in the owner class
      */
-    public static void getNumPickUp(Scanner petFoodGiven, String message, owner personInfo) {
+    public static void getNumPickUp(Scanner petFoodGiven, String message, Owner personInfo) {
         System.out.println(message);
         String input = petFoodGiven.nextLine();
         while(DataTest.checkPickUps(input)){
@@ -133,7 +133,7 @@ public class Driver{
      *  is correct for this field. If the data is invalid then the while loop will keep on running
      *  if the data is valid then the loop breaks and updates the owners address field.
      */
-    public static void getAddress(Scanner addressInput, String message,owner personInfo){
+    public static void getAddress(Scanner addressInput, String message,Owner personInfo){
         System.out.println(message);
         String input = addressInput.nextLine();
         while(DataTest.checkAddress(input)){
