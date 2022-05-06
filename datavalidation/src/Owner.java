@@ -1,11 +1,16 @@
 //package datavalidation;
+/**
+ *  The class that helps creat an Owner object
+ */
 public class Owner {
 
     private String name, incomeProof;
     public static int numPets, strikes, numRecieved;
     public static boolean isFixed;
 
-
+    /**
+     *  The owners class constructer that calls the set methods
+     */
     public Owner(String _name){
         setName(_name);
         setIncomeProof(null);
@@ -15,7 +20,9 @@ public class Owner {
         setIsFixed(false);
     }
 
-    // currently allows for only one pet.
+    /**
+     *  The to string method that prints out the owners information
+     */
    
     @Override 
     public String toString(){
@@ -29,7 +36,6 @@ public class Owner {
     public int getNumRecieved() {
         return numRecieved;
     }
-
 
     public void setNumRecieved(int numRecieved) {
         this.numRecieved = numRecieved;
