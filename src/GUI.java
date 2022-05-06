@@ -46,8 +46,6 @@ import java.io.IOException;
  * Primary goal is for quick and easy database management.
  * 
  * TODO:
- * Color each owner in table red if they dont have proof of income, as well
- * Search by address?
 
  Toggle search by name/address
  * Reset withdrawls at the first of every YEAR (AUGUST TO AUGUST)
@@ -57,7 +55,7 @@ import java.io.IOException;
  *
  * 
  * Maybe have an option to flag an owner as already banned
- * If searching, select top result
+
  * 
  * Click on table elemnt and have that highlighted on edit screen
  * 
@@ -356,7 +354,7 @@ public class GUI extends Application {
         Text scenetitle = new Text("Patron Information");
         scenetitle.setFont(Font.font("Telugu MN", FontWeight.NORMAL, 20));
         grid.add(scenetitle, 0, 0, 2, 1);
-        if (ow.getQualifiedForService() == false) {
+        if (ow.getQualifiedForService() == false && !addingNew) {
             Label banned = new Label("This person is not qualified for our services.");
             banned.setTextFill(Color.RED);
             grid.add(banned, 0,10,2,2);
@@ -411,8 +409,9 @@ public class GUI extends Application {
         grid.add(ownerNameL, 0, 1);
         TextField ownerTextField = new TextField(ow.getName());
         grid.add(ownerTextField, 1, 1);
-        if (addingNew)
+        if (addingNew) {
             ownerTextField.setText("");
+        }
         Text nameErr = displayErr(grid, "*", 5, 1);
 
         ownerTextField.textProperty().addListener(new ChangeListener<String>() {
@@ -430,7 +429,7 @@ public class GUI extends Application {
         grid.add(addressTextField, 1, 2);
         if (addingNew)
             addressTextField.setText("");
-        //Text addrErr = displayErr(grid, "*", 5, 2);
+        Text addressError = displayErr(grid, "*", 5, 2);
 
         addressTextField.textProperty().addListener(new ChangeListener<String>() {
             @Override
@@ -528,6 +527,13 @@ public class GUI extends Application {
                     nameErr.setVisible(false);
                 }
 
+                if (dVal.checkAddress(addressTextField.getText())) {
+                    addressError.setVisible(true);
+                    canSave = false;
+                } else {
+                    addressError.setVisible(false);
+                }
+
                 if (dVal.checkNumPets(numPeTextField.getText())) {
                     petErr.setVisible(true);
                     canSave = false;
@@ -568,6 +574,7 @@ public class GUI extends Application {
                         isSaved.setVisible(true);
                     }
                 } else {
+
                     if (!canSave) {
                         isSaved.setText("Invalid entry");
                         isSaved.setVisible(true);
@@ -631,7 +638,7 @@ public class GUI extends Application {
 
         backToMainButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
-            public void handle(ActionEvent e){
+            public void handle(ActionEvent e) {
                 ps.setScene(mainMenu);
                 displayInfoWindow();
             }

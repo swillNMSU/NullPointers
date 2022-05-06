@@ -1,9 +1,10 @@
 Name,Address,Pets,Strikes,Withdrawls,Fixed Status,Income Qualification,Overall Qualification
 Kayla Alberts,true,3,0,2,true,222 Greenview Lane
-Kaylie Balson,true,1,0,3,true,1125 Tree Lane
-Gill Bill,true,1,0,2,false,2222 Two St.
+Kaylie Balson,true,2,0,3,true,1125 Tree Lane
+Gill Bill,true,2,0,2,true,2222 Two St.
 David Bowers,true,1,0,1,true,980 Juniper St
 Albert Brown,true,1,0,1,true,2222 Steele Avenue
+Andrew Callihan,true,0,1,1,true,11232 Branson Ave.
 Randy Crookshanks,true,1,0,2,true,1132 Francine Ave
 Richard David  Sr,true,1,0,1,true,554 Moon Dr
 Kalan Davidson,true,3,0,3,true,3345 Pine Avenue
@@ -44,4 +45,3 @@ Joel Sanders,true,1,0,1,true,653 Simple Ridge Lane
 Steve Smith,true,1,0,1,true,4443 Donnovan Lane
 Steve Smith,false,1,0,1,true,6675 St. Francis Dr.
 Johan Williams,true,1,0,2,true,667 Francis Ave
-Joan Williamson,true,1,0,2,true,667 Francis Ave
