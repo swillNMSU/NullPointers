@@ -19,3 +19,6 @@ In order to install our UI you must have java installed (Preferably Java 16.0.0 
 
 # Structure of UI
 The structure of our UI is based on the structure called Pipes and Filters (Further illustrated on our website). For the brief description, we broke down different UI functions such as read, write, etc. into smaller classes that handled specific functions. At the end we combined these different classes into the UI, which was able to fully utilize the functionality of every class.
+
+# Build Instructions
+In order to use the GUI it must be run through an IDE. Please run the Driver.java class. This is obviously suboptimal but the pom files have been a struggle to understand in a short amount of time. 
