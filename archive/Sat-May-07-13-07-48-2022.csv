@@ -1,22 +1,22 @@
 Name,Address,Pets,Strikes,Withdrawls,Fixed Status,Income Qualification,Overall Qualification
 Kayla Alberts,true,3,0,0,true,222 Greenview Lane
 Kaylie Balson,true,2,0,3,true,1125 Tree Lane
-Gill Bill,true,2,0,2,true,2222 Two St.
+Gill Billy,true,2,0,2,true,2222 Two St.
 David Bowers,true,1,0,1,true,980 Juniper St
 Albert Brown,true,1,0,1,true,2222 Steele Avenue
 Andrew Callihan,true,0,0,1,true,11232 Branson Ave.
 Randy Crookshanks,true,1,0,2,true,1132 Francine Ave
 Richard David  Sr,true,1,0,1,true,554 Moon Dr
-David Davidson,true,0,0,1,true,5543 Golroy ave
 Kalan Davidson,true,3,0,3,true,3345 Pine Avenue
+David Davidson,true,0,0,1,true,5543 Golroy ave
 John Doe,true,0,0,2,true,51 Cherry Street Wakefield
-Richard Donalds,true,2,0,2,true,222 Greeville Ave
 Donald Donalds,true,1,0,1,true,6554 Branson Ave
-Albert Donaldson,true,1,0,1,true,County Road 4
+Richard Donalds,true,2,0,2,true,222 Greeville Ave
 Angel Donaldson,true,0,0,1,true,2232 Golf Rd.
+Albert Donaldson,true,1,0,1,true,County Road 4
 Donald Figs,true,1,0,1,true,664 Godfrey ln. 
-Gaby Flynn,true,0,0,1,true,1114 Garnder Ave
 Bill Flynn,true,4,0,2,true,2232 Oregon St
+Gaby Flynn,true,0,0,1,true,1114 Garnder Ave
 Dane Furgeson,true,0,0,1,true,3322 Maple Ave
 Maxo Galls,true,0,0,1,true,1114 Branson ave
 John Gilbert,true,4,0,1,true,1112 Saturn Dr.
@@ -31,13 +31,13 @@ Jason Landis,true,0,0,1,true,1120 Marilissa Ln.
 Terry Mann,true,1,0,1,true,422 Amherst Ave Frankfort
 Thomas Marquez,true,1,0,2,true,1123 Sundown St.
 Loki Maxwell,false,2,0,2,true,887 Gonly St.
-Elmo McGee,false,2,0,1,false,620 Linden Road Bristow
 Duncan McGee,true,1,0,2,true,1125 Taylore lane
+Elmo McGee,false,2,0,1,false,620 Linden Road Bristow
 Neil McNeil,false,2,0,2,false,224 Neil's St. 
 Greg Miller,true,2,0,3,true,5566 Satrun Dr
 Dan Moquin,true,0,0,1,false,445 Albert St
 New Owner,false,1,0,1,false,New Address
 Kate Phillips,true,0,0,1,true,332 Suncrest Drive
-Dave Richards,false,1,0,1,true,Pinewood Road
 Paul Richards,false,2,0,2,true,997 Gold Road
+Dave Richards,false,1,0,1,true,Pinewood Road
 Mawell Richardson,true,0,0,1,true,665 Ash Ave

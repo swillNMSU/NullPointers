@@ -124,13 +124,16 @@ public class Write {
      * Method creates and archive of the current log. Repeated code in writetoCSV, could stand to implement better.
      * File saved as CSV, titled todays date and time. TODO: make a directory.
      */
-    public static void archiveCurrent(String arg){
+    public static void archiveCurrent(String customName){
         Date date = new Date();
         String[] title = date.toString().split(" ");
-        String fName = title[0] + "-" + title[1] +  "-" + title[2] +  "-" + title[5] + ".csv";
-        GUI.emitGUIAction("Archive created with title: " + fName);
-
-        //if (arg == "withdrawlReset") fName = "reset_" + fName;
+        String[] time = title[3].split(":");
+        String fName;
+        System.out.println(date.toString()+"\n\n\n");
+        if (customName != "") 
+            fName = customName + ".csv";
+        else 
+            fName = title[0] + "-" + title[1] +  "-" + title[2] +  "-" + time[0] + "-" + time[1] + "-" + time[2] + "-" + title[5] + ".csv";
         
         try {
             File f = new File("archive/" + fName);

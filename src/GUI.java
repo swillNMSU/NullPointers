@@ -23,6 +23,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -46,21 +47,8 @@ import java.io.IOException;
  * 
  * Primary goal is for quick and easy database management.
  * 
- * TODO:
- * 
- * 
- * Reset withdrawls at the first of every YEAR (AUGUST TO AUGUST)
- * 
- * 
- * Resize and clean windows to properties that fit best
- *
- * 
- * Maybe have an option to flag an owner as already banned
- * 
- * 
  * Click on table elemnt and have that highlighted on edit screen
  * 
- * Fix ding sound when viewing archives
  */
 
 public class GUI extends Application {
@@ -69,7 +57,6 @@ public class GUI extends Application {
     static Stage ps;
     static Scene mainMenu;
     Scene editSc;
-   // Scene addSc;
     static Scene archiveScene;
     ScrollPane sp = new ScrollPane();
     final double width = 400, height = 600; // global sizes for scenes.
@@ -133,7 +120,8 @@ public class GUI extends Application {
         column7.setCellValueFactory(new PropertyValueFactory<>("incomeProof")); // change to string maybe
         column8.setCellValueFactory(new PropertyValueFactory<>("qualifiedForService"));
 
-        // Color code our ownerTable. Red indicates problem, green indicates all is well.
+        // Color code our ownerTable. Red indicates problem, green indicates all is
+        // well.
         column8.setCellFactory(col -> {
             TableCell<Owner, Boolean> cell = new TableCell<Owner, Boolean>() {
                 @Override
@@ -211,7 +199,7 @@ public class GUI extends Application {
         infoHB.getChildren().add(infoBtn);
         grid.add(infoBtn, 2, 10);
 
-        Button archiveBtn = new Button("Archive"); 
+        Button archiveBtn = new Button("Archive");
         HBox archHB = new HBox(10);
         archHB.setAlignment(align);
         archHB.getChildren().add(archiveBtn);
@@ -296,7 +284,7 @@ public class GUI extends Application {
                 addingNew = false;
                 if (owTable.getSelectionModel().getSelectedItem() != null) {
                     selectedOwner = owTable.getSelectionModel().getSelectedItem();
-                    emitGUIAction("Owner " + selectedOwner.getName()+ " stored as selected owner.");
+                    emitGUIAction("Owner " + selectedOwner.getName() + " stored as selected owner.");
                     editButton.setDisable(false);
                     // error check before swinthing scenes.
                     ps.setScene(editSc);
@@ -308,13 +296,15 @@ public class GUI extends Application {
         archiveBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
-                displayPopup("Would you like to name this archive? If not, the archive will be titled today's date and time.",
-                                "Add a Title?", "newArchive");
-                    Write.archiveCurrent("");
+                displayPopup(
+                        "Would you like to name this archive? If not, the archive will be titled today's date and time.",
+                        "Add a Title?", "newArchive");
+                
                     Text archSuccess = new Text("*");
                     archSuccess.setFill(Color.GREEN);
                     grid.add(archSuccess, 4, 10);
-                    
+                
+
             }
         });
 
@@ -324,7 +314,7 @@ public class GUI extends Application {
                 if (event.getClickCount() == 2 && (!row.isEmpty())) {
                     addingNew = false;
                     selectedOwner = row.getItem();
-                    emitGUIAction("Owner " + selectedOwner.getName()+ " stored as selected owner.");
+                    emitGUIAction("Owner " + selectedOwner.getName() + " stored as selected owner.");
                     ps.setScene(editSc);
                     initializeEditScene();
                 }
@@ -672,11 +662,13 @@ public class GUI extends Application {
     }
 
     /**
-     * Popup window is created, inset with a new stage and VBox. By default a yes and no button is created and a 
-     * some default customization is applied. 
+     * Popup window is created, inset with a new stage and VBox. By default a yes
+     * and no button is created and a
+     * some default customization is applied.
+     * 
      * @param message Label class always displayed unless empty.
-     * @param title Displayed on top pane of window.
-     * @param arg determines additional popup attribues.
+     * @param title   Displayed on top pane of window.
+     * @param arg     determines additional popup attribues.
      */
     public static void displayPopup(String message, String title, String arg) {
         Stage popWindow = new Stage();
@@ -807,25 +799,82 @@ public class GUI extends Application {
             layout.getChildren().addAll(repLabel, commentField, repBtn);
         }
 
-        if (arg == "newArchive"){
+        if (arg == "newArchive") {
             popWindow.setAlwaysOnTop(true);
+            BorderPane newArchBP = new BorderPane();
+            newArchBP.setPadding(insets);
+
+            GridPane center = new GridPane();
+            center.setAlignment(align);
+            center.setHgap(10);
+            center.setVgap(10);
+
             Button cancelButton = new Button("Cancel");
+            cancelButton.setAlignment(Pos.BOTTOM_RIGHT);
             Button renameButton = new Button("Rename");
-            // HBox cancelHB = new HBox();
-            // cancelHB.setAlignment(align);
-            // cancelButton.getChildren().add(cancelButton)
+            renameButton.setAlignment(Pos.CENTER);
+            TextField customeFileNameTF = new TextField();
+            customeFileNameTF.setMaxWidth(150);
+            Button useDateButton = new Button("Use Date and Time");
+            useDateButton.setAlignment(Pos.CENTER);
 
+            Label invalidNameLabel = new Label("Invalid file name");
+            invalidNameLabel.setTextFill(Color.RED);
+            invalidNameLabel.setVisible(false);
 
-            layout.getChildren().addAll(mess, renameButton, nButton, cancelButton);
+            cancelButton.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent e) {
+                    popWindow.close();
+                }
+            });
+
+            renameButton.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent e) {
+                    String archName = customeFileNameTF.getText();
+                    if (archName.contains(",") || archName.contains(":") || archName.contains("/")
+                            || archName.contains(".")
+                            || archName.contains(" ") || archName.charAt(0) == '_' ) {
+                        invalidNameLabel.setVisible(true);
+
+                    } else {
+                        Write.archiveCurrent(archName);
+                        invalidNameLabel.setVisible(false);
+                        popWindow.close();
+                    }
+                }
+            });
+
+            useDateButton.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent e) {
+                    Write.archiveCurrent("");
+                    popWindow.close();
+                }
+            });
+
+            center.add(mess, 0, 0);
+            center.add(renameButton, 0, 1);
+            center.add(customeFileNameTF, 0, 2);
+            center.add(invalidNameLabel, 1, 2);
+            center.add(useDateButton, 0, 3);
+            center.add(cancelButton, 0, 5);
+
+            newArchBP.setCenter(center);
+
+            layout.getChildren().addAll(newArchBP);
         }
         layout.setPadding(insets);
+
         Scene scene = new Scene(layout);
         popWindow.setScene(scene);
         popWindow.showAndWait();
     }
 
     /**
-     * Displays the settings window. Consists of a tabpane. Settings are to be determined
+     * Displays the settings window. Consists of a tabpane. Settings are to be
+     * determined
      * by client after additional discourse.
      */
     public static void displayInfoWindow() {
@@ -884,7 +933,6 @@ public class GUI extends Application {
         statisticsRoot.setCenter(statVB);
         statisticsRoot.setBottom(statbackBtn);
         statisticsRoot.setPrefHeight(prefHeight);
-        // statisticsRoot.prefWidthProperty().bind(tabPane.widthProperty());
         stat.setContent(statisticsRoot);
 
         // #endregion
@@ -999,6 +1047,12 @@ public class GUI extends Application {
         infoStage.show();
     } // end display popup
 
+    /**
+     * Creates and displays a table that contains all information from past
+     * archives.
+     * 
+     * @param selArc
+     */
     public static void displaySelectedArchive(File selArc) {
         archivedOwTable = new TableView<>();
         archivedOwTable.setPrefHeight(200);
@@ -1039,7 +1093,7 @@ public class GUI extends Application {
 
         VBox arVB = new VBox(10);
         arVB.setPadding(insets);
-        emitGUIAction("Archive selected: "+ selArc.getName());
+        emitGUIAction("Archive selected: " + selArc.getName());
 
         Button backToSeButton = new Button("Back");
         HBox backTBox = new HBox();
@@ -1063,6 +1117,12 @@ public class GUI extends Application {
 
     }
 
+    /**
+     * 
+     * @param fromMain boolean determines if we are updating the main ownerTable
+     *                 (true) or if
+     *                 we are updating an archived owner table (false).
+     */
     public static void updateOwnerTable(boolean fromMain) {
         if (fromMain) {
             for (Owner ows : Driver.owners)
@@ -1072,11 +1132,24 @@ public class GUI extends Application {
                 archivedOwTable.getItems().add(ows);
     }
 
+    /**
+     * Simply adds all new archives to the arhive table. These are stored in a list
+     * of Files and
+     * displayed in a tableview.
+     * 
+     * @param archs
+     * @param table
+     */
     public static void updateArchiveTable(List<File> archs, TableView<File> table) {
         for (File ar : archs)
             table.getItems().add(ar);
     }
 
+    /**
+     * This method retrieves the settings stored in meta/.metadata.csv. Currently
+     * the only settings
+     * are the ability to toggle on and off the automatic reset for withdrawls.
+     */
     public static void getSettings() {
         try {
             File metaFile = new File("meta/.metadata.csv");
@@ -1107,6 +1180,11 @@ public class GUI extends Application {
         }
     }
 
+    /**
+     * This method updates the settings in the meta/.metadata.csv file. The file is
+     * read in at start and this
+     * method is called whenever a change to settings is made.
+     */
     public static void setSettings() {
         try {
             File metaFile = new File("meta/.metadata.csv");
@@ -1154,7 +1232,7 @@ public class GUI extends Application {
         return answer;
     }
 
-    public static void emitGUIAction(String action){
+    public static void emitGUIAction(String action) {
         System.out.println("GUI Event: " + action);
     }
 }
