@@ -79,7 +79,7 @@ public class GUI extends Application {
      *  Gets setting then launches our GUI.
      * @param args
      */
-    public static void run(String[] args) {
+    public static void main(String[] args) {
         getSettings(); // surround with try catch
         launch(args);
         emitGUIAction("GUI has launched successfully.");
