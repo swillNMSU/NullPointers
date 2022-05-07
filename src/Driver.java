@@ -12,5 +12,12 @@ public class Driver {
   public static File writeFile = new File("src/testReset.csv");
   public static String errorMessage; // passed through here when an error is dependant on two classes. Always set to null after use.
 
+  /**
+   * Runs our software.
+   * @param args
+   */
+  public static void main(String[] args) {
+    GUI.run(args);
+  }
 
 }

@@ -53,21 +53,22 @@ import java.io.IOException;
 
 public class GUI extends Application {
 
+    // Global variables
     Owner selectedOwner, delOwner;
     static Stage ps;
     static Scene mainMenu;
     Scene editSc;
-    static Scene archiveScene;
+    static Scene archiveScene; 
     ScrollPane sp = new ScrollPane();
     final double width = 400, height = 600; // global sizes for scenes.
     Validator dVal = new Validator();
     boolean addingNew = false;
-    static TableView<Owner> owTable;
-    static TableView<Owner> archivedOwTable;
+    static TableView<Owner> owTable; // main owner table.
+    static TableView<Owner> archivedOwTable; // table of available archive files.
     boolean canSave = true, searching = false;
-    boolean withdrawlReset = Read.checkForReset();
+    boolean withdrawlReset = Read.checkForReset(); // is it august?
     static Insets insets = new Insets(20);
-    static Pos align = Pos.CENTER_LEFT;
+    static Pos align = Pos.CENTER_LEFT; // default alignment.
     boolean hasSaved = true;
     static boolean noSave = false;
 
@@ -75,13 +76,13 @@ public class GUI extends Application {
     static boolean notifyReset;
 
     /**
-     * Launches our GUI.
-     * 
+     *  Gets setting then launches our GUI.
      * @param args
      */
-    public static void main(String[] args) {
+    public static void run(String[] args) {
         getSettings(); // surround with try catch
         launch(args);
+        emitGUIAction("GUI has launched successfully.");
     }
 
     /**
@@ -120,8 +121,7 @@ public class GUI extends Application {
         column7.setCellValueFactory(new PropertyValueFactory<>("incomeProof")); // change to string maybe
         column8.setCellValueFactory(new PropertyValueFactory<>("qualifiedForService"));
 
-        // Color code our ownerTable. Red indicates problem, green indicates all is
-        // well.
+        // Color code our ownerTable. Red indicates problem, green indicates all is well.
         column8.setCellFactory(col -> {
             TableCell<Owner, Boolean> cell = new TableCell<Owner, Boolean>() {
                 @Override
@@ -220,6 +220,8 @@ public class GUI extends Application {
         grid.add(editHb, 2, 5);
         editButton.setDisable(true);
 
+        // sets searching boolean to true and while this is true, searching method is called. 
+        // Search results are via name or address.
         searchTextField.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
@@ -238,6 +240,7 @@ public class GUI extends Application {
             }
         });
 
+        // Initializes edit scene with blank values.
         addBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
@@ -249,6 +252,7 @@ public class GUI extends Application {
             }
         });
 
+        // on fire, promps the person using this software to ensure action is desired.
         deleteBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
@@ -261,6 +265,7 @@ public class GUI extends Application {
             }
         });
 
+        // On fire, opens settings and info tabpane.
         infoBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
@@ -268,6 +273,7 @@ public class GUI extends Application {
             }
         });
 
+        // Toggles usability of edit and delete button. Cannot be used if no owner is selected.
         owTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
                 editButton.setDisable(false);
@@ -278,6 +284,8 @@ public class GUI extends Application {
             }
         });
 
+        // Assigns selected owner to the current owTable item selected. This is always going to be the owner
+        // our user has selected. Swiches to the edit scene.
         editButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
@@ -286,13 +294,14 @@ public class GUI extends Application {
                     selectedOwner = owTable.getSelectionModel().getSelectedItem();
                     emitGUIAction("Owner " + selectedOwner.getName() + " stored as selected owner.");
                     editButton.setDisable(false);
-                    // error check before swinthing scenes.
                     ps.setScene(editSc);
+                    emitGUIAction("Scene changed to edit scene.");
                     initializeEditScene();
                 }
             }
         });
 
+        // On fire, archive button will display a popup prompting the user to name the file should they desire to.
         archiveBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
@@ -317,6 +326,7 @@ public class GUI extends Application {
                     emitGUIAction("Owner " + selectedOwner.getName() + " stored as selected owner.");
                     ps.setScene(editSc);
                     initializeEditScene();
+                    emitGUIAction("Scene changed to edit scene.");
                 }
             });
             return row;
@@ -517,6 +527,7 @@ public class GUI extends Application {
                     nameErr.setText(concatErrorMessage());
                     nameErr.setVisible(true);
                     canSave = false;
+                    emitGUIAction("VALIDATION ERROR for NAME field: " + nameErr.getText());
                 } else {
                     nameErr.setVisible(false);
                 }
@@ -525,6 +536,7 @@ public class GUI extends Application {
                     addressError.setText(concatErrorMessage());
                     addressError.setVisible(true);
                     canSave = false;
+                    emitGUIAction("VALIDATION ERROR for ADDRESS field: " + addressError.getText());
                 } else {
                     addressError.setVisible(false);
                 }
@@ -533,6 +545,7 @@ public class GUI extends Application {
                     petErr.setText(concatErrorMessage());
                     petErr.setVisible(true);
                     canSave = false;
+                    emitGUIAction("VALIDATION ERROR for NUMBER OF PETS field: " + petErr.getText());
                 } else {
                     petErr.setVisible(false);
                 }
@@ -541,6 +554,7 @@ public class GUI extends Application {
                     strikeErr.setText(concatErrorMessage());
                     strikeErr.setVisible(true);
                     canSave = false;
+                    emitGUIAction("VALIDATION ERROR for STRIKES field: " + strikeErr.getText());
                 } else {
                     strikeErr.setVisible(false);
                 }
@@ -549,6 +563,7 @@ public class GUI extends Application {
                     withdrawlErr.setText(concatErrorMessage());
                     withdrawlErr.setVisible(true);
                     canSave = false;
+                    emitGUIAction("VALIDATION ERROR for WITHDRAWL field: " + withdrawlErr.getText());
                 } else {
                     withdrawlErr.setVisible(false);
                 }
@@ -557,6 +572,7 @@ public class GUI extends Application {
                     if (!canSave) {
                         isSaved.setText("Invalid entry");
                         isSaved.setVisible(true);
+                        emitGUIAction("An attempt to save has FAILED.");
                     } else {
                         owTable.getSelectionModel().getSelectedItem().setAllFeilds(
                                 ownerTextField.getText(),
@@ -570,6 +586,7 @@ public class GUI extends Application {
                         hasSaved = true;
                         isSaved.setText("Saved");
                         isSaved.setVisible(true);
+                        emitGUIAction("An attempt to save was SUCCESSFUL.");
                     }
                 } else {
 
@@ -589,6 +606,7 @@ public class GUI extends Application {
                         Text newAdded = new Text("Saved");
                         newAdded.setFill(Color.BLUE);
                         grid.add(newAdded, 2, 8);
+                        emitGUIAction("A new Owner object has been successfully added.");
                     }
                 }
             }
@@ -608,6 +626,10 @@ public class GUI extends Application {
         // #endregion
     } // end initializeEditScene
 
+    /**
+     * Method to display our Archive scene. TableView is constructed showing all avaialable archive files. 
+     * If fired, the archive is displayed.
+     */
     public static void initializeArchiveScene() {
         List<File> archives = Read.getArchives();
         TableView<File> archiveTable = new TableView<>();
@@ -689,6 +711,7 @@ public class GUI extends Application {
                 @Override
                 public void handle(ActionEvent e) {
                     popWindow.close();
+                    emitGUIAction("Popup with title " + title + " now closed.");
                     noSave = true;
                 }
             });
@@ -697,6 +720,7 @@ public class GUI extends Application {
                 @Override
                 public void handle(ActionEvent e) {
                     popWindow.close();
+                    emitGUIAction("Popup with title " + title + " now closed.");
                 }
             });
         }
@@ -712,12 +736,15 @@ public class GUI extends Application {
                     updateOwnerTable(true);
                     owTable.refresh();
                     popWindow.close();
+                    emitGUIAction("Popup with title " + title + " now closed.");
+
                 }
             });
             nButton.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent e) {
                     popWindow.close();
+                    emitGUIAction("Popup with title " + title + " now closed.");
                 }
             });
             nButton.requestFocus();
@@ -731,8 +758,8 @@ public class GUI extends Application {
             nButton.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent e) {
-                    // TODO: more actions likely
                     popWindow.close();
+                    emitGUIAction("Popup with title " + title + " now closed.");
                 }
             });
 
@@ -745,9 +772,8 @@ public class GUI extends Application {
                     }
                     Write.writeToCSV(Driver.writeFile);
                     Write.updateDateMetadata();
-                    // updateOwnerTable(true);
-                    // owTable.refresh();
                     popWindow.close();
+                    emitGUIAction("Popup with title " + title + " now closed.");
                 }
             });
         }
@@ -762,8 +788,8 @@ public class GUI extends Application {
             nButton.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent e) {
-                    // TODO: more actions likely
                     popWindow.close();
+                    emitGUIAction("Popup with title " + title + " now closed.");
                 }
             });
             yesBt.setOnAction(new EventHandler<ActionEvent>() {
@@ -776,6 +802,7 @@ public class GUI extends Application {
                     Write.writeToCSV(Driver.writeFile);
                     Write.updateDateMetadata();
                     popWindow.close();
+                    emitGUIAction("Popup with title " + title + " now closed.");
                 }
             });
         }
@@ -794,6 +821,7 @@ public class GUI extends Application {
                 public void handle(ActionEvent e) {
                     Write.emitReport(commentField.getText());
                     popWindow.close();
+                    emitGUIAction("Popup with title " + title + " now closed.");
                 }
             });
             layout.getChildren().addAll(repLabel, commentField, repBtn);
@@ -826,6 +854,7 @@ public class GUI extends Application {
                 @Override
                 public void handle(ActionEvent e) {
                     popWindow.close();
+                    emitGUIAction("Popup with title " + title + " now closed.");
                 }
             });
 
@@ -842,6 +871,7 @@ public class GUI extends Application {
                         Write.archiveCurrent(archName);
                         invalidNameLabel.setVisible(false);
                         popWindow.close();
+                        emitGUIAction("Popup with title " + title + " now closed.");
                     }
                 }
             });
@@ -851,6 +881,7 @@ public class GUI extends Application {
                 public void handle(ActionEvent e) {
                     Write.archiveCurrent("");
                     popWindow.close();
+                    emitGUIAction("Popup with title " + title + " now closed.");
                 }
             });
 
@@ -870,12 +901,12 @@ public class GUI extends Application {
         Scene scene = new Scene(layout);
         popWindow.setScene(scene);
         popWindow.showAndWait();
+        emitGUIAction("Popup window with title " + title + " is showing and waiting for response.");
     }
 
     /**
      * Displays the settings window. Consists of a tabpane. Settings are to be
-     * determined
-     * by client after additional discourse.
+     * determined by client after additional discourse.
      */
     public static void displayInfoWindow() {
         Stage infoStage = new Stage();
@@ -1045,13 +1076,14 @@ public class GUI extends Application {
         // Button nButton = new Button("No");
 
         infoStage.show();
+        emitGUIAction("Showing info stage.");
     } // end display popup
 
     /**
      * Creates and displays a table that contains all information from past
      * archives.
      * 
-     * @param selArc
+     * @param selArc - file that contains the archive to be displayed.
      */
     public static void displaySelectedArchive(File selArc) {
         archivedOwTable = new TableView<>();
@@ -1105,6 +1137,7 @@ public class GUI extends Application {
             public void handle(ActionEvent e) {
                 ps.setScene(mainMenu);
                 displayInfoWindow();
+                emitGUIAction("Info window displayed.");
             }
         });
 
@@ -1125,11 +1158,15 @@ public class GUI extends Application {
      */
     public static void updateOwnerTable(boolean fromMain) {
         if (fromMain) {
-            for (Owner ows : Driver.owners)
+            for (Owner ows : Driver.owners) {
                 owTable.getItems().add(ows);
-        } else
+                emitGUIAction("Main owner table updated.");
+            }
+        } else {
             for (Owner ows : Driver.currentArchives)
                 archivedOwTable.getItems().add(ows);
+            emitGUIAction("An archive table has been updated.");
+        }
     }
 
     /**
@@ -1143,6 +1180,7 @@ public class GUI extends Application {
     public static void updateArchiveTable(List<File> archs, TableView<File> table) {
         for (File ar : archs)
             table.getItems().add(ar);
+        emitGUIAction("Archive table updated.");
     }
 
     /**
@@ -1168,6 +1206,7 @@ public class GUI extends Application {
                     String[] settingData = lineData[1].split(",");
                     if (settingData[0].equals("notifyReset")) {
                         notifyReset = Boolean.parseBoolean(settingData[1]);
+                        emitGUIAction("Setting value retreived from meta file: " + settingData[0]+" set to "+ notifyReset);
                     }
 
                 }
@@ -1184,6 +1223,7 @@ public class GUI extends Application {
      * This method updates the settings in the meta/.metadata.csv file. The file is
      * read in at start and this
      * method is called whenever a change to settings is made.
+     * Currently unfinished due to time contraints.
      */
     public static void setSettings() {
         try {
@@ -1201,6 +1241,7 @@ public class GUI extends Application {
                 String[] lineData = line.split(":");
                 if (lineData[0].equals("setting")) { // fill array
                     String[] settingData = lineData[1].split(",");
+                    
                     if (settingData[0].equals("notifyReset")) {
                         notifyReset = Boolean.parseBoolean(settingData[1]);
                     }
@@ -1232,6 +1273,10 @@ public class GUI extends Application {
         return answer;
     }
 
+    /**
+     * Prints significant events to the console, titled "GUI Event: "
+     * @param action - message to be displayed
+     */
     public static void emitGUIAction(String action) {
         System.out.println("GUI Event: " + action);
     }
