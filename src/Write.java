@@ -20,15 +20,22 @@ public class Write {
 
     /**
      * Constructs a new owner based on input and adds it to the list of owners.
-     * TODO: Sort the list after adding.
+     * 
+     * @param name
+     * @param addr
+     * @param incProof
+     * @param fixed
+     * @param numP
+     * @param strikes
+     * @param numR
      */
     public static void addOwner(String name, String addr, boolean incProof, boolean fixed, int numP, int strikes,
             int numR) {
         Owner newOwner = new Owner();
         newOwner.setName(name);
         newOwner.setAddress(addr);
-        newOwner.setIncomeProof(incProof); // TODO: defaults to true, still need to decide on ui execution.
-        newOwner.setIsFixed(fixed); // same as above
+        newOwner.setIncomeProof(incProof); 
+        newOwner.setIsFixed(fixed); 
         newOwner.setNumPets(numP);
         newOwner.setStrikes(strikes);
         newOwner.setNumRecieved(numR);
@@ -48,8 +55,7 @@ public class Write {
     }
 
     /**
-     * Collects name with data validation. Split boolean indicates if this method
-     * needs to split the string TODO
+     * Collects name with data validation. 
      * 
      * @return
      */
@@ -119,7 +125,7 @@ public class Write {
     /**
      * Method creates and archive of the current log. Repeated code in writetoCSV,
      * could stand to implement better.
-     * File saved as CSV, titled todays date and time. TODO: make a directory.
+     * File saved as CSV, titled todays date and time. 
      */
     public static void archiveCurrent(String customName) {
         Date date = new Date();
@@ -172,6 +178,13 @@ public class Write {
         writeToCSV(Driver.writeFile);
     }
 
+    /**
+     * Makes changes to the metadata file based on the date. Sets the month since
+     * withdrawls
+     * have been reset and writes this to the file.
+     * 
+     * @return
+     */
     public static boolean updateDateMetadata() {
         String[] months = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
         Date currDate = new Date();
@@ -212,6 +225,11 @@ public class Write {
         }
     }
 
+    /**
+     * Write a user report to comments.txt file located in the meta directory.
+     * 
+     * @param report
+     */
     public static void emitReport(String report) {
 
         try {
@@ -230,6 +248,7 @@ public class Write {
 
     /**
      * Prints important events to the console.
+     * 
      * @param action
      */
     public static void emitWriteAction(String action) {

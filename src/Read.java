@@ -101,7 +101,8 @@ public class Read {
     }
 
     /**
-     * If the current month is august, a reset is available for withdrawls.
+     * If the current month is august, a reset is available for withdrawls. This
+     * method checks for this event.
      * 
      * @return - boolean signifying whether a reset should be called.
      */
@@ -172,7 +173,7 @@ public class Read {
     }
 
     /**
-     * Retrieve an array of files from on the archives
+     * Retrieve an list of files from on the archives directory.
      */
     public static List<File> getArchives() {
         List<File> archs = new ArrayList<>();
@@ -189,9 +190,10 @@ public class Read {
 
     /**
      * Prints important events to the console.
+     * 
      * @param action
      */
-    public static void emitReadAction(String action){
+    public static void emitReadAction(String action) {
         System.out.println("Read Event: " + action);
     }
 }

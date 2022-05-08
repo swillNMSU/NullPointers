@@ -23,7 +23,6 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -40,12 +39,42 @@ import java.io.FileReader;
 import java.io.IOException;
 
 /**
- * This is our GUI class, made with JavaFX. The purpose of this class is to
+ * This is our GUI class, made with JavaFX. This class extends the application
+ * class.
  * 
- * Script to run the GUI. The primary stage (ps) is called to switch scenes.
- * Upon open, mainMenu is loaded immmediately.
+ * All elements are either nodes or containaers for the nodes nodes. The main
+ * menu is a gridpane
+ * as well as some of the popup windows. Gridpanes have more flexible node
+ * placement, but this
+ * sacrafices format consistency.
  * 
- * Primary goal is for quick and easy database management.
+ * We also utilize scrollpanes, Vboxs, tabpanes, borderpanes and TableViews.
+ * TableViews are placed in scrollpanes
+ * and used whenever we need to display CSV data. VBoxs are used when nodes
+ * should be bound together.
+ * 
+ * Some instructions can be found in the info window when using the GUI.
+ * 
+ * You'll find three other directories besides src: meta, archive and
+ * datavalidation.
+ * 
+ * Datavalidation contains some test code for Owner construction as well as data
+ * validation.
+ * meta holds some settings, the main database for our Owners
+ * (csvWriteTest.csv), as well as a backup testing database (testReset.csv).
+ * Once we get the clients main database, we will switch to theirs.
+ * 
+ * comments.txt holds all of the suggestions/comments/issues recorder by the
+ * client (acheived via info window).
+ * 
+ * The archive directory holds all archives saved. Archives by default are
+ * titled the date and time of archival.
+ * A custom title can be made for the archive via popup event that occurs on
+ * "Archive" button fire.
+ * 
+ * There is an export to excel method that is not complete due to lack of
+ * information recieved by the client on their
+ * excel formatting.
  * 
  * Click on table elemnt and have that highlighted on edit screen
  * 
@@ -58,7 +87,7 @@ public class GUI extends Application {
     static Stage ps;
     static Scene mainMenu;
     Scene editSc;
-    static Scene archiveScene; 
+    static Scene archiveScene;
     ScrollPane sp = new ScrollPane();
     final double width = 400, height = 600; // global sizes for scenes.
     Validator dVal = new Validator();
@@ -76,7 +105,8 @@ public class GUI extends Application {
     static boolean notifyReset;
 
     /**
-     *  Gets setting then launches our GUI.
+     * Gets setting then launches our GUI.
+     * 
      * @param args
      */
     public static void main(String[] args) {
@@ -98,7 +128,7 @@ public class GUI extends Application {
 
         // #region mainMenu
 
-        // #region Table
+        // #region Table - Construction of our main TableView object.
         owTable = new TableView<>();
 
         owTable.prefHeightProperty().bind(ps.heightProperty());
@@ -118,10 +148,11 @@ public class GUI extends Application {
         column4.setCellValueFactory(new PropertyValueFactory<>("strikes"));
         column5.setCellValueFactory(new PropertyValueFactory<>("numRecieved"));
         column6.setCellValueFactory(new PropertyValueFactory<>("isFixed"));
-        column7.setCellValueFactory(new PropertyValueFactory<>("incomeProof")); // change to string maybe
+        column7.setCellValueFactory(new PropertyValueFactory<>("incomeProof"));
         column8.setCellValueFactory(new PropertyValueFactory<>("qualifiedForService"));
 
-        // Color code our ownerTable. Red indicates problem, green indicates all is well.
+        // Color code our ownerTable. Red indicates problem, green indicates all is
+        // well.
         column8.setCellFactory(col -> {
             TableCell<Owner, Boolean> cell = new TableCell<Owner, Boolean>() {
                 @Override
@@ -220,7 +251,8 @@ public class GUI extends Application {
         grid.add(editHb, 2, 5);
         editButton.setDisable(true);
 
-        // sets searching boolean to true and while this is true, searching method is called. 
+        // sets searching boolean to true and while this is true, searching method is
+        // called.
         // Search results are via name or address.
         searchTextField.textProperty().addListener(new ChangeListener<String>() {
             @Override
@@ -273,7 +305,8 @@ public class GUI extends Application {
             }
         });
 
-        // Toggles usability of edit and delete button. Cannot be used if no owner is selected.
+        // Toggles usability of edit and delete button. Cannot be used if no owner is
+        // selected.
         owTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
                 editButton.setDisable(false);
@@ -284,7 +317,8 @@ public class GUI extends Application {
             }
         });
 
-        // Assigns selected owner to the current owTable item selected. This is always going to be the owner
+        // Assigns selected owner to the current owTable item selected. This is always
+        // going to be the owner
         // our user has selected. Swiches to the edit scene.
         editButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -301,22 +335,24 @@ public class GUI extends Application {
             }
         });
 
-        // On fire, archive button will display a popup prompting the user to name the file should they desire to.
+        // On fire, archive button will display a popup prompting the user to name the
+        // file should they desire to.
         archiveBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
                 displayPopup(
                         "Would you like to name this archive? If not, the archive will be titled today's date and time.",
                         "Add a Title?", "newArchive");
-                
-                    Text archSuccess = new Text("*");
-                    archSuccess.setFill(Color.GREEN);
-                    grid.add(archSuccess, 4, 10);
-                
+
+                Text archSuccess = new Text("*");
+                archSuccess.setFill(Color.GREEN);
+                grid.add(archSuccess, 4, 10);
 
             }
         });
 
+        // Event that fires when double-clicking the owner table item. Changes to edit
+        // scene.
         owTable.setRowFactory(tv -> {
             TableRow<Owner> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
@@ -335,11 +371,18 @@ public class GUI extends Application {
         mainMenu = new Scene(grid, 300, 275);
         primaryStage.setScene(mainMenu);
         primaryStage.show();
-        if (withdrawlReset == true) {
+        if (withdrawlReset == true)
             displayPopup("Would you like to reset withdrawls to zero?", "Reset Withdrawls", "resetWithdrawls");
-        }
+
     }
 
+    /**
+     * This method initialized the edit scene. Nodes are constructed and
+     * eventhandlers are then
+     * tied to the nodes. Each element of the owner class that can be edited by our
+     * client is seperated
+     * into their own regions.
+     */
     public void initializeEditScene() {
         Owner ow = new Owner("");
 
@@ -515,6 +558,7 @@ public class GUI extends Application {
         });
         // #endregion
 
+        // Next block of code is data validation.
         Text isSaved = new Text("Saved");
         grid.add(isSaved, 1, 9);
         isSaved.setVisible(false);
@@ -550,7 +594,7 @@ public class GUI extends Application {
                     petErr.setVisible(false);
                 }
 
-                if (dVal.checkStrikes(numStrikesTextField.getText())) { // TODO
+                if (dVal.checkStrikes(numStrikesTextField.getText())) { 
                     strikeErr.setText(concatErrorMessage());
                     strikeErr.setVisible(true);
                     canSave = false;
@@ -627,7 +671,8 @@ public class GUI extends Application {
     } // end initializeEditScene
 
     /**
-     * Method to display our Archive scene. TableView is constructed showing all avaialable archive files. 
+     * Method to display our Archive scene. TableView is constructed showing all
+     * avaialable archive files.
      * If fired, the archive is displayed.
      */
     public static void initializeArchiveScene() {
@@ -864,7 +909,7 @@ public class GUI extends Application {
                     String archName = customeFileNameTF.getText();
                     if (archName.contains(",") || archName.contains(":") || archName.contains("/")
                             || archName.contains(".")
-                            || archName.contains(" ") || archName.charAt(0) == '_' ) {
+                            || archName.contains(" ") || archName.charAt(0) == '_') {
                         invalidNameLabel.setVisible(true);
 
                     } else {
@@ -1068,7 +1113,7 @@ public class GUI extends Application {
 
         infoStage.setScene(scene);
         infoStage.setTitle("JavaFX App");
-        infoStage.initModality(Modality.APPLICATION_MODAL); // TODO: what is info modality?
+        infoStage.initModality(Modality.APPLICATION_MODAL); 
         infoStage.setMinWidth(600);
         infoStage.setMinHeight(400);
         infoStage.setTitle("Information");
@@ -1151,6 +1196,8 @@ public class GUI extends Application {
     }
 
     /**
+     * This adds all owners present in the driver's ownerTable and adds them to the
+     * ownertable.
      * 
      * @param fromMain boolean determines if we are updating the main ownerTable
      *                 (true) or if
@@ -1206,7 +1253,8 @@ public class GUI extends Application {
                     String[] settingData = lineData[1].split(",");
                     if (settingData[0].equals("notifyReset")) {
                         notifyReset = Boolean.parseBoolean(settingData[1]);
-                        emitGUIAction("Setting value retreived from meta file: " + settingData[0]+" set to "+ notifyReset);
+                        emitGUIAction(
+                                "Setting value retreived from meta file: " + settingData[0] + " set to " + notifyReset);
                     }
 
                 }
@@ -1241,7 +1289,7 @@ public class GUI extends Application {
                 String[] lineData = line.split(":");
                 if (lineData[0].equals("setting")) { // fill array
                     String[] settingData = lineData[1].split(",");
-                    
+
                     if (settingData[0].equals("notifyReset")) {
                         notifyReset = Boolean.parseBoolean(settingData[1]);
                     }
@@ -1275,6 +1323,7 @@ public class GUI extends Application {
 
     /**
      * Prints significant events to the console, titled "GUI Event: "
+     * 
      * @param action - message to be displayed
      */
     public static void emitGUIAction(String action) {
